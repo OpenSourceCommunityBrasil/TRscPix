@@ -1,8 +1,21 @@
-Componente para desenvolvimento de aplicações com PIX usando:
-	RestDataware
-	ZXing
+Componente para desenvolvimento de aplicações com PIX usando: RestDataware, ZXing
 	
+grupos de Delphi para discusão e compartilhamneto de informações sobre Delphi, Pascal e afins.
+
+Grupo Whatsapp
+https://chat.whatsapp.com/KmOB9HQM0JNHtgeU0u1H41
+
+Grupo Telegram
+https://t.me/DelphiBeginner
 	
+Curta, compartilhe e se increva nas nossas redes sociais !!!
+ano de 2022 teremos muita, mas muita coisa nova que estamos preparando!!
+
+YouTube
+https://www.youtube.com/channel/UCh47zPxjlxzsIgRRvZTqmMA
+
+Facebook
+https://www.facebook.com/rscsistemas
 	
 	
 Componente PIX
