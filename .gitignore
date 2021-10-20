@@ -1,18 +1,44 @@
-# Build and Release Folders
-bin-debug/
-bin-release/
-[Oo]bj/
-[Bb]in/
+# ignore an entire directory
+/dcu/
+/.git/
+/__history/
+/__recovery/
+/Controles/__history/
 
-# Other files and folders
-.settings/
+/Demo/Projeto/__recovery/
+/Demo/Projeto/__history/
 
-# Executables
-*.swf
-*.air
-*.ipa
-*.apk
+/Demo/View/__recovery/
+/Demo/View/__history/
 
-# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
-# should NOT be excluded as they contain compiler settings and other important
-# information for Eclipse / Flash Builder.
+/Demob/Binarios/
+/Demob/DCUs/
+
+/Projeto/__history/
+/Projeto/Win32/
+
+/Source/__history/
+/Source/__recovery/
+
+
+
+# ignore a file type
+*.gitignore
+
+# Arquivos do Delphi
+*.dcu
+*.dproj.local
+*.groupproj.local
+*..tvsconfig
+*.identcache
+*.res
+
+
+# Arquivos diversos
+*.zip
+*.rar
+*.ini
+*.exe
+
+
+# add an exception (using !) to the preceding rule to track a specific file
