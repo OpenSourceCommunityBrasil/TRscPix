@@ -1,4 +1,3 @@
-# TRscPix
 Componente para desenvolvimento de aplicações com PIX usando:
 	RestDataware
 	ZXing
