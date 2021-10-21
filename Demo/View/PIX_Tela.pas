@@ -8,7 +8,10 @@ uses
   Vcl.Buttons, Vcl.Imaging.pngimage, Vcl.ComCtrls, ACBrGIF, Data.FMTBcd,
   Data.DB, Datasnap.DBClient, Datasnap.Provider, Data.SqlExpr, ACBrBase,
   ACBrPosPrinter, uDWResponseTranslator, uDWAbout, RLPrinters,
-  RscPix, uRscPix.Variaveis, uRscPix.funcoes;
+  RscPix, uRscPix.Variaveis, uRscPix.funcoes, FireDAC.Stan.Intf,
+  FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
+  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client, Vcl.Grids, Vcl.DBGrids;
 
 Const
  cLoja   = '1';
@@ -30,11 +33,19 @@ type
     Memo1: TMemo;
     RscPix1: TRscPix;
     Label4: TLabel;
+    DBGrid1: TDBGrid;
+    FDMemTable1: TFDMemTable;
+    DataSource1: TDataSource;
+    FDMemTable1pagador: TStringField;
+    FDMemTable1inforpagador: TStringField;
+    FDMemTable1endtoebdid: TStringField;
+    FDMemTable1txid: TStringField;
+    FDMemTable1valor: TCurrencyField;
+    FDMemTable1horario: TStringField;
     procedure btnCancelarClick(Sender: TObject);
     procedure btnConfirmarClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnImprQrCodeClick(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure TimerConsultarTimer(Sender: TObject);
   private
@@ -53,6 +64,9 @@ type
     procedure AtualizarPix(cStatus : String);
     procedure ConsultaPixPorTXID(dMostraMensagem : Boolean);
     procedure ConsultaListaPixPorPeriodo(dMostraMensagem : Boolean);
+    procedure ConsultarPixRecebido(dMostraMensagem : Boolean);
+    procedure SolicitarDevolucaoPixRecebido(dMostraMensagem : Boolean);
+    procedure ConsultarDevolucaoPixRecebido(dMostraMensagem : Boolean);
 
 
   end;
@@ -95,32 +109,40 @@ end;
 
 procedure TfrmPIX_Tela.ConsultaListaPixPorPeriodo(dMostraMensagem: Boolean);
 begin
-  RscPix1.ConsultarListaDeCobrancas(DtIniConsult, DtFimConsult);
+  RscPix1.ConsultarListaPixsRecebidos(DtIniConsult, DtFimConsult);
 
   if RscPix1.Resultado_Cod = 200 then
   begin
+
+    DBGrid1.Visible :=  True;
+    DBGrid1.Align :=  TAlign.alClient;
+
       lblStatus.Caption := 'Situação: ' +  RscPix1.Resultado.status;
 
-      if RscPix1.Resultado.status = 'CONCLUIDA' then
+      FDMemTable1.Open;
+      for var i := Low(RscPix1.Resultado.pix) to High(RscPix1.Resultado.pix) do
       begin
-          //Verificar se Foi Recebido aqui e Ja alterar para Recebido
-          if RscPix1.RecebidoTagPIX = True then
-          begin
-              if Assigned(RscPix1.Resultado.pix) then
-              begin
-                  bRecebido := True;
-              end
-              else
-               MessageBox(0,'Expirado ou Cancelado!', 'Atenção', mb_IconInformation + mb_ok);
-          end
-          else
-          begin
-                bRecebido := True;
-          end;
+        FDMemTable1.Append;
+
+        if RscPix1.Resultado.pix[i].pagador.cpf = EmptyStr then
+          FDMemTable1pagador.Value  :=  RscPix1.Resultado.pix[i].pagador.cnpj
+        else
+          FDMemTable1pagador.Value  :=  RscPix1.Resultado.pix[i].pagador.cpf;
+
+        FDMemTable1inforpagador.Value   :=  RscPix1.Resultado.pix[i].infoPagador;
+        FDMemTable1endtoebdid.Value     :=  RscPix1.Resultado.pix[i].endToEndId;
+        FDMemTable1txid.Value           :=  RscPix1.Resultado.pix[i].txid;
+        FDMemTable1valor.Value          :=  RscPix1.Resultado.pix[i].valor;
+        FDMemTable1horario.Value        :=  RscPix1.Resultado.pix[i].horario;
+
+        FDMemTable1.Post;
       end;
   end
   else
   begin
+    DBGrid1.Visible :=  False;
+    DBGrid1.Align :=  TAlign.alNone;
+
       if dMostraMensagem = True then
         MessageBox(0,PChar('Erro ao Consultar o PIX, tente novamente!'  + #13#10  + RscPix1.Retorno), 'Atenção', mb_IconInformation + mb_ok);
   end;
@@ -168,11 +190,59 @@ begin
           end;
       end;
 
-    var cValor := StringReplace(RscPix1.Resultado.valor.original, '.', ',', [rfReplaceAll]);
+    var cValor := StringReplace(FloatToStr(RscPix1.Resultado.valor), '.', ',', [rfReplaceAll]);
     lblValor.Caption := 'R$ '+FormatFLoat('###,###,##0.00',StrToCurr(cValor));
   end
   else
   begin
+      if dMostraMensagem = True then
+        MessageBox(0,PChar('Erro ao Consultar o PIX, tente novamente!'  + #13#10  + RscPix1.Retorno), 'Atenção', mb_IconInformation + mb_ok);
+  end;
+end;
+
+procedure TfrmPIX_Tela.ConsultarDevolucaoPixRecebido(dMostraMensagem: Boolean);
+begin
+  RscPix1.ConsultarDevolucaoPix(RscPix1.PixE2eid, RscPix1.PixTXID);
+
+  if RscPix1.Resultado_Cod = 200 then
+  begin
+    var cValor := StringReplace(FloatToStr(RscPix1.Resultado.valor), '.', ',', [rfReplaceAll]);
+    lblValor.Caption := 'R$ '+FormatFLoat('###,###,##0.00',StrToCurr(cValor));
+
+      lblStatus.Caption := 'Nome Pagador: ' +  RscPix1.Resultado.Pagador.nome;
+
+      memo1.Text  :=  RscPix1.Retorno;
+
+  end
+  else
+  begin
+    DBGrid1.Visible :=  False;
+    DBGrid1.Align :=  TAlign.alNone;
+
+      if dMostraMensagem = True then
+        MessageBox(0,PChar('Erro ao Consultar o PIX, tente novamente!'  + #13#10  + RscPix1.Retorno), 'Atenção', mb_IconInformation + mb_ok);
+  end;
+end;
+
+procedure TfrmPIX_Tela.ConsultarPixRecebido(dMostraMensagem: Boolean);
+begin
+  RscPix1.ConsultarPixRecebido(RscPix1.PixTXID);
+
+  if RscPix1.Resultado_Cod = 200 then
+  begin
+    var cValor := StringReplace(FloatToStr(RscPix1.Resultado.valor), '.', ',', [rfReplaceAll]);
+    lblValor.Caption := 'R$ '+FormatFLoat('###,###,##0.00',StrToCurr(cValor));
+
+      lblStatus.Caption := 'Nome Pagador: ' +  RscPix1.Resultado.Pagador.nome;
+
+      memo1.Text  :=  RscPix1.Retorno;
+
+  end
+  else
+  begin
+    DBGrid1.Visible :=  False;
+    DBGrid1.Align :=  TAlign.alNone;
+
       if dMostraMensagem = True then
         MessageBox(0,PChar('Erro ao Consultar o PIX, tente novamente!'  + #13#10  + RscPix1.Retorno), 'Atenção', mb_IconInformation + mb_ok);
   end;
@@ -240,12 +310,6 @@ begin
   end;
 end;
 
-procedure TfrmPIX_Tela.FormShow(Sender: TObject);
-begin
-//  Gerar;
-  lblValor.Caption := 'R$ '+FormatFLoat('###,###,##0.00',RscPix1.PIXValor);
-end;
-
 procedure TfrmPIX_Tela.GerarPix;
 var
     cValor : String;
@@ -280,7 +344,7 @@ begin
               cQrCode := RscPix1.Resultado.location;
             end;
 
-            cValor := StringReplace(RscPix1.Resultado.valor.original, '.', ',', [rfReplaceAll]);
+            cValor := StringReplace(FloatToStr(RscPix1.Resultado.valor), '.', ',', [rfReplaceAll]);
             lblValor.Caption := 'R$ '+FormatFLoat('###,###,##0.00',StrToCurr(cValor));
         end
         else
@@ -291,6 +355,30 @@ begin
 end;
 
 
+
+procedure TfrmPIX_Tela.SolicitarDevolucaoPixRecebido(dMostraMensagem: Boolean);
+begin
+  RscPix1.SolicitarDevolucaoPix(RscPix1.PixE2eid, RscPix1.PixTXID);
+
+  if RscPix1.Resultado_Cod = 200 then
+  begin
+    var cValor := StringReplace(FloatToStr(RscPix1.Resultado.valor), '.', ',', [rfReplaceAll]);
+    lblValor.Caption := 'R$ '+FormatFLoat('###,###,##0.00',StrToCurr(cValor));
+
+      lblStatus.Caption := 'Nome Pagador: ' +  RscPix1.Resultado.Pagador.nome;
+
+      memo1.Text  :=  RscPix1.Retorno;
+
+  end
+  else
+  begin
+    DBGrid1.Visible :=  False;
+    DBGrid1.Align :=  TAlign.alNone;
+
+      if dMostraMensagem = True then
+        MessageBox(0,PChar('Erro ao Consultar o PIX, tente novamente!'  + #13#10  + RscPix1.Retorno), 'Atenção', mb_IconInformation + mb_ok);
+  end;
+end;
 
 procedure TfrmPIX_Tela.TimerConsultarTimer(Sender: TObject);
 begin
@@ -326,7 +414,7 @@ begin
 
             lblStatus.Caption := 'Situação: '+RscPix1.Resultado.status;
 
-            cValor := StringReplace(RscPix1.Resultado.valor.original, '.', ',', [rfReplaceAll]);
+            cValor := StringReplace(FloatToStr(RscPix1.Resultado.valor), '.', ',', [rfReplaceAll]);
             lblValor.Caption := 'R$ '+FormatFLoat('###,###,##0.00',StrToCurr(cValor));
         end
         else

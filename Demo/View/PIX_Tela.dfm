@@ -15,7 +15,6 @@ object frmPIX_Tela: TfrmPIX_Tela
   Position = poMainFormCenter
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
@@ -675,6 +674,21 @@ object frmPIX_Tela: TfrmPIX_Tela
       Height = 161
       TabOrder = 4
     end
+    object DBGrid1: TDBGrid
+      Left = 1
+      Top = 1
+      Width = 522
+      Height = 40
+      Align = alTop
+      DataSource = DataSource1
+      TabOrder = 5
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWindowText
+      TitleFont.Height = -11
+      TitleFont.Name = 'Tahoma'
+      TitleFont.Style = []
+      Visible = False
+    end
   end
   object TimerConsultar: TTimer
     Enabled = False
@@ -702,5 +716,39 @@ object frmPIX_Tela: TfrmPIX_Tela
     PspAmbiente = taHomologacao
     Left = 70
     Top = 57
+  end
+  object FDMemTable1: TFDMemTable
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    Left = 40
+    Top = 120
+    object FDMemTable1pagador: TStringField
+      FieldName = 'pagador'
+    end
+    object FDMemTable1inforpagador: TStringField
+      FieldName = 'inforpagador'
+    end
+    object FDMemTable1endtoebdid: TStringField
+      FieldName = 'endtoebdid'
+    end
+    object FDMemTable1txid: TStringField
+      FieldName = 'txid'
+    end
+    object FDMemTable1valor: TCurrencyField
+      FieldName = 'valor'
+    end
+    object FDMemTable1horario: TStringField
+      FieldName = 'horario'
+    end
+  end
+  object DataSource1: TDataSource
+    DataSet = FDMemTable1
+    Left = 256
+    Top = 232
   end
 end

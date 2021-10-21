@@ -3,7 +3,7 @@ object Form1: TForm1
   Top = 0
   BorderStyle = bsSingle
   Caption = 'PIX - By: Roniery Santos Cardoso'
-  ClientHeight = 571
+  ClientHeight = 616
   ClientWidth = 1054
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
@@ -21,7 +21,7 @@ object Form1: TForm1
     Left = 0
     Top = 0
     Width = 1054
-    Height = 57
+    Height = 145
     Align = alTop
     BevelOuter = bvNone
     Color = clHighlight
@@ -33,7 +33,7 @@ object Form1: TForm1
     TabOrder = 0
     DesignSize = (
       1054
-      57)
+      145)
     object Label1: TLabel
       Left = 895
       Top = 7
@@ -49,80 +49,148 @@ object Form1: TForm1
       ParentFont = False
       ExplicitLeft = 950
     end
-    object Button1: TButton
-      AlignWithMargins = True
-      Left = 15
-      Top = 10
-      Width = 100
-      Height = 37
-      Margins.Left = 5
-      Margins.Top = 0
-      Margins.Right = 5
-      Margins.Bottom = 0
-      Align = alLeft
-      Caption = 'Gerar Pix'
-      TabOrder = 0
-      OnClick = Button1Click
-    end
-    object Button2: TButton
-      AlignWithMargins = True
-      Left = 125
-      Top = 10
-      Width = 100
-      Height = 37
-      Margins.Left = 5
-      Margins.Top = 0
-      Margins.Right = 5
-      Margins.Bottom = 0
-      Align = alLeft
-      Caption = 'Consultar Pix'
-      TabOrder = 1
-      OnClick = Button2Click
-    end
-    object Button3: TButton
-      AlignWithMargins = True
-      Left = 235
-      Top = 10
-      Width = 100
-      Height = 37
-      Margins.Left = 5
-      Margins.Top = 0
-      Margins.Right = 5
-      Margins.Bottom = 0
-      Align = alLeft
-      Caption = 'Cancelar Pix'
-      TabOrder = 2
-      OnClick = Button3Click
-    end
     object cbbTipoQRCode: TComboBox
       Left = 895
       Top = 26
       Width = 145
       Height = 21
       Anchors = [akTop, akRight]
-      TabOrder = 3
+      TabOrder = 0
     end
-    object Button4: TButton
-      AlignWithMargins = True
-      Left = 345
+    object GroupBox2: TGroupBox
+      Left = 10
       Top = 10
-      Width = 136
-      Height = 37
-      Margins.Left = 5
+      Width = 255
+      Height = 125
+      Align = alLeft
+      Caption = 'Cobran'#231'a Pix'
+      TabOrder = 1
+      object Button1: TButton
+        AlignWithMargins = True
+        Left = 7
+        Top = 15
+        Width = 241
+        Height = 25
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Gerar Combran'#231'a QRCode'
+        TabOrder = 0
+        OnClick = Button1Click
+      end
+      object Button2: TButton
+        AlignWithMargins = True
+        Left = 7
+        Top = 40
+        Width = 241
+        Height = 25
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Consultar Combran'#231'a Pix'
+        TabOrder = 1
+        OnClick = Button2Click
+      end
+      object Button3: TButton
+        AlignWithMargins = True
+        Left = 7
+        Top = 65
+        Width = 241
+        Height = 25
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Cancelar Cobran'#231'a Pix'
+        TabOrder = 2
+        OnClick = Button3Click
+      end
+    end
+    object GroupBox3: TGroupBox
+      AlignWithMargins = True
+      Left = 280
+      Top = 10
+      Width = 255
+      Height = 125
+      Margins.Left = 15
       Margins.Top = 0
-      Margins.Right = 5
+      Margins.Right = 0
       Margins.Bottom = 0
       Align = alLeft
-      Caption = 'Consultar Pix'#39's Periodo'
-      TabOrder = 4
-      OnClick = Button4Click
+      Caption = 'Pix'
+      TabOrder = 2
+      object Button5: TButton
+        AlignWithMargins = True
+        Left = 7
+        Top = 15
+        Width = 241
+        Height = 25
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Consultar Lista de Pix Recebios Por Per'#237'odo'
+        TabOrder = 0
+        OnClick = Button5Click
+      end
+      object Button6: TButton
+        AlignWithMargins = True
+        Left = 7
+        Top = 40
+        Width = 241
+        Height = 25
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Consultar Pix'
+        TabOrder = 1
+        OnClick = Button6Click
+      end
+      object Button7: TButton
+        AlignWithMargins = True
+        Left = 7
+        Top = 90
+        Width = 241
+        Height = 25
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Consultar Devolu'#231'ao Pix'
+        TabOrder = 2
+        OnClick = Button7Click
+      end
+      object Button4: TButton
+        AlignWithMargins = True
+        Left = 7
+        Top = 65
+        Width = 241
+        Height = 25
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Solicitar Devolu'#231'ao Pix'
+        TabOrder = 3
+        OnClick = Button4Click
+      end
     end
   end
   object Panel2: TPanel
     Left = 649
-    Top = 57
+    Top = 145
     Width = 405
-    Height = 514
+    Height = 471
     Align = alClient
     Color = clSilver
     ParentBackground = False
@@ -168,7 +236,7 @@ object Form1: TForm1
       Left = 1
       Top = 183
       Width = 403
-      Height = 330
+      Height = 287
       Align = alClient
       Center = True
       Picture.Data = {
@@ -432,9 +500,9 @@ object Form1: TForm1
   end
   object pnlLeft: TPanel
     Left = 0
-    Top = 57
+    Top = 145
     Width = 649
-    Height = 514
+    Height = 471
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 2
@@ -801,7 +869,7 @@ object Form1: TForm1
         object edtTXID: TLabeledEdit
           Left = 15
           Top = 87
-          Width = 189
+          Width = 80
           Height = 21
           EditLabel.Width = 23
           EditLabel.Height = 13
@@ -817,6 +885,16 @@ object Form1: TForm1
           EditLabel.Height = 13
           EditLabel.Caption = 'Copiar Colar Payload'
           TabOrder = 4
+        end
+        object edtEndToEndId: TLabeledEdit
+          Left = 115
+          Top = 87
+          Width = 89
+          Height = 21
+          EditLabel.Width = 58
+          EditLabel.Height = 13
+          EditLabel.Caption = 'endToEndId'
+          TabOrder = 5
         end
       end
     end

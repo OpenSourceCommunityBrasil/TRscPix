@@ -34,8 +34,11 @@ type
     DWCR_PIX: TDWClientREST;
 
     FURLApi       : string;
-    FCob          : String;
+    FHostCert     : string;
     FURLToken     : String;
+
+    FCob          : String;
+
     FInstanteGeradoToken: Cardinal;
 
     FRetorno: string;
@@ -70,6 +73,7 @@ type
     FPixDuracaoMin: integer;
     FPixTipoQRCode: TTipoQrCode;
     FRecebedorNome: string;
+    FPixE2eid: string;
     procedure SetDevedor_Documento(const Value: String);
     procedure SetDevedor_Documento_Tipo(const Value: TPessoa);
     procedure SetDevedor_Nome(const Value: String);
@@ -104,6 +108,7 @@ type
     procedure SetChavePixTipo(const Value: TTipoChavePIX);
     procedure SetPixTXID(const Value: String);
 
+    {========================================}
     function GerarTXID: String;
     procedure GetURLToken;
     procedure GetToToken;
@@ -114,6 +119,8 @@ type
     procedure SetPixDuracaoMin(const Value: integer);
     procedure SetPixTipoQRCode(const Value: TTipoQrCode);
     procedure SetRecebedorNome(const Value: string);
+    procedure SetPixE2eid(const Value: string);
+    {========================================}
   protected
     { Protected declarations }
   public
@@ -121,32 +128,38 @@ type
   Constructor Create(AOwner   : TComponent);  Override;
   Destructor  Destroy;  Override;
 
-    procedure CriarCobranca;
-    procedure RevisarCobranca(cTXID,cStatus:String);
-    procedure ConsultarCobranca(TXID:String);
-    procedure ConsultarListaDeCobrancas(DtIni: TDateTime; DtFim: TDateTime);
+  {========================================}
+  procedure CriarCobranca;
+  procedure RevisarCobranca(cTXID,cStatus:String);
+  procedure ConsultarCobranca(TXID:String);
+  procedure ConsultarListaPixsRecebidos(DtIni: TDateTime; DtFim: TDateTime; sTXID: string = ''; sCPF: string = ''; sCNPJ: string = '');
+  procedure ConsultarPixRecebido(e2eid:String);
+  procedure SolicitarDevolucaoPix(e2eid, TxIDDev:String);
+  procedure ConsultarDevolucaoPix(e2eid, TxIDDev:String);
+  {========================================}
 
 
-    property Acess_token  : string read FAcess_token write SetAcess_token;
+    property Acess_token            : string read FAcess_token write SetAcess_token;
 
     property Retorno                : string read FRetorno write SetRetorno;
     property Resultado_Cod          : Integer read FResultado_Cod write SetResultado_Cod;
     property Resultado              : TPix_Parametros read FResultado write SetResultado;
 
-    property Expires_in   : Integer read FExpires_in write SetExpires_in;
-    property Token_type   : string read FToken_type write SetToken_type;
-    property Scope        : string read FScope write SetScope;
+    property Expires_in             : Integer read FExpires_in write SetExpires_in;
+    property Token_type             : string read FToken_type write SetToken_type;
+    property Scope                  : string read FScope write SetScope;
 
-    property PixMensagem  : String read FPIXMensagem write SetPIXMensagem;
-    property PixValor  : Currency read FPIXValor write SetPIXValor;
-    property PixDuracaoMin: integer read FPixDuracaoMin write SetPixDuracaoMin Default 30;
-    property PixTipoQRCode: TTipoQrCode read FPixTipoQRCode write SetPixTipoQRCode;
-    property PixTXID         : String read FPixTXID write SetPixTXID;
+    property PixMensagem            : String read FPIXMensagem write SetPIXMensagem;
+    property PixValor               : Currency read FPIXValor write SetPIXValor;
+    property PixDuracaoMin          : integer read FPixDuracaoMin write SetPixDuracaoMin Default 30;
+    property PixTipoQRCode          : TTipoQrCode read FPixTipoQRCode write SetPixTipoQRCode;
+    property PixTXID                : String read FPixTXID write SetPixTXID;
+    property PixE2eid               : string read FPixE2eid write SetPixE2eid;
 
-    property RecebidoTagPIX : Boolean read FRecebidoTagPIX write SetRecebidoTagPIX;
+    property RecebidoTagPIX         : Boolean read FRecebidoTagPIX write SetRecebidoTagPIX;
 
-    property PermiteRevisar  : Boolean read FPermiteRevisar write SetPermiteRevisar;
-    property PermiteCancelar : Boolean read FPermiteCancelar write SetPermiteCancelar;
+    property PermiteRevisar         : Boolean read FPermiteRevisar write SetPermiteRevisar;
+    property PermiteCancelar        : Boolean read FPermiteCancelar write SetPermiteCancelar;
 
     property Devedor_Nome           : String read FDevedor_Nome write SetDevedor_Nome;
     property Devedor_Documento      : String read FDevedor_Documento write SetDevedor_Documento;
@@ -158,25 +171,23 @@ type
   published
     { Published declarations }
 
-    property ChavePIX     : String read FChavePIX write SetChavePIX;
-    property ChavePixTipo : TTipoChavePIX read FChavePixTipo write SetChavePixTipo;
+    property ChavePIX                   : String read FChavePIX write SetChavePIX;
+    property ChavePixTipo               : TTipoChavePIX read FChavePixTipo write SetChavePixTipo;
 
-    property Certificado_Nome : String read FCertificado_Nome write SetCertificado_Nome;
-    property Certificado_Senha: String read FCertificado_Senha write SetCertificado_Senha;
+    property Certificado_Nome           : String read FCertificado_Nome write SetCertificado_Nome;
+    property Certificado_Senha          : String read FCertificado_Senha write SetCertificado_Senha;
 
-    property Developer_application_key : String read FDeveloper_application_key write SetDeveloper_application_key;
-    property Developer_Client_ID    : String read FDeveloper_Client_ID write SetDeveloper_Client_ID;
-    property Developer_Client_Secret: String read FDeveloper_Client_Secret write SetDeveloper_Client_Secret;
+    property Developer_application_key  : String read FDeveloper_application_key write SetDeveloper_application_key;
+    property Developer_Client_ID        : String read FDeveloper_Client_ID write SetDeveloper_Client_ID;
+    property Developer_Client_Secret    : String read FDeveloper_Client_Secret write SetDeveloper_Client_Secret;
 
-    property RecebedorNome: string read FRecebedorNome write SetRecebedorNome;
-    property RecebedorCidade: String read FRecebedorCidade write SetRecebedorCidade;
+    property RecebedorNome              : string read FRecebedorNome write SetRecebedorNome;
+    property RecebedorCidade            : String read FRecebedorCidade write SetRecebedorCidade;
 
+    property Psp                        : TPSP read FPSP write SetPSP;
+    property PspAmbiente                : TTipoAmbiente read FPspAmbiente write SetPspAmbiente;
 
-
-    property Psp          : TPSP read FPSP write SetPSP;
-    property PspAmbiente : TTipoAmbiente read FPspAmbiente write SetPspAmbiente;
-
-    property CNPJRecebedor: String read FCNPJRecebedor write SetCNPJRecebedor; {Ver o que fazer com esse cara}
+    property CNPJRecebedor              : String read FCNPJRecebedor write SetCNPJRecebedor; {Ver o que fazer com esse cara}
 
 
   end;
@@ -250,14 +261,11 @@ begin
   end;
 end;
 
-procedure TRscPix.ConsultarListaDeCobrancas(DtIni: TDateTime; DtFim: TDateTime);
+procedure TRscPix.ConsultarDevolucaoPix(e2eid, TxIDDev: String);
 var
   cURL          : string;
   nResp         : Integer;
   Stream        : TStringStream;
-  JsonParams    : TJSONObject;
-  RequestHeader : TStringList;
-  var JasonData : TJSONObject;
 begin
   GetURLToken;
   GetToToken;
@@ -268,49 +276,14 @@ begin
     Exit;
   end;
 
+    TxIDDev :=  IntToStr(Random(123456));
+
   try
-
-//{
-//  "parametros": {
-//    "inicio": "2020-04-01T00:00:00Z",
-//    "fim": "2020-04-01T23:59:59Z",
-//    "paginacao": {
-//      "paginaAtual": 0,
-//      "itensPorPagina": 100,
-//      "quantidadeDePaginas": 1,
-//      "quantidadeTotalDeItens": 1
-//    }
-//  },
-//  "cobs": [
-//    {
-//      "$ref": "openapi.yaml#/components/examples/cobResponse1/value"
-//    }
-//  ]
-//}
-
      Stream       := TStringStream.Create('', TEncoding.UTF8);
-     RequestHeader  := TStringList.Create;
 
-     {criando parametro de datas}
-//     JasonData  :=  TJSONObject.Create;
-//     JasonData.AddPair('inicio', FormatDateTime('yyyy-mm-dd hh:mm:ss -04:00', DtIni)); {Respeita RFC 3339}
-//     JasonData.AddPair('fim', FormatDateTime('yyyy-mm-dd hh:mm:ss -04:00', DtFim)); {Respeita RFC 3339}
-//
-//     JsonParams := TJSONObject.Create;
-//     JsonParams.AddPair('parametros', JasonData);
-
-//     RequestHeader.Add('inicio=' + FormatDateTime('yyyy-mm-dd hh:mm:ss -04:00', DtIni));
-//     RequestHeader.Add('&');
-//     RequestHeader.Add('fim=' + FormatDateTime('yyyy-mm-dd hh:mm:ss -04:00', DtFim));
-//     RequestHeader.Add('&paginacao.paginaAtual=0&paginacao.itensPorPagina=100');
-//
-//     RequestHeader.Text :=  StringReplace(RequestHeader.Text, ' ', '%20', [rfReplaceAll]);
-//     RequestHeader.Text :=  StringReplace(RequestHeader.Text, ':', '%3A', [rfReplaceAll]);
-
-//     RequestHeader.Add('inicio=2021-01-10%2001%3A05%3A02%20-04%3A00&fim=2021-10-10%2001%3A05%3A02%20-04%3A00&paginacao.paginaAtual=0&paginacao.itensPorPagina=100');//JSON
-
-     cURL := fURLAPI + '/cob?{Params}';
-     cURL := StringReplace(cURL, '{Params}', 'inicio=2021-01-10%2001%3A05%3A02%20-04%3A00&fim=2021-10-10%2001%3A05%3A02%20-04%3A00&paginacao.paginaAtual=0&paginacao.itensPorPagina=100', [rfReplaceAll]);
+     cURL := fURLAPI + '/pix/{e2eid}/devolucao/{id}';
+     cURL := StringReplace(cURL, '{e2eid}', e2eid, [rfReplaceAll]);
+     cURL := StringReplace(cURL, '{id}', TxIDDev, [rfReplaceAll]);
 
      if Developer_application_key <> '' then
          cURL := cURL + '?gw-dev-app-key=' + Developer_application_key;
@@ -328,7 +301,6 @@ begin
      begin
           Resultado_Cod := 200;
           Retorno := UTF8ToWideString(Stream.DataString);//para poder analisar se esta correto
-
           Resultado := TJson.JsonToObject<TPix_Parametros>(Retorno);
      end
      else
@@ -338,7 +310,127 @@ begin
      end;
 
   finally
-      Stream.Free;
+    Stream.Free;
+  end;
+end;
+
+procedure TRscPix.ConsultarListaPixsRecebidos(DtIni: TDateTime; DtFim: TDateTime; sTXID: string = ''; sCPF: string = ''; sCNPJ: string = '');
+var
+  cURL          : string;
+  nResp         : Integer;
+  Stream        : TStringStream;
+  JsonParams    : TJSONObject;
+  RequestHeader : TStringList;
+  JasonData     : TJSONObject;
+begin
+  GetURLToken;
+  GetToToken;
+
+  if fAcess_token = '' then
+  begin
+    Retorno := 'Erro ao Obter Acces Token';
+    Exit;
+  end;
+
+  try
+    sTXID   := 'eoYL9bJFneAWWQcqu8gkPyUXFFoXFUHBzkW';
+    sCPF    :=  '';
+    sCNPJ   :=  '';
+
+
+     Stream       := TStringStream.Create('', TEncoding.UTF8);
+     RequestHeader  := TStringList.Create;
+
+     {criando parametro de datas}
+     JasonData  :=  TJSONObject.Create;
+     JasonData.AddPair('inicio', FormatDateTime('yyyy-mm-dd hh:mm:ss -04:00', DtIni)); {Respeita RFC 3339}
+     JasonData.AddPair('fim', FormatDateTime('yyyy-mm-dd hh:mm:ss -04:00', DtFim)); {Respeita RFC 3339}
+
+     JsonParams := TJSONObject.Create;
+     JsonParams.AddPair('parametros', JasonData);
+
+     RequestHeader.Add(JsonParams.ToString);
+
+     cURL := fURLAPI + '/pix';
+
+     if Developer_application_key <> '' then
+         cURL := cURL + '?gw-dev-app-key=' + Developer_application_key;
+
+     DWCR_PIX.ContentType  := 'application/json';
+     DWCR_PIX.UseSSL       := True;
+     DWCR_PIX.SSLVersions  := [sslvTLSv1_2];
+
+     DWCR_PIX.AuthenticationOptions.AuthorizationOption  := rdwAOBearer;
+     TRDWAuthOptionBearerClient(DWCR_PIX.AuthenticationOptions.OptionParams).Token := Acess_token;
+
+     nResp := DWCR_PIX.Get(cURL,nil,Stream,false);
+
+     if nResp = 200 then
+     begin
+          Resultado_Cod := 200;
+          Retorno := UTF8ToWideString(Stream.DataString);
+          Resultado := TJson.JsonToObject<TPix_Parametros>(Retorno);
+     end
+     else
+     begin
+         Resultado_Cod := 400;
+         Retorno := UTF8ToWideString(Stream.DataString);
+     end;
+
+  finally
+    Stream.Free;
+    JsonParams.Free;
+    RequestHeader.Free;
+  end;
+end;
+
+procedure TRscPix.ConsultarPixRecebido(e2eid: String);
+var
+  cURL          : string;
+  nResp         : Integer;
+  Stream        : TStringStream;
+begin
+  GetURLToken;
+  GetToToken;
+
+  if fAcess_token = '' then
+  begin
+    Retorno := 'Erro ao Obter Acces Token';
+    Exit;
+  end;
+
+  try
+     Stream       := TStringStream.Create('', TEncoding.UTF8);
+
+     cURL := fURLAPI + '/pix/{e2eid}';
+     cURL := StringReplace(cURL, '{e2eid}', e2eid, [rfReplaceAll]);
+
+     if Developer_application_key <> '' then
+         cURL := cURL + '?gw-dev-app-key=' + Developer_application_key;
+
+     DWCR_PIX.ContentType  := 'application/json';
+     DWCR_PIX.UseSSL       := True;
+     DWCR_PIX.SSLVersions  := [sslvTLSv1_2];
+
+     DWCR_PIX.AuthenticationOptions.AuthorizationOption  := rdwAOBearer;
+     TRDWAuthOptionBearerClient(DWCR_PIX.AuthenticationOptions.OptionParams).Token := Acess_token;
+
+     nResp := DWCR_PIX.Get(cURL,nil,Stream,false);
+
+     if nResp = 200 then
+     begin
+          Resultado_Cod := 200;
+          Retorno := UTF8ToWideString(Stream.DataString);//para poder analisar se esta correto
+          Resultado := TJson.JsonToObject<TPix_Parametros>(Retorno);
+     end
+     else
+     begin
+         Resultado_Cod := 400;
+         Retorno := UTF8ToWideString(Stream.DataString);
+     end;
+
+  finally
+    Stream.Free;
   end;
 end;
 
@@ -414,7 +506,7 @@ begin
 
         Resultado.txid  :=  PixTXID;
         Resultado.chave :=  ChavePIX;
-        Resultado.valor.original  :=  cValor;
+        Resultado.valor  := StrToFloatDef(cValor, 0);
 
 
         if Resultado.textoImagemQRcode = '' then
@@ -564,7 +656,7 @@ destructor TRscPix.Destroy;
 begin
   if Assigned(FResultado) then
     begin
-      FResultado.valor.Free;
+//      FResultado.valor.Free;
       FResultado.calendario.Free;
       FResultado.Recebedor.Free;
       FResultado.Free;
@@ -792,8 +884,9 @@ begin
   if FPspAmbiente = taSandBox then
   begin
     case FPSP of
+                        {============================================}
       pspSicredi      : begin
-                          FURLToken       := '';
+                          FURLToken       := 'https://api-pix-h.sicredi.com.br/oauth/token';  //pode ser diferente a URL do TOKEN para URL de consumo API
                           FURLAPI         := '';
 
                           FCob            := '/cob/{txid}';
@@ -801,6 +894,7 @@ begin
                           fPermiteRevisar := False;
                           fPermiteCancelar  := False;
                         end;
+                        {============================================}
       pspBancoDoBrasil: begin
                           FURLToken     := '';
                           FURLAPI       := '';
@@ -809,7 +903,8 @@ begin
                           fPermiteRevisar := False;
                           fPermiteCancelar  := False;
                         end;
-      pspSantander: begin
+                        {============================================}
+      pspSantander:     begin
                           FURLToken       := 'https://pix.santander.com.br/sandbox/oauth/token';
                           FURLAPI         := 'https://pix.santander.com.br/api/v1/sandbox';
                           FCob            := '/cob/{txid}';
@@ -818,15 +913,16 @@ begin
                           fPermiteRevisar := False;
                           fPermiteCancelar  := False;
                         end;
-
-      pspSicoob: begin
-                          FURLToken       := '';
-                          FURLAPI         := '';
+                        {============================================}
+      pspSicoob:        begin
+                          FURLToken       := 'https://api-homol.sicoob.com.br/cooperado/pix/token';
+                          FURLAPI         := 'https://api-homol.sicoob.com.br/cooperado/pix/api/v2';
                           FCob            := '/cob/{txid}';
                           fRecebidoTagPIX := True;
                           fPermiteRevisar := False;
                           fPermiteCancelar  := False;
                         end;
+                        {============================================}
       pspBradesco     : begin
                           FURLToken     := '';
                           FURLAPI       := '';
@@ -835,20 +931,24 @@ begin
                           fPermiteRevisar := False;
                           fPermiteCancelar  := False;
                         end;
+                        {============================================}
     end;
   end
   else if FPspAmbiente = taHomologacao then
   begin
     case FPSP of
+                        {============================================}
       pspSicredi      : begin
                           FURLToken       := 'https://api-pix-h.sicredi.com.br/oauth/token';  //pode ser diferente a URL do TOKEN para URL de consumo API
                           FURLAPI         := 'https://api-pix-h.sicredi.com.br/v2';
+                          FHostCert       := 'https://api-pix-h.sicredi.com.br';
 
                           FCob            := '/cob/{txid}';
                           fRecebidoTagPIX := False;
                           fPermiteRevisar := False;
                           fPermiteCancelar  := False;
                         end;
+                        {============================================}
       pspBancoDoBrasil: begin
                           FURLToken     := 'https://oauth.hm.bb.com.br/oauth/token';
                           FURLAPI       := 'https://api.hm.bb.com.br/pix/v1';
@@ -857,7 +957,8 @@ begin
                           fPermiteRevisar := False;
                           fPermiteCancelar  := False;
                         end;
-      pspSantander: begin
+                        {============================================}
+      pspSantander:     begin
                           FURLToken       := 'https://trust-pix-h.santander.com.br/oauth/token';
                           FURLAPI         := 'https://trust-pix-h.santander.com.br/api/v1';
                           FCob            := '/cob/{txid}';
@@ -866,8 +967,8 @@ begin
                           fPermiteRevisar := False;
                           fPermiteCancelar  := False;
                         end;
-
-      pspSicoob: begin
+                        {============================================}
+      pspSicoob:        begin
                           FURLToken       := 'https://api-homol.sicoob.com.br/cooperado/pix/token';
                           FURLAPI         := 'https://api-homol.sicoob.com.br/cooperado/pix/api/v2';
                           FCob            := '/cob/{txid}';
@@ -875,6 +976,7 @@ begin
                           fPermiteRevisar := False;
                           fPermiteCancelar  := False;
                         end;
+                        {============================================}
       pspBradesco     : begin
                           FURLToken     := 'https://qrpix-h.bradesco.com.br/auth/server/oauth/token';
                           FURLAPI       := '';
@@ -883,19 +985,24 @@ begin
                           fPermiteRevisar := False;
                           fPermiteCancelar  := False;
                         end;
+                        {============================================}
     end;
   end
   else if FPspAmbiente = taProducao then
   begin
     case FPSP of
+                        {============================================}
       pspSicredi      : begin
-                          FURLToken     := '';
-                          FURLAPI       := '';
+                          FURLToken     := 'https://api-pix.sicredi.com.br/v2/oauth/token';
+                          FURLAPI       := 'https://api-pix.sicredi.com.br';
+                          FHostCert     := 'https://api-pix.sicredi.com.br';
+
                           FCob          := '/cob/{txid}';
                           fRecebidoTagPIX := False;
                           fPermiteRevisar := False;
                           fPermiteCancelar  := False;
                         end;
+                        {===========================================}
       pspBancoDoBrasil: begin
                           FURLToken     := '';
                           FURLAPI       := '';
@@ -904,6 +1011,7 @@ begin
                           fPermiteRevisar := False;
                           fPermiteCancelar  := False;
                         end;
+                        {============================================}
       pspSantander    : begin
                           FURLToken       := 'https://trust-pix.santander.com.br/oauth/token';
                           FURLAPI         := 'https://trust-pix.santander.com.br/api/v1';
@@ -913,15 +1021,16 @@ begin
                           fPermiteRevisar := False;
                           fPermiteCancelar  := False;
                         end;
+                        {============================================}
        pspSicoob:       begin
-                          FURLToken       := '';
-                          FURLAPI         := '';
+                          FURLToken       := 'https://api-homol.sicoob.com.br/cooperado/pix/token';
+                          FURLAPI         := 'https://apis.sisbr.com.br/cooperado/pix/api/v2/';
                           FCob            := '/cob/{txid}';
                           fRecebidoTagPIX := True;
                           fPermiteRevisar := False;
                           fPermiteCancelar  := False;
                         end;
-
+                        {============================================}
       pspBradesco     : begin
                           FURLToken     := '';
                           FURLAPI       := '';
@@ -930,6 +1039,7 @@ begin
                           fPermiteRevisar := False;
                           fPermiteCancelar  := False;
                         end;
+                        {============================================}
     end;
   end;
 
@@ -1274,6 +1384,11 @@ begin
   FPixDuracaoMin := Value;
 end;
 
+procedure TRscPix.SetPixE2eid(const Value: string);
+begin
+  FPixE2eid := Value;
+end;
+
 procedure TRscPix.SetPIXMensagem(const Value: String);
 begin
   FPIXMensagem := Value;
@@ -1386,6 +1501,59 @@ end;
 procedure TRscPix.SetToken_type(const Value: string);
 begin
   FToken_type := Value;
+end;
+
+procedure TRscPix.SolicitarDevolucaoPix(e2eid, TxIDDev: String);
+var
+  cURL          : string;
+  nResp         : Integer;
+  Stream        : TStringStream;
+begin
+  GetURLToken;
+  GetToToken;
+
+  if fAcess_token = '' then
+  begin
+    Retorno := 'Erro ao Obter Acces Token';
+    Exit;
+  end;
+
+    TxIDDev :=  IntToStr(Random(123456));
+
+  try
+     Stream       := TStringStream.Create('', TEncoding.UTF8);
+
+     cURL := fURLAPI + '/pix/{e2eid}/devolucao/{id}';
+     cURL := StringReplace(cURL, '{e2eid}', e2eid, [rfReplaceAll]);
+     cURL := StringReplace(cURL, '{id}', TxIDDev, [rfReplaceAll]);
+
+     if Developer_application_key <> '' then
+         cURL := cURL + '?gw-dev-app-key=' + Developer_application_key;
+
+     DWCR_PIX.ContentType  := 'application/json';
+     DWCR_PIX.UseSSL       := True;
+     DWCR_PIX.SSLVersions  := [sslvTLSv1_2];
+
+     DWCR_PIX.AuthenticationOptions.AuthorizationOption  := rdwAOBearer;
+     TRDWAuthOptionBearerClient(DWCR_PIX.AuthenticationOptions.OptionParams).Token := Acess_token;
+
+     nResp := DWCR_PIX.Put(cURL,nil,Stream,false);
+
+     if nResp = 200 then
+     begin
+          Resultado_Cod := 200;
+          Retorno := UTF8ToWideString(Stream.DataString);//para poder analisar se esta correto
+          Resultado := TJson.JsonToObject<TPix_Parametros>(Retorno);
+     end
+     else
+     begin
+         Resultado_Cod := 400;
+         Retorno := UTF8ToWideString(Stream.DataString);
+     end;
+
+  finally
+    Stream.Free;
+  end;
 end;
 
 procedure TRscPix.SetPixTXID(const Value: String);
