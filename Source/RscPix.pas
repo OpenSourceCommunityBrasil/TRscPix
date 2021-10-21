@@ -621,6 +621,8 @@ begin
           if Resultado.textoImagemQRcode = '' then
              Resultado.textoImagemQRcode := GeraPayload;
 
+          var borey := DWCR_PIX.DefaultCustomHeader.ToString;
+
      end
      else
      begin
@@ -886,8 +888,9 @@ begin
     case FPSP of
                         {============================================}
       pspSicredi      : begin
-                          FURLToken       := 'https://api-pix-h.sicredi.com.br/oauth/token';  //pode ser diferente a URL do TOKEN para URL de consumo API
-                          FURLAPI         := '';
+                          FURLToken       := 'https://api-pix-h.sicredi.com.br/oauth/token';
+                          FURLAPI         := 'https://api-pix-h.sicredi.com.br/api/v2';
+                          FHostCert       := 'https://api-pix-h.sicredi.com.br';
 
                           FCob            := '/cob/{txid}';
                           fRecebidoTagPIX := False;
@@ -939,8 +942,8 @@ begin
     case FPSP of
                         {============================================}
       pspSicredi      : begin
-                          FURLToken       := 'https://api-pix-h.sicredi.com.br/oauth/token';  //pode ser diferente a URL do TOKEN para URL de consumo API
-                          FURLAPI         := 'https://api-pix-h.sicredi.com.br/v2';
+                          FURLToken       := 'https://api-pix-h.sicredi.com.br/oauth/token';
+                          FURLAPI         := 'https://api-pix-h.sicredi.com.br/api/v2';
                           FHostCert       := 'https://api-pix-h.sicredi.com.br';
 
                           FCob            := '/cob/{txid}';
@@ -993,9 +996,9 @@ begin
     case FPSP of
                         {============================================}
       pspSicredi      : begin
-                          FURLToken     := 'https://api-pix.sicredi.com.br/v2/oauth/token';
-                          FURLAPI       := 'https://api-pix.sicredi.com.br';
-                          FHostCert     := 'https://api-pix.sicredi.com.br';
+                          FURLToken     :=  'https://api-pix.sicredi.com.br/oauth/token';;  // 'https://api-pix.sicredi.com.br/v2/oauth/token';
+                          FURLAPI       :=  'https://api-pix.sicredi.com.br/api/v2';
+                          FHostCert     :=  'https://api-pix.sicredi.com.br';
 
                           FCob          := '/cob/{txid}';
                           fRecebidoTagPIX := False;
@@ -1062,9 +1065,6 @@ var
   cURL         : string;
   cValor       : string;
   cdata        : string;
-
-//  DataToSend    : TStringStream;
-//  sRetorno       : TStringStream;
 
   JsonDevedor: TJsonObject;
 
