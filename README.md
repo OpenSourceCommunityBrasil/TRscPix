@@ -3,8 +3,11 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/Ronierys2/TRscPix)
 
 #TRscPix Componente para desenvolvimento de aplicações que usam a api PIX
+
 ##O componente Abstrai a comunicação com os PSP's
+
 ##O componente faz uso das bibliotecas do:
+
 * [Rest-Dataware](https://github.com/svn2github/rest-dataware)
 * [Rest-Dataware](https://github.com/svn2github/rest-dataware)
 
@@ -22,7 +25,9 @@
 	
 	
 ##Desenvolverdor
+
 ###Roniery Santos Cardoso  
+
 ###Contatos:  092984391279 - ronierys2@hotmail.com
 	
 ####Se o Componente lhe ajudar fique a vontade para fazer uma doação para nós, assim continuamos nosso trabalho e sempre estaremos buscando novas formas de contribuir com nossa comunidade.
