@@ -1,3 +1,8 @@
+![GitHub](https://img.shields.io/github/license/Ronierys2/TRscPix)
+
+![GitHub repo size](https://img.shields.io/github/repo-size/Ronierys2/TRscPix)
+
+#
 Componente para desenvolvimento de aplicações com PIX usando: RestDataware, ZXing
 	
 grupos de Delphi para discusão e compartilhamneto de informações sobre Delphi, Pascal e afins.
