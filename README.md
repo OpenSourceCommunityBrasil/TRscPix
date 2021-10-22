@@ -26,7 +26,7 @@
 
 	
 	
-# Desenvolverdor
+# Autor
 
 ### Roniery Santos Cardoso  
 
