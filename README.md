@@ -2,24 +2,31 @@
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/Ronierys2/TRscPix)
 
-#
-Componente para desenvolvimento de aplicações com PIX usando: RestDataware, ZXing
-	
-grupos de Delphi para discusão e compartilhamneto de informações sobre Delphi, Pascal e afins.
+#TRscPix Componente para desenvolvimento de aplicações que usam a api PIX
+##O componente Abstrai a comunicação com os PSP's
+##O componente faz uso das bibliotecas do:
+* [Rest-Dataware](https://github.com/svn2github/rest-dataware)
 
-Grupo Whatsapp
+![GitHub](https://github.com/svn2github/rest-dataware)
+
+###ZXing
+![GitHub](https://github.com/zxing/zxing)
+	
+#grupos de Delphi para discusão e compartilhamneto de informações sobre Delphi, Pascal e afins.
+
+##Grupo Whatsapp
 https://chat.whatsapp.com/KmOB9HQM0JNHtgeU0u1H41
 
-Grupo Telegram
+##Grupo Telegram
 https://t.me/DelphiBeginner
 	
 Curta, compartilhe e se increva nas nossas redes sociais !!!
 ano de 2022 teremos muita, mas muita coisa nova que estamos preparando!!
 
-YouTube
+##YouTube
 https://www.youtube.com/channel/UCh47zPxjlxzsIgRRvZTqmMA
 
-Facebook
+##Facebook
 https://www.facebook.com/rscsistemas
 	
 	
