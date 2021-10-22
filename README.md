@@ -1,5 +1,4 @@
-![GitHub](https://img.shields.io/github/license/Ronierys2/TRscPix)
-
+![GitHub](https://img.shields.io/github/license/Ronierys2/TRscPix) 
 ![GitHub repo size](https://img.shields.io/github/repo-size/Ronierys2/TRscPix)
 
 # TRscPix Componente para desenvolvimento de aplicações que usam a api PIX
@@ -9,6 +8,7 @@
 ## O componente faz uso das bibliotecas do:
 
 * [Rest-Dataware](https://github.com/svn2github/rest-dataware)
+
 * [ZXing](https://github.com/zxing/zxing)
 
 ## Grupos de Delphi para discusão e compartilhamneto de informações sobre Delphi, Pascal e afins.
