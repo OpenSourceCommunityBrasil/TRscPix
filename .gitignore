@@ -33,6 +33,8 @@
 *.identcache
 *.res
 
+*.~*
+
 
 # Arquivos diversos
 *.zip
