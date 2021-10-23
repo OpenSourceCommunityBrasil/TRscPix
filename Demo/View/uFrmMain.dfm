@@ -877,9 +877,9 @@ object Form1: TForm1
           TabOrder = 3
         end
         object edtPayload: TLabeledEdit
-          Left = 219
+          Left = 301
           Top = 87
-          Width = 225
+          Width = 143
           Height = 21
           EditLabel.Width = 100
           EditLabel.Height = 13
@@ -887,7 +887,7 @@ object Form1: TForm1
           TabOrder = 4
         end
         object edtEndToEndId: TLabeledEdit
-          Left = 115
+          Left = 106
           Top = 87
           Width = 89
           Height = 21
@@ -895,6 +895,16 @@ object Form1: TForm1
           EditLabel.Height = 13
           EditLabel.Caption = 'endToEndId'
           TabOrder = 5
+        end
+        object edtTxIdDev: TLabeledEdit
+          Left = 203
+          Top = 87
+          Width = 89
+          Height = 21
+          EditLabel.Width = 57
+          EditLabel.Height = 13
+          EditLabel.Caption = 'edtTxIdDev'
+          TabOrder = 6
         end
       end
     end
@@ -908,7 +918,7 @@ object Form1: TForm1
     ConfigQRCode.LarguraModulo = 4
     ConfigQRCode.ErrorLevel = 0
     LinhasEntreCupons = 0
-    Left = 736
-    Top = 320
+    Left = 520
+    Top = 312
   end
 end

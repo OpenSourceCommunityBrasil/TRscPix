@@ -44,7 +44,8 @@ contains
   uRscPix.Parametros in '..\Source\uRscPix.Parametros.pas',
   uRscPix.funcoes in '..\Source\uRscPix.funcoes.pas',
   RscPix.Validations in '..\Source\RscPix.Validations.pas',
-  DelphiZXIngQRCode in '..\Source\DelphiZXIngQRCode.pas';
+  DelphiZXIngQRCode in '..\Source\DelphiZXIngQRCode.pas',
+  uRscPix.Classes in '..\Source\uRscPix.Classes.pas';
 
 end.
 

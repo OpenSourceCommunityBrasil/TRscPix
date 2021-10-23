@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, PIX_Tela, Vcl.ExtCtrls,
   REST.Types, Data.Bind.Components, Data.Bind.ObjectScope, REST.Client,
   uDWAbout, uDWResponseTranslator, Vcl.Buttons, Vcl.Samples.Spin, System.TypInfo, ACBrPosPrinter,
-  ACBrBase, configuraserial, IniFiles,
+  ACBrBase, configuraserial, IniFiles,  System.UITypes,
 
   uRscPix.Variaveis,
   RscPix.Validations, ACBrSocket, ACBrPicpay, RscPix, Data.DB, Vcl.Grids,
@@ -21,7 +21,6 @@ type
     Panel1: TPanel;
     cbbTipoQRCode: TComboBox;
     Label1: TLabel;
-    ACBrPosPrinter1: TACBrPosPrinter;
     Panel2: TPanel;
     pnlLeft: TPanel;
     gbConfigImpressora: TGroupBox;
@@ -78,6 +77,8 @@ type
     Button7: TButton;
     Button4: TButton;
     edtEndToEndId: TLabeledEdit;
+    ACBrPosPrinter1: TACBrPosPrinter;
+    edtTxIdDev: TLabeledEdit;
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btTestarPosPrinterClick(Sender: TObject);
@@ -232,7 +233,6 @@ begin
     {======================}
 
     {Configurar PIX}
-    frmPIX_Tela.RscPix1.PIXValor       :=  StrToFloatDef(edtValorPix.Text, 0);
     frmPIX_Tela.RscPix1.ChavePIX       :=  edtChavePix.Text;
     frmPIX_Tela.RscPix1.ChavePixTipo   :=  TTipoChavePIX(CbbTipoChavePix.ItemIndex);
     frmPIX_Tela.RscPix1.Psp            :=  TPSP(CbbPSP.ItemIndex);
@@ -244,6 +244,11 @@ begin
     frmPIX_Tela.RscPix1.Developer_Client_Secret   :=  edtClientSecreat.Text;
     frmPIX_Tela.RscPix1.RecebedorNome             :=  edtNomeRecebedore.Text;
     {======================}
+
+    frmPIX_Tela.RscPix1.PIXValor            :=  StrToFloatDef(edtValorPix.Text, 0);
+    frmPIX_Tela.RscPix1.PixTXID             :=  edtTXID.Text;
+    frmPIX_Tela.RscPix1.PixE2eid            :=  edtEndToEndId.Text;
+    frmPIX_Tela.RscPix1.PixTXIDDev          :=  edtTxIdDev.Text;
 
     frmPIX_Tela.GerarPix;
 
@@ -366,7 +371,6 @@ begin
     {======================}
 
     {Configurar PIX}
-    frmPIX_Tela.RscPix1.PIXValor       :=  StrToFloatDef(edtValorPix.Text, 0);
     frmPIX_Tela.RscPix1.ChavePIX       :=  edtChavePix.Text;
     frmPIX_Tela.RscPix1.ChavePixTipo   :=  TTipoChavePIX(CbbTipoChavePix.ItemIndex);
     frmPIX_Tela.RscPix1.Psp            :=  TPSP(CbbPSP.ItemIndex);
@@ -379,8 +383,10 @@ begin
     frmPIX_Tela.RscPix1.RecebedorNome             :=  edtNomeRecebedore.Text;
     {======================}
 
+    frmPIX_Tela.RscPix1.PIXValor            :=  StrToFloatDef(edtValorPix.Text, 0);
     frmPIX_Tela.RscPix1.PixTXID             :=  edtTXID.Text;
     frmPIX_Tela.RscPix1.PixE2eid            :=  edtEndToEndId.Text;
+    frmPIX_Tela.RscPix1.PixTXIDDev          :=  edtTxIdDev.Text;
 
     frmPIX_Tela.SolicitarDevolucaoPixRecebido(True);
 
@@ -488,7 +494,6 @@ begin
     {======================}
 
     {Configurar PIX}
-    frmPIX_Tela.RscPix1.PIXValor       :=  StrToFloatDef(edtValorPix.Text, 0);
     frmPIX_Tela.RscPix1.ChavePIX       :=  edtChavePix.Text;
     frmPIX_Tela.RscPix1.ChavePixTipo   :=  TTipoChavePIX(CbbTipoChavePix.ItemIndex);
     frmPIX_Tela.RscPix1.Psp            :=  TPSP(CbbPSP.ItemIndex);
@@ -501,8 +506,10 @@ begin
     frmPIX_Tela.RscPix1.RecebedorNome             :=  edtNomeRecebedore.Text;
     {======================}
 
+    frmPIX_Tela.RscPix1.PIXValor            :=  StrToFloatDef(edtValorPix.Text, 0);
     frmPIX_Tela.RscPix1.PixTXID             :=  edtTXID.Text;
     frmPIX_Tela.RscPix1.PixE2eid            :=  edtEndToEndId.Text;
+    frmPIX_Tela.RscPix1.PixTXIDDev          :=  edtTxIdDev.Text;
 
     frmPIX_Tela.ConsultarDevolucaoPixRecebido(True);
 

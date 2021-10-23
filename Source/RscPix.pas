@@ -20,12 +20,15 @@ uses
 
   IdSSLOpenSSL
 
+  ,uRscPix.Classes
   ,uRscPix.Variaveis
   ,uRscPix.Parametros
   ,uRscPix.funcoes
   ,RscPix.Validations
 
   ;
+
+
 
 type
   TRscPix = class(TComponent)
@@ -74,6 +77,10 @@ type
     FPixTipoQRCode: TTipoQrCode;
     FRecebedorNome: string;
     FPixE2eid: string;
+    FPixTXIDDev: String;
+    FDateConsutFinal: TDateTime;
+    FDateConsutInicial: TDateTime;
+    FOnGetStatusCobranca: TOnGetStatusCobranca;
     procedure SetDevedor_Documento(const Value: String);
     procedure SetDevedor_Documento_Tipo(const Value: TPessoa);
     procedure SetDevedor_Nome(const Value: String);
@@ -109,7 +116,6 @@ type
     procedure SetPixTXID(const Value: String);
 
     {========================================}
-    function GerarTXID: String;
     procedure GetURLToken;
     procedure GetToToken;
     procedure SetAcess_token(const Value: string);
@@ -120,7 +126,12 @@ type
     procedure SetPixTipoQRCode(const Value: TTipoQrCode);
     procedure SetRecebedorNome(const Value: string);
     procedure SetPixE2eid(const Value: string);
+    procedure SetPixTXIDDev(const Value: String);
+    procedure SetDateConsutFinal(const Value: TDateTime);
+    procedure SetDateConsutInicial(const Value: TDateTime);
     {========================================}
+
+    procedure InOnGetStatusCobranca(Sender : TObject; Const sStatus: String = '');
   protected
     { Protected declarations }
   public
@@ -128,14 +139,17 @@ type
   Constructor Create(AOwner   : TComponent);  Override;
   Destructor  Destroy;  Override;
 
+  function GerarTXID: String;
+  function GerarTXIDDEV: string;
+
   {========================================}
   procedure CriarCobranca;
-  procedure RevisarCobranca(cTXID,cStatus:String);
-  procedure ConsultarCobranca(TXID:String);
-  procedure ConsultarListaPixsRecebidos(DtIni: TDateTime; DtFim: TDateTime; sTXID: string = ''; sCPF: string = ''; sCNPJ: string = '');
-  procedure ConsultarPixRecebido(e2eid:String);
-  procedure SolicitarDevolucaoPix(e2eid, TxIDDev:String);
-  procedure ConsultarDevolucaoPix(e2eid, TxIDDev:String);
+  procedure RevisarCobranca(PixStatus : string);
+  procedure ConsultarCobranca;
+  procedure ConsultarListaPixsRecebidos;
+  procedure ConsultarPixRecebido;
+  procedure SolicitarDevolucaoPix;
+  procedure ConsultarDevolucaoPix;
   {========================================}
 
 
@@ -154,7 +168,11 @@ type
     property PixDuracaoMin          : integer read FPixDuracaoMin write SetPixDuracaoMin Default 30;
     property PixTipoQRCode          : TTipoQrCode read FPixTipoQRCode write SetPixTipoQRCode;
     property PixTXID                : String read FPixTXID write SetPixTXID;
+    property PixTXIDDev             : String read FPixTXIDDev write SetPixTXIDDev;
     property PixE2eid               : string read FPixE2eid write SetPixE2eid;
+
+    property DateConsutInicial      : TDateTime read FDateConsutInicial write SetDateConsutInicial;
+    property DateConsutFinal        : TDateTime read FDateConsutFinal write SetDateConsutFinal;
 
     property RecebidoTagPIX         : Boolean read FRecebidoTagPIX write SetRecebidoTagPIX;
 
@@ -189,6 +207,8 @@ type
 
     property CNPJRecebedor              : String read FCNPJRecebedor write SetCNPJRecebedor; {Ver o que fazer com esse cara}
 
+    property OnOnGetStatusCobranca      : TOnGetStatusCobranca  read  FOnGetStatusCobranca write  FOnGetStatusCobranca;
+
 
   end;
 
@@ -204,7 +224,7 @@ end;
 { TPix }
 
 
-procedure TRscPix.ConsultarCobranca(TXID: String);
+procedure TRscPix.ConsultarCobranca;
 var
   cURL    : string;
   nResp   : Integer;
@@ -213,15 +233,17 @@ begin
   GetURLToken;
   GetToToken;
 
-  if TXId = '' then
+  if PixTXID = '' then
   begin
     Retorno := 'Campo do ID deve ser informado na transação.';
+    InOnGetStatusCobranca(Self, Retorno);
     Exit;
   end;
 
   if fAcess_token = '' then
   begin
     Retorno := 'Erro ao Obter Acces Token';
+    InOnGetStatusCobranca(Self, Retorno);
     Exit;
   end;
 
@@ -229,7 +251,7 @@ begin
      Stream       := TStringStream.Create('', TEncoding.UTF8);
 
      cURL := fURLAPI + '/cob/{txid}';
-     cURL := StringReplace(cURL, '{txid}', TXId, [rfReplaceAll]);
+     cURL := StringReplace(cURL, '{txid}', PixTXID, [rfReplaceAll]);
 
      if Developer_application_key <> '' then
          cURL := cURL + '?gw-dev-app-key=' + Developer_application_key;
@@ -249,11 +271,15 @@ begin
           Retorno := UTF8ToWideString(Stream.DataString);//para poder analisar se esta correto
 
           Resultado := TJson.JsonToObject<TPix_Parametros>(Retorno);
+
+          InOnGetStatusCobranca(Self, Resultado.status);
      end
      else
      begin
          Resultado_Cod := 400;
          Retorno := UTF8ToWideString(Stream.DataString);
+
+         InOnGetStatusCobranca(Self, Retorno);
      end;
 
   finally
@@ -261,7 +287,7 @@ begin
   end;
 end;
 
-procedure TRscPix.ConsultarDevolucaoPix(e2eid, TxIDDev: String);
+procedure TRscPix.ConsultarDevolucaoPix;
 var
   cURL          : string;
   nResp         : Integer;
@@ -276,14 +302,24 @@ begin
     Exit;
   end;
 
-    TxIDDev :=  IntToStr(Random(123456));
+  if PixE2eid = '' then
+    begin
+      Retorno := 'Erro endToEndId não Informado';
+      Exit;
+    end;
+
+  if PixTXIDDev = '' then
+    begin
+      Retorno := 'Erro ao TXIDDev Não Informado';
+      Exit;
+    end;
 
   try
      Stream       := TStringStream.Create('', TEncoding.UTF8);
 
      cURL := fURLAPI + '/pix/{e2eid}/devolucao/{id}';
-     cURL := StringReplace(cURL, '{e2eid}', e2eid, [rfReplaceAll]);
-     cURL := StringReplace(cURL, '{id}', TxIDDev, [rfReplaceAll]);
+     cURL := StringReplace(cURL, '{e2eid}', PixE2eid, [rfReplaceAll]);
+     cURL := StringReplace(cURL, '{id}', PixTXIDDev, [rfReplaceAll]);
 
      if Developer_application_key <> '' then
          cURL := cURL + '?gw-dev-app-key=' + Developer_application_key;
@@ -307,6 +343,7 @@ begin
      begin
          Resultado_Cod := 400;
          Retorno := UTF8ToWideString(Stream.DataString);
+         Resultado := TJson.JsonToObject<TPix_Parametros>(Retorno);
      end;
 
   finally
@@ -314,7 +351,7 @@ begin
   end;
 end;
 
-procedure TRscPix.ConsultarListaPixsRecebidos(DtIni: TDateTime; DtFim: TDateTime; sTXID: string = ''; sCPF: string = ''; sCNPJ: string = '');
+procedure TRscPix.ConsultarListaPixsRecebidos;
 var
   cURL          : string;
   nResp         : Integer;
@@ -333,18 +370,13 @@ begin
   end;
 
   try
-    sTXID   := 'eoYL9bJFneAWWQcqu8gkPyUXFFoXFUHBzkW';
-    sCPF    :=  '';
-    sCNPJ   :=  '';
-
-
      Stream       := TStringStream.Create('', TEncoding.UTF8);
      RequestHeader  := TStringList.Create;
 
      {criando parametro de datas}
      JasonData  :=  TJSONObject.Create;
-     JasonData.AddPair('inicio', FormatDateTime('yyyy-mm-dd hh:mm:ss -04:00', DtIni)); {Respeita RFC 3339}
-     JasonData.AddPair('fim', FormatDateTime('yyyy-mm-dd hh:mm:ss -04:00', DtFim)); {Respeita RFC 3339}
+     JasonData.AddPair('inicio', FormatDateTime('yyyy-mm-dd hh:mm:ss -04:00', DateConsutInicial)); {Respeita RFC 3339}
+     JasonData.AddPair('fim', FormatDateTime('yyyy-mm-dd hh:mm:ss -04:00', DateConsutFinal)); {Respeita RFC 3339}
 
      JsonParams := TJSONObject.Create;
      JsonParams.AddPair('parametros', JasonData);
@@ -384,7 +416,7 @@ begin
   end;
 end;
 
-procedure TRscPix.ConsultarPixRecebido(e2eid: String);
+procedure TRscPix.ConsultarPixRecebido;
 var
   cURL          : string;
   nResp         : Integer;
@@ -403,7 +435,7 @@ begin
      Stream       := TStringStream.Create('', TEncoding.UTF8);
 
      cURL := fURLAPI + '/pix/{e2eid}';
-     cURL := StringReplace(cURL, '{e2eid}', e2eid, [rfReplaceAll]);
+     cURL := StringReplace(cURL, '{e2eid}', PixE2eid, [rfReplaceAll]);
 
      if Developer_application_key <> '' then
          cURL := cURL + '?gw-dev-app-key=' + Developer_application_key;
@@ -482,7 +514,6 @@ var
    JSonInfo       : TJSOnObject;
 
 begin
-  PixTXID  :=  GerarTXID;
 
   cValor := FormatFloat('#0.00',PIXValor);
 
@@ -715,6 +746,23 @@ begin
     sFPixTXID := MD5(sFPixTXID);
 
     Result  :=  sFPixTXID;
+end;
+
+function TRscPix.GerarTXIDDEV: string;
+var
+  Uid: TGuid;
+  sTXIDDEV : string;
+begin
+    CreateGUID(Uid);
+
+    sTXIDDEV := Uid.ToString;
+
+    if Length(sTXIDDEV) < 26 then
+        StrZero(sTXIDDEV, 26);
+
+    sTXIDDEV := MD5(sTXIDDEV);
+
+    Result  :=  sTXIDDEV;
 end;
 
 function TRscPix.GetAdditionalDataFieldTemplate: string;
@@ -1060,14 +1108,19 @@ begin
   Result := Id + IfThen(Size < 10, StrZero(Size.ToString, 2), Size.ToString) + Value;
 end;
 
-procedure TRscPix.RevisarCobranca(cTXID, cStatus: String);
+procedure TRscPix.InOnGetStatusCobranca(Sender: TObject; const sStatus: String);
+begin
+  if Assigned(FOnGetStatusCobranca) then
+     FOnGetStatusCobranca(Sender, sStatus);
+end;
+
+procedure TRscPix.RevisarCobranca(PixStatus : string);
 var
   cURL         : string;
   cValor       : string;
   cdata        : string;
 
   JsonDevedor: TJsonObject;
-
 
   RequestBody : TStringList;
 
@@ -1086,12 +1139,12 @@ begin
   GetURLToken;
   GetToToken;
 
-  if cTXId = '' then
+  if PixTXID = '' then
   begin
     Retorno := 'Campo do ID deve ser informado na transação.';
     Exit;
   end;
-  if cStatus = '' then
+  if PixStatus = '' then
   begin
     Retorno := 'Informe o Status para Alteração.';
     Exit;
@@ -1103,14 +1156,14 @@ begin
     Exit;
   end;
 
-  if ((PermiteRevisar = False) and (cStatus = 'ATIVA')) then//Revisar - Atualizar
+  if ((PermiteRevisar = False) and (PixStatus = 'ATIVA')) then//Revisar - Atualizar
   begin
     Resultado_Cod := 00;
     Retorno := 'Este Banco não permite Atualizar a Cobrança!';
     Exit;
   end;
 
-  if ((PermiteCancelar = False) and (cStatus <> 'ATIVA')) then//Revisar - Atualizar
+  if ((PermiteCancelar = False) and (PixStatus <> 'ATIVA')) then//Revisar - Atualizar
   begin
     Resultado_Cod := 00;
     Retorno := 'Este Banco não permite Cancelar a Cobrança!';
@@ -1163,7 +1216,7 @@ begin
      //Montrando o Json a Enviar
      JsonEnviar := TJSOnObject.Create;//Criando o Objeto
 
-     JsonEnviar.AddPair('status', cStatus);
+     JsonEnviar.AddPair('status', PixStatus);
      JsonEnviar.AddPair('chave', ChavePIX);
      JsonEnviar.AddPair('calendario', JsonCalendario);
      if Assigned(JsonDevedor) then
@@ -1178,7 +1231,7 @@ begin
      cdata := JsonEnviar.ToString;
 
      cURL := FURLApi + '/cob/{txid}';
-     cURL := StringReplace(cURL, '{txid}', cTXId, [rfReplaceAll]);
+     cURL := StringReplace(cURL, '{txid}', PixTXID, [rfReplaceAll]);
 
      if Developer_application_key <> '' then
         cURL := cURL + '?gw-dev-app-key=' + Developer_application_key;
@@ -1316,6 +1369,16 @@ end;
 procedure TRscPix.SetCNPJRecebedor(const Value: String);
 begin
   FCNPJRecebedor := Value;
+end;
+
+procedure TRscPix.SetDateConsutFinal(const Value: TDateTime);
+begin
+  FDateConsutFinal := Value;
+end;
+
+procedure TRscPix.SetDateConsutInicial(const Value: TDateTime);
+begin
+  FDateConsutInicial := Value;
 end;
 
 procedure TRscPix.SetDevedor_Documento(const Value: String);
@@ -1503,29 +1566,62 @@ begin
   FToken_type := Value;
 end;
 
-procedure TRscPix.SolicitarDevolucaoPix(e2eid, TxIDDev: String);
+procedure TRscPix.SolicitarDevolucaoPix;
 var
   cURL          : string;
+  cValor        : string;
   nResp         : Integer;
   Stream        : TStringStream;
+  JasonValor    : TJSONObject;
+  RequestBody   : TStringList;
 begin
   GetURLToken;
   GetToToken;
 
   if fAcess_token = '' then
-  begin
-    Retorno := 'Erro ao Obter Acces Token';
-    Exit;
-  end;
+    begin
+      Retorno := 'Erro ao Obter Acces Token';
+      Exit;
+    end;
 
-    TxIDDev :=  IntToStr(Random(123456));
+  if PixE2eid = '' then
+    begin
+      Retorno := 'Erro endToEndId não Informado';
+      Exit;
+    end;
+
+  if PixTXIDDev = '' then
+    begin
+      Retorno := 'Erro ao TXIDDev Não Informado';
+      Exit;
+    end;
+
+  if PIXValor <= 0 then
+    begin
+      Retorno := 'Erro Valor Não Informado ou Inválido';
+      Exit;
+    end;
+
+
+  cValor := FormatFloat('#0.00',PIXValor);
+
+  if Pos(',', cValor) > 0 then
+    cValor := StringReplace(cValor, ',', '.', [rfReplaceAll]);
+
 
   try
+    JasonValor  :=  TJSONObject.Create;
+    JasonValor.AddPair('valor',  cValor);
+
+    RequestBody := TStringList.Create;
+
+    RequestBody.Add(JasonValor.ToString);
+
      Stream       := TStringStream.Create('', TEncoding.UTF8);
 
      cURL := fURLAPI + '/pix/{e2eid}/devolucao/{id}';
-     cURL := StringReplace(cURL, '{e2eid}', e2eid, [rfReplaceAll]);
-     cURL := StringReplace(cURL, '{id}', TxIDDev, [rfReplaceAll]);
+     cURL := StringReplace(cURL, '{e2eid}', PixE2eid, [rfReplaceAll]);
+     cURL := StringReplace(cURL, '{id}', PixTXIDDev, [rfReplaceAll]);
 
      if Developer_application_key <> '' then
          cURL := cURL + '?gw-dev-app-key=' + Developer_application_key;
@@ -1537,7 +1633,7 @@ begin
      DWCR_PIX.AuthenticationOptions.AuthorizationOption  := rdwAOBearer;
      TRDWAuthOptionBearerClient(DWCR_PIX.AuthenticationOptions.OptionParams).Token := Acess_token;
 
-     nResp := DWCR_PIX.Put(cURL,nil,Stream,false);
+     nResp := DWCR_PIX.Put(cURL,RequestBody,Stream,false);
 
      if nResp = 200 then
      begin
@@ -1552,6 +1648,8 @@ begin
      end;
 
   finally
+    RequestBody.Free;
+    JasonValor.Free;
     Stream.Free;
   end;
 end;
@@ -1561,5 +1659,10 @@ begin
     FPixTXID := Value;
 end;
 
+
+procedure TRscPix.SetPixTXIDDev(const Value: String);
+begin
+  FPixTXIDDev := Value;
+end;
 
 end.

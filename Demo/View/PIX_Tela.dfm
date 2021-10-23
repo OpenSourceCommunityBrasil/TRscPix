@@ -714,6 +714,7 @@ object frmPIX_Tela: TfrmPIX_Tela
     ChavePixTipo = tcCPF
     Psp = pspBancoDoBrasil
     PspAmbiente = taHomologacao
+    OnOnGetStatusCobranca = RscPix1OnGetStatusCobranca
     Left = 70
     Top = 57
   end
