@@ -4,7 +4,7 @@ object Form1: TForm1
   BorderStyle = bsSingle
   Caption = 'PIX - By: Roniery Santos Cardoso'
   ClientHeight = 616
-  ClientWidth = 1054
+  ClientWidth = 1051
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,7 +20,7 @@ object Form1: TForm1
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 1054
+    Width = 1051
     Height = 145
     Align = alTop
     BevelOuter = bvNone
@@ -31,11 +31,12 @@ object Form1: TForm1
     Padding.Bottom = 10
     ParentBackground = False
     TabOrder = 0
+    ExplicitWidth = 1054
     DesignSize = (
-      1054
+      1051
       145)
     object Label1: TLabel
-      Left = 895
+      Left = 892
       Top = 7
       Width = 75
       Height = 16
@@ -50,12 +51,13 @@ object Form1: TForm1
       ExplicitLeft = 950
     end
     object cbbTipoQRCode: TComboBox
-      Left = 895
+      Left = 892
       Top = 26
       Width = 145
       Height = 21
       Anchors = [akTop, akRight]
       TabOrder = 0
+      ExplicitLeft = 895
     end
     object GroupBox2: TGroupBox
       Left = 10
@@ -189,17 +191,18 @@ object Form1: TForm1
   object Panel2: TPanel
     Left = 649
     Top = 145
-    Width = 405
+    Width = 402
     Height = 471
     Align = alClient
     Color = clSilver
     ParentBackground = False
     TabOrder = 1
+    ExplicitWidth = 405
     object Label3: TLabel
       AlignWithMargins = True
       Left = 4
       Top = 130
-      Width = 397
+      Width = 394
       Height = 50
       Align = alTop
       Caption = 'Chave Pix para Contribu'#237#231#227'o: E-MAIL: ronierys2@hotmail.com'
@@ -216,7 +219,7 @@ object Form1: TForm1
       AlignWithMargins = True
       Left = 4
       Top = 48
-      Width = 397
+      Width = 394
       Height = 76
       Align = alTop
       Caption = 
@@ -235,7 +238,7 @@ object Form1: TForm1
     object Image1: TImage
       Left = 1
       Top = 183
-      Width = 403
+      Width = 400
       Height = 287
       Align = alClient
       Center = True
@@ -481,7 +484,7 @@ object Form1: TForm1
       AlignWithMargins = True
       Left = 4
       Top = 4
-      Width = 397
+      Width = 394
       Height = 38
       Align = alTop
       Alignment = taCenter
