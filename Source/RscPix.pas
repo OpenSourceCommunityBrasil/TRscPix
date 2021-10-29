@@ -869,11 +869,11 @@ begin
     end;
 
 
-                            DWCR_PIX.CertMode := sslmClient;
-                            DWCR_PIX.CertFile := Certificado_Nome;
-                            DWCR_PIX.HostCert :=  FHostCert;
-                            DWCR_PIX.PortCert := 443;//PADRAO
-                            DWCR_PIX.KeyFile  := Certificado_Senha;
+//                            DWCR_PIX.CertMode := sslmClient;
+//                            DWCR_PIX.CertFile := Certificado_Nome;
+//                            DWCR_PIX.HostCert :=  FHostCert;
+//                            DWCR_PIX.PortCert := 443;//PADRAO
+//                            DWCR_PIX.KeyFile  := Certificado_Senha;
 
 
 
@@ -929,8 +929,8 @@ begin
                         end;
                         {============================================}
       pspBancoDoBrasil: begin
-                          FURLToken     := '';
-                          FURLAPI       := '';
+                          FURLToken     := 'https://oauth.sandbox.bb.com.br/oauth/token';
+                          FURLAPI       := 'https://api.sandbox.bb.com.br/pix/v1';
                           FCob          := '/cobqrcode/{txid}';
                           fRecebidoTagPIX := False;
                           fPermiteRevisar := False;
@@ -984,8 +984,8 @@ begin
                         end;
                         {============================================}
       pspBancoDoBrasil: begin
-                          FURLToken     := 'https://oauth.hm.bb.com.br/oauth/token';
-                          FURLAPI       := 'https://api.hm.bb.com.br/pix/v1';
+                          FURLToken     :=  'https://oauth.hm.bb.com.br/oauth/token';
+                          FURLAPI       :=  'https://api.hm.bb.com.br/pix/v1';
                           FCob          := '/cobqrcode/{txid}';
                           fRecebidoTagPIX := False;
                           fPermiteRevisar := False;
@@ -1039,8 +1039,8 @@ begin
                         end;
                         {===========================================}
       pspBancoDoBrasil: begin
-                          FURLToken     := '';
-                          FURLAPI       := '';
+                          FURLToken     := 'https://oauth.bb.com.br/oauth/token';
+                          FURLAPI       := 'https://api.bb.com.br/pix/v1';
                           FCob          := '/cobqrcode/{txid}';
                           fRecebidoTagPIX := False;
                           fPermiteRevisar := False;
