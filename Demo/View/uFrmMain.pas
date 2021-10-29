@@ -101,7 +101,7 @@ type
   private
     { Private declarations }
     procedure ProcurarImpressora;
-    procedure AdicionarLinhaImpressao(ALinha: String);
+    procedure AdicionarLinhaImpressao(ALinha: AnsiString);
     procedure ConfigurarPosPrinter;
     procedure AtivarPosPrinter;
   public
@@ -116,7 +116,7 @@ implementation
 
 {$R *.dfm}
 
-procedure TForm1.AdicionarLinhaImpressao(ALinha: String);
+procedure TForm1.AdicionarLinhaImpressao(ALinha: AnsiString);
 begin
   if ACBrPosPrinter1.Ativo then
     ACBrPosPrinter1.Imprimir(ALinha);
@@ -206,7 +206,7 @@ begin
       SL.Add('');
       SL.Add('</corte_total>');
 
-      AdicionarLinhaImpressao(SL.Text);
+      AdicionarLinhaImpressao(AnsiString(SL.Text));
     finally
        SL.Free;
     end;
@@ -314,8 +314,6 @@ begin
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);
-var
-  t:  Variant;
 begin
   frmPIX_Tela := TfrmPIX_Tela.Create(nil);
   try
@@ -534,11 +532,13 @@ begin
 end;
 
 procedure TForm1.CriarConfigIni;
+var
+  ConfigIni : TIniFile;
 begin
   try
     if not FileExists(PathConfigIni) then
       begin
-        var ConfigIni := TIniFile.Create(PathConfigIni);
+        ConfigIni := TIniFile.Create(PathConfigIni);
         try
           ConfigIni.WriteString('PIX', 'Certificado', '');
           ConfigIni.WriteString('PIX', 'Senha Certificado', '');
@@ -572,6 +572,13 @@ begin
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
+var
+  O:  TACBrPosPrinterModelo;
+  P:  TACBrPosPaginaCodigo;
+  Q:  TTipoQrCode;
+  R:  TTipoChavePIX;
+  S:  TPSP;
+  T:  TTipoAmbiente;
 begin
   Self.Width  :=  654;
 
@@ -579,34 +586,34 @@ begin
   CriarConfigIni;
 
   cbxModeloPosPrinter.Items.Clear ;
-  For var N := Low(TACBrPosPrinterModelo) to High(TACBrPosPrinterModelo) do
-     cbxModeloPosPrinter.Items.Add( GetEnumName(TypeInfo(TACBrPosPrinterModelo), integer(N) ) ) ;
+  For O := Low(TACBrPosPrinterModelo) to High(TACBrPosPrinterModelo) do
+     cbxModeloPosPrinter.Items.Add( GetEnumName(TypeInfo(TACBrPosPrinterModelo), integer(O) ) ) ;
 
   cbxPagCodigo.Items.Clear ;
-  For var O := Low(TACBrPosPaginaCodigo) to High(TACBrPosPaginaCodigo) do
-     cbxPagCodigo.Items.Add( GetEnumName(TypeInfo(TACBrPosPaginaCodigo), integer(O) ) ) ;
+  For P := Low(TACBrPosPaginaCodigo) to High(TACBrPosPaginaCodigo) do
+     cbxPagCodigo.Items.Add( GetEnumName(TypeInfo(TACBrPosPaginaCodigo), integer(P) ) ) ;
 
   cbbTipoQRCode.Clear;
-  For var O := Low(TTipoQrCode) to High(TTipoQrCode) do
-     cbbTipoQRCode.Items.Add( GetEnumName(TypeInfo(TTipoQrCode), integer(O)));
+  For Q := Low(TTipoQrCode) to High(TTipoQrCode) do
+     cbbTipoQRCode.Items.Add( GetEnumName(TypeInfo(TTipoQrCode), integer(Q)));
   if cbbTipoQRCode.Items.Count > 0 then
     cbbTipoQRCode.ItemIndex :=  0;
 
   CbbTipoChavePix.Clear;
-  For var O := Low(TTipoChavePIX) to High(TTipoChavePIX) do
-     CbbTipoChavePix.Items.Add( GetEnumName(TypeInfo(TTipoChavePIX), integer(O)));
+  For R := Low(TTipoChavePIX) to High(TTipoChavePIX) do
+     CbbTipoChavePix.Items.Add( GetEnumName(TypeInfo(TTipoChavePIX), integer(R)));
   if CbbTipoChavePix.Items.Count > 0 then
     CbbTipoChavePix.ItemIndex :=  0;
 
   CbbPSP.Clear;
-  For var O := Low(TPSP) to High(TPSP) do
-     CbbPSP.Items.Add( GetEnumName(TypeInfo(TPSP), integer(O)));
+  For S := Low(TPSP) to High(TPSP) do
+     CbbPSP.Items.Add( GetEnumName(TypeInfo(TPSP), integer(S)));
   if CbbPSP.Items.Count > 0 then
     CbbPSP.ItemIndex :=  0;
 
   CbbTipoAmbiente.Clear;
-  For var O := Low(TTipoAmbiente) to High(TTipoAmbiente) do
-     CbbTipoAmbiente.Items.Add( GetEnumName(TypeInfo(TTipoAmbiente), integer(O)));
+  For T := Low(TTipoAmbiente) to High(TTipoAmbiente) do
+     CbbTipoAmbiente.Items.Add( GetEnumName(TypeInfo(TTipoAmbiente), integer(T)));
   if CbbTipoAmbiente.Items.Count > 0 then
     CbbTipoAmbiente.ItemIndex :=  0;
 
@@ -624,9 +631,11 @@ begin
 end;
 
 procedure TForm1.GravarConfigIni;
+var
+  ConfigIni : TIniFile;
 begin
   try
-    var ConfigIni := TIniFile.Create(PathConfigIni);
+    ConfigIni := TIniFile.Create(PathConfigIni);
     try
       ConfigIni.WriteString('PIX', 'Certificado', edtCertificado.Text);
       ConfigIni.WriteString('PIX', 'Senha Certificado', edtSenhaCertificado.Text);
@@ -658,9 +667,11 @@ begin
 end;
 
 procedure TForm1.LerConfigIni;
+var
+  ConfigIni : TIniFile;
 begin
   try
-    var ConfigIni := TIniFile.Create(PathConfigIni);
+    ConfigIni := TIniFile.Create(PathConfigIni);
     try
       edtCertificado.Text       :=  ConfigIni.ReadString('PIX', 'Certificado', '');
       edtSenhaCertificado.Text  :=  ConfigIni.ReadString('PIX', 'Senha Certificado', '');

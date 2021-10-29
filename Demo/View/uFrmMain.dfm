@@ -31,7 +31,6 @@ object Form1: TForm1
     Padding.Bottom = 10
     ParentBackground = False
     TabOrder = 0
-    ExplicitWidth = 1054
     DesignSize = (
       1051
       145)
@@ -57,7 +56,6 @@ object Form1: TForm1
       Height = 21
       Anchors = [akTop, akRight]
       TabOrder = 0
-      ExplicitLeft = 895
     end
     object GroupBox2: TGroupBox
       Left = 10
@@ -197,7 +195,6 @@ object Form1: TForm1
     Color = clSilver
     ParentBackground = False
     TabOrder = 1
-    ExplicitWidth = 405
     object Label3: TLabel
       AlignWithMargins = True
       Left = 4
@@ -233,7 +230,7 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       WordWrap = True
-      ExplicitWidth = 396
+      ExplicitWidth = 391
     end
     object Image1: TImage
       Left = 1
