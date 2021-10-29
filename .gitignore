@@ -24,7 +24,7 @@
 
 
 # ignore a file type
-*.gitignore
+#*.gitignore
 
 
 # Delphi compiler-generated binaries (safe to delete)
