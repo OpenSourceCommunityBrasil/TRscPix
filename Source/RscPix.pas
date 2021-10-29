@@ -501,6 +501,7 @@ var
 
 
    RequestBody : TStringList;
+   borey: string;
 
    nResp : Integer;
 
@@ -652,7 +653,7 @@ begin
           if Resultado.textoImagemQRcode = '' then
              Resultado.textoImagemQRcode := GeraPayload;
 
-          var borey := DWCR_PIX.DefaultCustomHeader.ToString;
+          borey := DWCR_PIX.DefaultCustomHeader.ToString;
 
      end
      else
@@ -667,21 +668,6 @@ begin
 
     if Assigned(JsonEnviar) then
       JsonEnviar.Free;
-//
-//    if Assigned(JsonValor) then
-//        JsonValor.Free;
-//
-//    if Assigned(JsonCalendario) then
-//        JsonCalendario.Free;
-//
-//    if Assigned(JsonDevedor) then
-//        JsonDevedor.Free;
-//
-//    if Assigned(JSonInfo) then
-//        JSonInfo.Free;
-//
-//    if Assigned(JSonInfoA) then
-//      JSonInfoA.Free;
   end;
 end;
 
@@ -689,7 +675,6 @@ destructor TRscPix.Destroy;
 begin
   if Assigned(FResultado) then
     begin
-//      FResultado.valor.Free;
       FResultado.calendario.Free;
       FResultado.Recebedor.Free;
       FResultado.Free;
@@ -830,9 +815,7 @@ begin
     DWCR_PIX.ContentType      := 'application/x-www-form-urlencoded';
 
     DWCR_PIX.UseSSL       := True;
-//    DWCR_PIX.VerifyCert   := True;
     DWCR_PIX.SSLVersions  := [sslvSSLv23];
-//    DWCR_PIX.SSLMethod    :=  sslvSSLv2;
 
     DWCR_PIX.AuthenticationOptions.AuthorizationOption  := rdwOAuth;
     TRDWAuthOAuth(DWCR_PIX.AuthenticationOptions.OptionParams).ClientID      := FDeveloper_Client_ID;
@@ -846,12 +829,10 @@ begin
                             RequestBody.Add('grant_type=client_credentials');
                             RequestBody.Add('scope=cob.read cob.write pix.read pix.write');
 
-
                         end;
       pspBancoDoBrasil: begin //SAND BOX - OK
                             RequestBody.Add('grant_type=client_credentials');
                             RequestBody.Add('scope=cob.read cob.write pix.read pix.write');
-
 
                         end;
       pspSantander    : begin  //sANDbOX - OK
@@ -865,15 +846,11 @@ begin
                             RequestBody.Add('client_id='+FDeveloper_Client_ID);
                             RequestBody.Add('client_secret='+FDeveloper_Client_Secret);
 
-                            //fCertificado_Nome := 'D:\PIX DOCUMENTOS\0-Certificado_GiGa\giga.pem';
-                            //fCertificado_Senha:= 'D:\PIX DOCUMENTOS\0-Certificado_GiGa\giga_dec.key';
-
-
-                            DWCR_PIX.CertMode := sslmClient;
-                            DWCR_PIX.CertFile := Certificado_Nome;
-                            DWCR_PIX.HostCert := 'https://trust-pix-h.santander.com.br';
-                            DWCR_PIX.PortCert := 443;//PADRAO
-                            DWCR_PIX.KeyFile  := Certificado_Senha;
+//                            DWCR_PIX.CertMode := sslmClient;
+//                            DWCR_PIX.CertFile := Certificado_Nome;
+//                            DWCR_PIX.HostCert :=  FHostCert;
+//                            DWCR_PIX.PortCert := 443;//PADRAO
+//                            DWCR_PIX.KeyFile  := Certificado_Senha;
 
                         end;
       pspSicoob       : begin
@@ -882,16 +859,21 @@ begin
                             RequestBody.Add('client_secret='+FDeveloper_Client_Secret);
                             RequestBody.Add('scope=cob.read cob.write pix.read pix.write');
 
-
                         end;
       pspBradesco     : begin
                             RequestBody.Add('grant_type=client_credentials');
                             RequestBody.Add('Authorization = Basic '  {+ encodeBase64(client_id:client_secret)});
                             RequestBody.Add('scope=cob.read cob.write pix.read pix.write');
 
-
                         end;
     end;
+
+
+                            DWCR_PIX.CertMode := sslmClient;
+                            DWCR_PIX.CertFile := Certificado_Nome;
+                            DWCR_PIX.HostCert :=  FHostCert;
+                            DWCR_PIX.PortCert := 443;//PADRAO
+                            DWCR_PIX.KeyFile  := Certificado_Senha;
 
 
 
@@ -958,6 +940,7 @@ begin
       pspSantander:     begin
                           FURLToken       := 'https://pix.santander.com.br/sandbox/oauth/token';
                           FURLAPI         := 'https://pix.santander.com.br/api/v1/sandbox';
+                          FHostCert       := 'https://trust-pix-h.santander.com.br';
                           FCob            := '/cob/{txid}';
                           fRecebidoTagPIX := True;
 
@@ -1012,6 +995,7 @@ begin
       pspSantander:     begin
                           FURLToken       := 'https://trust-pix-h.santander.com.br/oauth/token';
                           FURLAPI         := 'https://trust-pix-h.santander.com.br/api/v1';
+                          FHostCert       := 'https://trust-pix-h.santander.com.br';
                           FCob            := '/cob/{txid}';
                           fRecebidoTagPIX := True;
 
@@ -1066,6 +1050,7 @@ begin
       pspSantander    : begin
                           FURLToken       := 'https://trust-pix.santander.com.br/oauth/token';
                           FURLAPI         := 'https://trust-pix.santander.com.br/api/v1';
+                          FHostCert       := 'https://trust-pix-h.santander.com.br';
 
                           FCob          := '/cob/{txid}';
                           fRecebidoTagPIX := True;

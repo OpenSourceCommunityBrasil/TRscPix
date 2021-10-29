@@ -13,10 +13,6 @@ uses
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Comp.DataSet,
   FireDAC.Comp.Client, Vcl.Grids, Vcl.DBGrids, System.DateUtils;
 
-Const
- cLoja   = '1';
- LojaSeq = '1';
-
 type
   TfrmPIX_Tela = class(TForm)
     Panel1: TPanel;
@@ -108,6 +104,8 @@ begin
 end;
 
 procedure TfrmPIX_Tela.ConsultaListaPixPorPeriodo(dMostraMensagem: Boolean);
+var
+  i:  Integer;
 begin
 
   RscPix1.DateConsutInicial :=  IncDay(Now, -30);
@@ -124,7 +122,7 @@ begin
       lblStatus.Caption := 'Situação: ' +  RscPix1.Resultado.status;
 
       FDMemTable1.Open;
-      for var i := Low(RscPix1.Resultado.pix) to High(RscPix1.Resultado.pix) do
+      for i := Low(RscPix1.Resultado.pix) to High(RscPix1.Resultado.pix) do
       begin
         FDMemTable1.Append;
 
@@ -158,12 +156,14 @@ begin
 end;
 
 procedure TfrmPIX_Tela.ConsultarDevolucaoPixRecebido(dMostraMensagem: Boolean);
+var
+  cValor: string;
 begin
   RscPix1.ConsultarDevolucaoPix;
 
   if RscPix1.Resultado_Cod = 200 then
   begin
-    var cValor := StringReplace(FloatToStr(RscPix1.Resultado.valor), '.', ',', [rfReplaceAll]);
+    cValor := StringReplace(FloatToStr(RscPix1.Resultado.valor), '.', ',', [rfReplaceAll]);
     lblValor.Caption := 'R$ '+FormatFLoat('###,###,##0.00',StrToCurr(cValor));
 
       lblStatus.Caption := 'Nome Pagador: ' +  RscPix1.Resultado.Pagador.nome;
@@ -190,12 +190,14 @@ begin
 end;
 
 procedure TfrmPIX_Tela.ConsultarPixRecebido(dMostraMensagem: Boolean);
+var
+  cValor: string;
 begin
   RscPix1.ConsultarPixRecebido;
 
   if RscPix1.Resultado_Cod = 200 then
   begin
-    var cValor := StringReplace(FloatToStr(RscPix1.Resultado.valor), '.', ',', [rfReplaceAll]);
+    cValor := StringReplace(FloatToStr(RscPix1.Resultado.valor), '.', ',', [rfReplaceAll]);
     lblValor.Caption := 'R$ '+FormatFLoat('###,###,##0.00',StrToCurr(cValor));
 
       lblStatus.Caption := 'Nome Pagador: ' +  RscPix1.Resultado.Pagador.nome;
@@ -322,6 +324,8 @@ end;
 
 procedure TfrmPIX_Tela.RscPix1OnGetStatusCobranca(Sender: TObject;
   const sStatus: string);
+var
+  cValor: string;
 begin
   if RscPix1.Resultado_Cod = 200 then
   begin
@@ -361,7 +365,7 @@ begin
           end;
       end;
 
-    var cValor := StringReplace(FloatToStr(RscPix1.Resultado.valor), '.', ',', [rfReplaceAll]);
+    cValor := StringReplace(FloatToStr(RscPix1.Resultado.valor), '.', ',', [rfReplaceAll]);
     lblValor.Caption := 'R$ '+FormatFLoat('###,###,##0.00',StrToCurr(cValor));
   end
   else
@@ -372,12 +376,14 @@ begin
 end;
 
 procedure TfrmPIX_Tela.SolicitarDevolucaoPixRecebido(dMostraMensagem: Boolean);
+var
+  cValor: string;
 begin
   RscPix1.SolicitarDevolucaoPix;
 
   if RscPix1.Resultado_Cod = 200 then
   begin
-    var cValor := StringReplace(FloatToStr(RscPix1.Resultado.valor), '.', ',', [rfReplaceAll]);
+    cValor := StringReplace(FloatToStr(RscPix1.Resultado.valor), '.', ',', [rfReplaceAll]);
     lblValor.Caption := 'R$ '+FormatFLoat('###,###,##0.00',StrToCurr(cValor));
 
       lblStatus.Caption := 'Nome Pagador: ' +  RscPix1.Resultado.Pagador.nome;
