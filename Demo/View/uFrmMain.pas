@@ -79,6 +79,7 @@ type
     edtEndToEndId: TLabeledEdit;
     ACBrPosPrinter1: TACBrPosPrinter;
     edtTxIdDev: TLabeledEdit;
+    RscPix1: TRscPix;
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btTestarPosPrinterClick(Sender: TObject);
@@ -104,6 +105,7 @@ type
     procedure AdicionarLinhaImpressao(ALinha: AnsiString);
     procedure ConfigurarPosPrinter;
     procedure AtivarPosPrinter;
+    procedure SetConfigTelaPix;
   public
     { Public declarations }
   end;
@@ -222,33 +224,8 @@ procedure TForm1.Button1Click(Sender: TObject);
 begin
   frmPIX_Tela := TfrmPIX_Tela.Create(nil);
   try
-    {configurar impressora}
-    frmPIX_Tela.ACBrPosPrinterPIX.Desativar;
-    frmPIX_Tela.ACBrPosPrinterPIX.Modelo := TACBrPosPrinterModelo( cbxModeloPosPrinter.ItemIndex );
-    frmPIX_Tela.ACBrPosPrinterPIX.PaginaDeCodigo := TACBrPosPaginaCodigo( cbxPagCodigo.ItemIndex );
-    frmPIX_Tela.ACBrPosPrinterPIX.Porta := cbxPorta.Text;
-    frmPIX_Tela.ACBrPosPrinterPIX.ColunasFonteNormal := seColunas.Value;
-    frmPIX_Tela.ACBrPosPrinterPIX.LinhasEntreCupons := seLinhasPular.Value;
-    frmPIX_Tela.ACBrPosPrinterPIX.EspacoEntreLinhas := seEspLinhas.Value;
-    {======================}
 
-    {Configurar PIX}
-    frmPIX_Tela.RscPix1.ChavePIX       :=  edtChavePix.Text;
-    frmPIX_Tela.RscPix1.ChavePixTipo   :=  TTipoChavePIX(CbbTipoChavePix.ItemIndex);
-    frmPIX_Tela.RscPix1.Psp            :=  TPSP(CbbPSP.ItemIndex);
-    frmPIX_Tela.RscPix1.PspAmbiente    :=  TTipoAmbiente(CbbTipoAmbiente.ItemIndex);
-    frmPIX_Tela.RscPix1.PixTipoQRCode  :=  TTipoQrCode(cbbTipoQRCode.ItemIndex);
-
-    frmPIX_Tela.RscPix1.Developer_application_key :=  edtDeveloperKey.Text;
-    frmPIX_Tela.RscPix1.Developer_Client_ID       :=  edtClientID.Text;
-    frmPIX_Tela.RscPix1.Developer_Client_Secret   :=  edtClientSecreat.Text;
-    frmPIX_Tela.RscPix1.RecebedorNome             :=  edtNomeRecebedore.Text;
-    {======================}
-
-    frmPIX_Tela.RscPix1.PIXValor            :=  StrToFloatDef(edtValorPix.Text, 0);
-    frmPIX_Tela.RscPix1.PixTXID             :=  edtTXID.Text;
-    frmPIX_Tela.RscPix1.PixE2eid            :=  edtEndToEndId.Text;
-    frmPIX_Tela.RscPix1.PixTXIDDev          :=  edtTxIdDev.Text;
+    SetConfigTelaPix;
 
     frmPIX_Tela.GerarPix;
 
@@ -276,31 +253,8 @@ procedure TForm1.Button2Click(Sender: TObject);
 begin
   frmPIX_Tela := TfrmPIX_Tela.Create(nil);
   try
-    {configurar impressora}
-    frmPIX_Tela.ACBrPosPrinterPIX.Desativar;
-    frmPIX_Tela.ACBrPosPrinterPIX.Modelo := TACBrPosPrinterModelo( cbxModeloPosPrinter.ItemIndex );
-    frmPIX_Tela.ACBrPosPrinterPIX.PaginaDeCodigo := TACBrPosPaginaCodigo( cbxPagCodigo.ItemIndex );
-    frmPIX_Tela.ACBrPosPrinterPIX.Porta := cbxPorta.Text;
-    frmPIX_Tela.ACBrPosPrinterPIX.ColunasFonteNormal := seColunas.Value;
-    frmPIX_Tela.ACBrPosPrinterPIX.LinhasEntreCupons := seLinhasPular.Value;
-    frmPIX_Tela.ACBrPosPrinterPIX.EspacoEntreLinhas := seEspLinhas.Value;
-    {======================}
 
-    {Configurar PIX}
-    frmPIX_Tela.RscPix1.PIXValor       :=  StrToFloatDef(edtValorPix.Text, 0);
-    frmPIX_Tela.RscPix1.ChavePIX       :=  edtChavePix.Text;
-    frmPIX_Tela.RscPix1.ChavePixTipo   :=  TTipoChavePIX(CbbTipoChavePix.ItemIndex);
-    frmPIX_Tela.RscPix1.Psp            :=  TPSP(CbbPSP.ItemIndex);
-    frmPIX_Tela.RscPix1.PspAmbiente    :=  TTipoAmbiente(CbbTipoAmbiente.ItemIndex);
-    frmPIX_Tela.RscPix1.PixTipoQRCode  :=  TTipoQrCode(cbbTipoQRCode.ItemIndex);
-
-    frmPIX_Tela.RscPix1.Developer_application_key :=  edtDeveloperKey.Text;
-    frmPIX_Tela.RscPix1.Developer_Client_ID       :=  edtClientID.Text;
-    frmPIX_Tela.RscPix1.Developer_Client_Secret   :=  edtClientSecreat.Text;
-    frmPIX_Tela.RscPix1.RecebedorNome             :=  edtNomeRecebedore.Text;
-    {======================}
-
-    frmPIX_Tela.RscPix1.PixTXID :=  edtTXID.Text;
+    SetConfigTelaPix;
 
     frmPIX_Tela.ConsultaPixPorTXID(True);
 
@@ -317,31 +271,8 @@ procedure TForm1.Button3Click(Sender: TObject);
 begin
   frmPIX_Tela := TfrmPIX_Tela.Create(nil);
   try
-    {configurar impressora}
-    frmPIX_Tela.ACBrPosPrinterPIX.Desativar;
-    frmPIX_Tela.ACBrPosPrinterPIX.Modelo := TACBrPosPrinterModelo( cbxModeloPosPrinter.ItemIndex );
-    frmPIX_Tela.ACBrPosPrinterPIX.PaginaDeCodigo := TACBrPosPaginaCodigo( cbxPagCodigo.ItemIndex );
-    frmPIX_Tela.ACBrPosPrinterPIX.Porta := cbxPorta.Text;
-    frmPIX_Tela.ACBrPosPrinterPIX.ColunasFonteNormal := seColunas.Value;
-    frmPIX_Tela.ACBrPosPrinterPIX.LinhasEntreCupons := seLinhasPular.Value;
-    frmPIX_Tela.ACBrPosPrinterPIX.EspacoEntreLinhas := seEspLinhas.Value;
-    {======================}
 
-    {Configurar PIX}
-    frmPIX_Tela.RscPix1.PIXValor       :=  StrToFloatDef(edtValorPix.Text, 0);
-    frmPIX_Tela.RscPix1.ChavePIX       :=  edtChavePix.Text;
-    frmPIX_Tela.RscPix1.ChavePixTipo   :=  TTipoChavePIX(CbbTipoChavePix.ItemIndex);
-    frmPIX_Tela.RscPix1.Psp            :=  TPSP(CbbPSP.ItemIndex);
-    frmPIX_Tela.RscPix1.PspAmbiente    :=  TTipoAmbiente(CbbTipoAmbiente.ItemIndex);
-    frmPIX_Tela.RscPix1.PixTipoQRCode  :=  TTipoQrCode(cbbTipoQRCode.ItemIndex);
-
-    frmPIX_Tela.RscPix1.Developer_application_key :=  edtDeveloperKey.Text;
-    frmPIX_Tela.RscPix1.Developer_Client_ID       :=  edtClientID.Text;
-    frmPIX_Tela.RscPix1.Developer_Client_Secret   :=  edtClientSecreat.Text;
-    frmPIX_Tela.RscPix1.RecebedorNome             :=  edtNomeRecebedore.Text;
-    {======================}
-
-    frmPIX_Tela.RscPix1.PixTXID :=  edtTXID.Text;
+    SetConfigTelaPix;
 
     frmPIX_Tela.AtualizarPix('REMOVIDA_PELO_USUARIO_RECEBEDOR');
 
@@ -358,33 +289,8 @@ procedure TForm1.Button4Click(Sender: TObject);
 begin
   frmPIX_Tela := TfrmPIX_Tela.Create(nil);
   try
-    {configurar impressora}
-    frmPIX_Tela.ACBrPosPrinterPIX.Desativar;
-    frmPIX_Tela.ACBrPosPrinterPIX.Modelo := TACBrPosPrinterModelo( cbxModeloPosPrinter.ItemIndex );
-    frmPIX_Tela.ACBrPosPrinterPIX.PaginaDeCodigo := TACBrPosPaginaCodigo( cbxPagCodigo.ItemIndex );
-    frmPIX_Tela.ACBrPosPrinterPIX.Porta := cbxPorta.Text;
-    frmPIX_Tela.ACBrPosPrinterPIX.ColunasFonteNormal := seColunas.Value;
-    frmPIX_Tela.ACBrPosPrinterPIX.LinhasEntreCupons := seLinhasPular.Value;
-    frmPIX_Tela.ACBrPosPrinterPIX.EspacoEntreLinhas := seEspLinhas.Value;
-    {======================}
 
-    {Configurar PIX}
-    frmPIX_Tela.RscPix1.ChavePIX       :=  edtChavePix.Text;
-    frmPIX_Tela.RscPix1.ChavePixTipo   :=  TTipoChavePIX(CbbTipoChavePix.ItemIndex);
-    frmPIX_Tela.RscPix1.Psp            :=  TPSP(CbbPSP.ItemIndex);
-    frmPIX_Tela.RscPix1.PspAmbiente    :=  TTipoAmbiente(CbbTipoAmbiente.ItemIndex);
-    frmPIX_Tela.RscPix1.PixTipoQRCode  :=  TTipoQrCode(cbbTipoQRCode.ItemIndex);
-
-    frmPIX_Tela.RscPix1.Developer_application_key :=  edtDeveloperKey.Text;
-    frmPIX_Tela.RscPix1.Developer_Client_ID       :=  edtClientID.Text;
-    frmPIX_Tela.RscPix1.Developer_Client_Secret   :=  edtClientSecreat.Text;
-    frmPIX_Tela.RscPix1.RecebedorNome             :=  edtNomeRecebedore.Text;
-    {======================}
-
-    frmPIX_Tela.RscPix1.PIXValor            :=  StrToFloatDef(edtValorPix.Text, 0);
-    frmPIX_Tela.RscPix1.PixTXID             :=  edtTXID.Text;
-    frmPIX_Tela.RscPix1.PixE2eid            :=  edtEndToEndId.Text;
-    frmPIX_Tela.RscPix1.PixTXIDDev          :=  edtTxIdDev.Text;
+    SetConfigTelaPix;
 
     frmPIX_Tela.SolicitarDevolucaoPixRecebido(True);
 
@@ -401,29 +307,8 @@ procedure TForm1.Button5Click(Sender: TObject);
 begin
   frmPIX_Tela := TfrmPIX_Tela.Create(nil);
   try
-    {configurar impressora}
-    frmPIX_Tela.ACBrPosPrinterPIX.Desativar;
-    frmPIX_Tela.ACBrPosPrinterPIX.Modelo := TACBrPosPrinterModelo( cbxModeloPosPrinter.ItemIndex );
-    frmPIX_Tela.ACBrPosPrinterPIX.PaginaDeCodigo := TACBrPosPaginaCodigo( cbxPagCodigo.ItemIndex );
-    frmPIX_Tela.ACBrPosPrinterPIX.Porta := cbxPorta.Text;
-    frmPIX_Tela.ACBrPosPrinterPIX.ColunasFonteNormal := seColunas.Value;
-    frmPIX_Tela.ACBrPosPrinterPIX.LinhasEntreCupons := seLinhasPular.Value;
-    frmPIX_Tela.ACBrPosPrinterPIX.EspacoEntreLinhas := seEspLinhas.Value;
-    {======================}
 
-    {Configurar PIX}
-    frmPIX_Tela.RscPix1.PIXValor       :=  StrToFloatDef(edtValorPix.Text, 0);
-    frmPIX_Tela.RscPix1.ChavePIX       :=  edtChavePix.Text;
-    frmPIX_Tela.RscPix1.ChavePixTipo   :=  TTipoChavePIX(CbbTipoChavePix.ItemIndex);
-    frmPIX_Tela.RscPix1.Psp            :=  TPSP(CbbPSP.ItemIndex);
-    frmPIX_Tela.RscPix1.PspAmbiente    :=  TTipoAmbiente(CbbTipoAmbiente.ItemIndex);
-    frmPIX_Tela.RscPix1.PixTipoQRCode  :=  TTipoQrCode(cbbTipoQRCode.ItemIndex);
-
-    frmPIX_Tela.RscPix1.Developer_application_key :=  edtDeveloperKey.Text;
-    frmPIX_Tela.RscPix1.Developer_Client_ID       :=  edtClientID.Text;
-    frmPIX_Tela.RscPix1.Developer_Client_Secret   :=  edtClientSecreat.Text;
-    frmPIX_Tela.RscPix1.RecebedorNome             :=  edtNomeRecebedore.Text;
-    {======================}
+    SetConfigTelaPix;
 
     frmPIX_Tela.ConsultaListaPixPorPeriodo(True);
 
@@ -440,31 +325,8 @@ procedure TForm1.Button6Click(Sender: TObject);
 begin
   frmPIX_Tela := TfrmPIX_Tela.Create(nil);
   try
-    {configurar impressora}
-    frmPIX_Tela.ACBrPosPrinterPIX.Desativar;
-    frmPIX_Tela.ACBrPosPrinterPIX.Modelo := TACBrPosPrinterModelo( cbxModeloPosPrinter.ItemIndex );
-    frmPIX_Tela.ACBrPosPrinterPIX.PaginaDeCodigo := TACBrPosPaginaCodigo( cbxPagCodigo.ItemIndex );
-    frmPIX_Tela.ACBrPosPrinterPIX.Porta := cbxPorta.Text;
-    frmPIX_Tela.ACBrPosPrinterPIX.ColunasFonteNormal := seColunas.Value;
-    frmPIX_Tela.ACBrPosPrinterPIX.LinhasEntreCupons := seLinhasPular.Value;
-    frmPIX_Tela.ACBrPosPrinterPIX.EspacoEntreLinhas := seEspLinhas.Value;
-    {======================}
 
-    {Configurar PIX}
-    frmPIX_Tela.RscPix1.PIXValor       :=  StrToFloatDef(edtValorPix.Text, 0);
-    frmPIX_Tela.RscPix1.ChavePIX       :=  edtChavePix.Text;
-    frmPIX_Tela.RscPix1.ChavePixTipo   :=  TTipoChavePIX(CbbTipoChavePix.ItemIndex);
-    frmPIX_Tela.RscPix1.Psp            :=  TPSP(CbbPSP.ItemIndex);
-    frmPIX_Tela.RscPix1.PspAmbiente    :=  TTipoAmbiente(CbbTipoAmbiente.ItemIndex);
-    frmPIX_Tela.RscPix1.PixTipoQRCode  :=  TTipoQrCode(cbbTipoQRCode.ItemIndex);
-
-    frmPIX_Tela.RscPix1.Developer_application_key :=  edtDeveloperKey.Text;
-    frmPIX_Tela.RscPix1.Developer_Client_ID       :=  edtClientID.Text;
-    frmPIX_Tela.RscPix1.Developer_Client_Secret   :=  edtClientSecreat.Text;
-    frmPIX_Tela.RscPix1.RecebedorNome             :=  edtNomeRecebedore.Text;
-    {======================}
-
-    frmPIX_Tela.RscPix1.PixTXID             :=  edtTXID.Text;
+    SetConfigTelaPix;
 
     frmPIX_Tela.ConsultarPixRecebido(True);
 
@@ -481,33 +343,7 @@ procedure TForm1.Button7Click(Sender: TObject);
 begin
   frmPIX_Tela := TfrmPIX_Tela.Create(nil);
   try
-    {configurar impressora}
-    frmPIX_Tela.ACBrPosPrinterPIX.Desativar;
-    frmPIX_Tela.ACBrPosPrinterPIX.Modelo := TACBrPosPrinterModelo( cbxModeloPosPrinter.ItemIndex );
-    frmPIX_Tela.ACBrPosPrinterPIX.PaginaDeCodigo := TACBrPosPaginaCodigo( cbxPagCodigo.ItemIndex );
-    frmPIX_Tela.ACBrPosPrinterPIX.Porta := cbxPorta.Text;
-    frmPIX_Tela.ACBrPosPrinterPIX.ColunasFonteNormal := seColunas.Value;
-    frmPIX_Tela.ACBrPosPrinterPIX.LinhasEntreCupons := seLinhasPular.Value;
-    frmPIX_Tela.ACBrPosPrinterPIX.EspacoEntreLinhas := seEspLinhas.Value;
-    {======================}
-
-    {Configurar PIX}
-    frmPIX_Tela.RscPix1.ChavePIX       :=  edtChavePix.Text;
-    frmPIX_Tela.RscPix1.ChavePixTipo   :=  TTipoChavePIX(CbbTipoChavePix.ItemIndex);
-    frmPIX_Tela.RscPix1.Psp            :=  TPSP(CbbPSP.ItemIndex);
-    frmPIX_Tela.RscPix1.PspAmbiente    :=  TTipoAmbiente(CbbTipoAmbiente.ItemIndex);
-    frmPIX_Tela.RscPix1.PixTipoQRCode  :=  TTipoQrCode(cbbTipoQRCode.ItemIndex);
-
-    frmPIX_Tela.RscPix1.Developer_application_key :=  edtDeveloperKey.Text;
-    frmPIX_Tela.RscPix1.Developer_Client_ID       :=  edtClientID.Text;
-    frmPIX_Tela.RscPix1.Developer_Client_Secret   :=  edtClientSecreat.Text;
-    frmPIX_Tela.RscPix1.RecebedorNome             :=  edtNomeRecebedore.Text;
-    {======================}
-
-    frmPIX_Tela.RscPix1.PIXValor            :=  StrToFloatDef(edtValorPix.Text, 0);
-    frmPIX_Tela.RscPix1.PixTXID             :=  edtTXID.Text;
-    frmPIX_Tela.RscPix1.PixE2eid            :=  edtEndToEndId.Text;
-    frmPIX_Tela.RscPix1.PixTXIDDev          :=  edtTxIdDev.Text;
+    SetConfigTelaPix;
 
     frmPIX_Tela.ConsultarDevolucaoPixRecebido(True);
 
@@ -723,5 +559,38 @@ begin
   {$EndIf}
 end;
 
+
+procedure TForm1.SetConfigTelaPix;
+begin
+    {configurar impressora}
+    frmPIX_Tela.ACBrPosPrinterPIX.Desativar;
+    frmPIX_Tela.ACBrPosPrinterPIX.Modelo := TACBrPosPrinterModelo( cbxModeloPosPrinter.ItemIndex );
+    frmPIX_Tela.ACBrPosPrinterPIX.PaginaDeCodigo := TACBrPosPaginaCodigo( cbxPagCodigo.ItemIndex );
+    frmPIX_Tela.ACBrPosPrinterPIX.Porta := cbxPorta.Text;
+    frmPIX_Tela.ACBrPosPrinterPIX.ColunasFonteNormal := seColunas.Value;
+    frmPIX_Tela.ACBrPosPrinterPIX.LinhasEntreCupons := seLinhasPular.Value;
+    frmPIX_Tela.ACBrPosPrinterPIX.EspacoEntreLinhas := seEspLinhas.Value;
+    {======================}
+
+    {Configurar PIX}
+    frmPIX_Tela.RscPix1.ChavePixTipo   :=  TTipoChavePIX(CbbTipoChavePix.ItemIndex);
+    frmPIX_Tela.RscPix1.ChavePIX       :=  edtChavePix.Text;
+    frmPIX_Tela.RscPix1.Psp            :=  TPSP(CbbPSP.ItemIndex);
+    frmPIX_Tela.RscPix1.PspAmbiente    :=  TTipoAmbiente(CbbTipoAmbiente.ItemIndex);
+    frmPIX_Tela.RscPix1.PixTipoQRCode  :=  TTipoQrCode(cbbTipoQRCode.ItemIndex);
+
+    frmPIX_Tela.RscPix1.Developer_application_key :=  edtDeveloperKey.Text;
+    frmPIX_Tela.RscPix1.Developer_Client_ID       :=  edtClientID.Text;
+    frmPIX_Tela.RscPix1.Developer_Client_Secret   :=  edtClientSecreat.Text;
+    frmPIX_Tela.RscPix1.RecebedorNome             :=  edtNomeRecebedore.Text;
+    {======================}
+
+    frmPIX_Tela.RscPix1.PIXValor            :=  StrToFloatDef(edtValorPix.Text, 0);
+    frmPIX_Tela.RscPix1.PixTXID             :=  edtTXID.Text;
+    frmPIX_Tela.RscPix1.PixE2eid            :=  edtEndToEndId.Text;
+    frmPIX_Tela.RscPix1.PixTXIDDev          :=  edtTxIdDev.Text;
+    frmPIX_Tela.RscPix1.PixMensagem         :=  edtMsgPix.Text;
+    frmPIX_Tela.RscPix1.RecebedorCidade     :=  edtCidadeRecebedor.Text;
+end;
 
 end.

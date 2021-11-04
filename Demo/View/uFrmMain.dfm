@@ -921,4 +921,11 @@ object Form1: TForm1
     Left = 520
     Top = 312
   end
+  object RscPix1: TRscPix
+    ChavePixTipo = tcCPF
+    Psp = pspSicredi
+    PspAmbiente = taSandBox
+    Left = 576
+    Top = 64
+  end
 end
