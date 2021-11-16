@@ -475,7 +475,7 @@ begin
 
   CbbPSP.Clear;
   For S := Low(TTipoPSP) to High(TTipoPSP) do
-     CbbPSP.Items.Add( GetEnumName(TypeInfo(TPSP), integer(S)));
+     CbbPSP.Items.Add( GetEnumName(TypeInfo(TTipoPSP), integer(S)));
   if CbbPSP.Items.Count > 0 then
     CbbPSP.ItemIndex :=  0;
 
