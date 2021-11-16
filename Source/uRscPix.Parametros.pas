@@ -2,13 +2,11 @@ unit uRscPix.Parametros;
 
 interface
 
-uses System.Generics.collections;
+uses System.Generics.collections, uRscPix.Classes;
 
 type
 
-  TPagador = class;
-
-  TPIX = class
+  TPIXParams = class
       private
           FendToEndId  : String;
           Ftxid        : String;
@@ -27,105 +25,9 @@ type
     destructor Destroy; override;
   end;
 
-  TCalendario = class
-  private
-      Fcriacao : String;
-      Fexpiracao: Integer;
-      FdataDeVencimento : String;
-      FvalidadeAposVencimento : Integer;
 
-  public
-      property criacao                : String  read Fcriacao                 write Fcriacao;
-      property expiracao              : Integer read Fexpiracao               write Fexpiracao;
-      property dataDeVencimento       : String  read FdataDeVencimento        write FdataDeVencimento;
-      property validadeAposVencimento : Integer read FvalidadeAposVencimento  write FvalidadeAposVencimento;
-  end;
 
-  TRecebedor = class
-  private
-      Fcpf        : String;
-      Fcnpj       : String;
-      Fnome       : String;
-      Flogradouro : String;
-      Fcidade     : String;
-      FUF         : String;
-      FCEP        : String;
-  public
-      property cpf         : String read Fcpf        write Fcpf;
-      property cnpj        : String read Fcnpj       write Fcnpj;
-      property nome        : String read Fnome       write Fnome;
-      property logradouro  : String read Flogradouro write Flogradouro;
-      property cidade      : String read Fcidade     write Fcidade;
-      property UF          : String read FUF         write FUF;
-      property CEP         : String read FCEP        write FCEP;
-  end;
 
-  TLoc = class
-  private
-    FId       : Integer;
-    FLocation : string;
-    FTipoCob  : string;
-  public
-    property Id         : Integer read FId        write FId;
-    property Location   : string  read FLocation  write FLocation;
-    property TipoCob    : string  read FTipoCob   write FTipoCob;
-  end;
-
-  TValor = class
-  private
-      Foriginal            : String;
-      FmodalidadeAlteracao : Integer;
-  public
-      property original             : String  read Foriginal             write Foriginal;
-      property modalidadeAlteracao  : Integer read FmodalidadeAlteracao  write FmodalidadeAlteracao;
-  end;
-
-  Tinfo_adicionais = class
-  private
-      Fnome    : String;
-      Fvalor   : String;
-  public
-      property nome  : String read Fnome  write Fnome;
-      property valor : String read Fvalor write Fvalor;
-  end;
-
-   TDevolucaoHorario = class
-  private
-    fSolicitacao: string;
-    fLiquidacao: string;
-  public
-    property Solicitacao: string read fSolicitacao write fSolicitacao;
-    property Liquidacao : string read fLiquidacao write fSolicitacao;
-  end;
-
-  TDevolucao = class
-  private
-    fId         : string;
-    fRtrId      : string;
-    fValor      : Currency;
-    fHorario    : TDevolucaoHorario;
-    fStatus     : string;
-  public
-    property Id       : string              read fId write fId;
-    property RtrId    : string              read fRtrId write fRtrId;
-    property Valor    : Currency            read fValor write fValor;
-    property Horario  : TDevolucaoHorario   read fHorario write fHorario;
-    property Status   : string              read fStatus write fStatus;
-  end;
-
-   TPagador = class
-  private
-    Fcpf          : String;
-    Fcnpj         : String;
-    Fnome         : String;
-    Finformacao   : String;
-
-  public
-    property cpf         : String read Fcpf        write Fcpf;
-    property cnpj        : String read Fcnpj       write Fcnpj;
-    property nome        : String read Fnome       write Fnome;
-    property informacao  : String read Finformacao write Finformacao;
-  end;
 
   TParametrosListaPixs = class
   private
@@ -158,7 +60,7 @@ type
     fdata_final_criacao : String;
     ftextoImagemQRcode  : String;
 
-    FPIX                : tArray<TPIX>;
+    FPIX                : tArray<TPIXParams>;
     fpagador            : TPagador;
     FHorario            : string;
     Fparametros         : TParametrosListaPixs;
@@ -182,7 +84,7 @@ type
     property data_final_criacao : String                    read fdata_final_criacao  write fdata_final_criacao;
     property textoImagemQRcode  : String                    read ftextoImagemQRcode   write ftextoImagemQRcode;
 
-    property pix    : TArray<TPIX>  read Fpix     write Fpix;
+    property pix    : TArray<TPIXParams>  read Fpix     write Fpix;
 
     property endToEndID         : String                    read FendToEndID          write FendToEndID;
     property valor              : Currency                  read Fvalor               write Fvalor;
@@ -204,7 +106,7 @@ implementation
 destructor TPix_Parametros.Destroy;
 var Vinfo_adicionais : Tinfo_adicionais;
     Vdevolucao : TDevolucao;
-    Vpix : Tpix;
+    Vpix : TPIXParams;
 
 begin
 
@@ -230,7 +132,7 @@ end;
 
 { TPIX }
 
-destructor TPIX.Destroy;
+destructor TPIXParams.Destroy;
 begin
   if  Assigned(Fpagador) then
     Fpagador.Free;

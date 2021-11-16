@@ -8,14 +8,14 @@ uses
   Vcl.Buttons, Vcl.Imaging.pngimage, Vcl.ComCtrls, ACBrGIF, Data.FMTBcd,
   Data.DB, Datasnap.DBClient, Datasnap.Provider, Data.SqlExpr, ACBrBase,
   ACBrPosPrinter, uDWResponseTranslator, uDWAbout, RLPrinters,
-  RscPix, uRscPix.Variaveis, uRscPix.funcoes, FireDAC.Stan.Intf,
+  FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Comp.DataSet,
-  FireDAC.Comp.Client, Vcl.Grids, Vcl.DBGrids, System.DateUtils;
+  FireDAC.Comp.Client, Vcl.Grids, Vcl.DBGrids, System.DateUtils,
 
-Const
- cLoja   = '1';
- LojaSeq = '1';
+  RscPix, uRscPix.Variaveis, uRscPix.funcoes,
+  uRscPix.Tipos, uRscPix.Classes;
+
 
 type
   TfrmPIX_Tela = class(TForm)
@@ -31,7 +31,6 @@ type
     lblStatus: TLabel;
     ACBrPosPrinterPIX: TACBrPosPrinter;
     Memo1: TMemo;
-    RscPix1: TRscPix;
     Label4: TLabel;
     DBGrid1: TDBGrid;
     FDMemTable1: TFDMemTable;
@@ -42,6 +41,8 @@ type
     FDMemTable1txid: TStringField;
     FDMemTable1valor: TCurrencyField;
     FDMemTable1horario: TStringField;
+    RscPix1: TRscPix;
+    DWClientREST1: TDWClientREST;
     procedure btnCancelarClick(Sender: TObject);
     procedure btnConfirmarClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -276,13 +277,12 @@ procedure TfrmPIX_Tela.GerarPix;
 var
     cValor : String;
 begin
-  RscPix1.PixTXID  :=  RscPix1.GerarTXID;
 
   RscPix1.CriarCobranca;
 
   if RscPix1.Resultado_Cod = 200 then
   begin
-    case RscPix1.PixTipoQRCode of
+    case RscPix1.PixCobranca.TipoQRCode of
       tqDinamico:
         begin
           TimerConsultar.enabled := True; {criar uma função interna para fazer essa consulta}
@@ -314,7 +314,8 @@ begin
   else
   begin
       lblStatus.Caption  := 'Situação: Erro ao Gerar';
-      MessageBox(0, PChar('Erro ao Gerar PIX, tente novamente!'#13#10+RscPix1.Retorno), 'Atenção', MB_ICONERROR + mb_ok);
+      MessageBox(0, PChar(RscPix1.Retorno), PChar('Erro'), MB_ICONERROR + mb_ok);
+//      MessageBox(0, PChar(RscPix1.ResultadoErro.message  + #13#10  + 'Código Erro: ' + RscPix1.ResultadoErro.statusCode.ToString), PChar(RscPix1.ResultadoErro.error), MB_ICONERROR + mb_ok);
   end;
 end;
 
@@ -327,7 +328,7 @@ begin
   begin
       lblStatus.Caption := 'Situação: ' +  RscPix1.Resultado.status;
 
-      if RscPix1.Resultado.status = 'CONCLUIDA' then
+      if sStatus = 'CONCLUIDA' then
       begin
           //Verificar se Foi Recebido aqui e Ja alterar para Recebido
           if RscPix1.RecebidoTagPIX = True then
@@ -345,7 +346,7 @@ begin
           end;
       end;
 
-      if RscPix1.Resultado.status = 'ATIVA' then
+      if sStatus = 'ATIVA' then
       begin
         if RscPix1.Resultado.textoImagemQRcode <> '' then
           begin
@@ -366,8 +367,8 @@ begin
   end
   else
   begin
-//      if dMostraMensagem = True then
-        MessageBox(0,PChar('Erro ao Consultar o PIX, tente novamente!'  + #13#10  + RscPix1.Retorno), 'Atenção', mb_IconInformation + mb_ok);
+        MessageBox(0,PChar(RscPix1.Retorno),
+                  PChar('erro'), mb_IconInformation + mb_ok);
   end;
 end;
 

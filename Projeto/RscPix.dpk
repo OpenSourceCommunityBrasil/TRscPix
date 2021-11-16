@@ -1,6 +1,7 @@
 package RscPix;
 
 {$R *.res}
+{$R *.dres}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
 {$ALIGN 8}
 {$ASSERTIONS ON}
@@ -43,9 +44,24 @@ contains
   uRscPix.Variaveis in '..\Source\uRscPix.Variaveis.pas',
   uRscPix.Parametros in '..\Source\uRscPix.Parametros.pas',
   uRscPix.funcoes in '..\Source\uRscPix.funcoes.pas',
-  RscPix.Validations in '..\Source\RscPix.Validations.pas',
+  uRscPix.Validations in '..\Source\uRscPix.Validations.pas',
   DelphiZXIngQRCode in '..\Source\DelphiZXIngQRCode.pas',
-  uRscPix.Classes in '..\Source\uRscPix.Classes.pas';
+  uRscPix.Classes in '..\Source\uRscPix.Classes.pas',
+  uRscPix.Constantes in '..\Source\uRscPix.Constantes.pas',
+  uRscPix.Certificado in '..\Source\Classes\uRscPix.Certificado.pas',
+  uRscPix.Pix in '..\Source\Classes\uRscPix.Pix.pas',
+  uRscPix.Tipos in '..\Source\uRscPix.Tipos.pas',
+  uRscPix.Desenvolvedor in '..\Source\Classes\uRscPix.Desenvolvedor.pas',
+  uRscPix.PSP in '..\Source\Classes\uRscPix.PSP.pas',
+  uRscPix.Pix.Cobranca in '..\Source\Classes\uRscPix.Pix.Cobranca.pas',
+  uRscPix.Token in '..\Source\Classes\uRscPix.Token.pas',
+  uRscPix.Calendario in '..\Source\Classes\uRscPix.Calendario.pas',
+  uRscPix.Recebedor in '..\Source\Classes\uRscPix.Recebedor.pas',
+  uRscPix.Localizacao in '..\Source\Classes\uRscPix.Localizacao.pas',
+  uRscPix.Valor in '..\Source\Classes\uRscPix.Valor.pas',
+  uRscPix.InformacoesAdicionais in '..\Source\Classes\uRscPix.InformacoesAdicionais.pas',
+  uRscPix.Devolucao in '..\Source\Classes\uRscPix.Devolucao.pas',
+  uRscPix.Pagador in '..\Source\Classes\uRscPix.Pagador.pas';
 
 end.
 

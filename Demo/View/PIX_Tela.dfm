@@ -710,14 +710,6 @@ object frmPIX_Tela: TfrmPIX_Tela
     Left = 208
     Top = 176
   end
-  object RscPix1: TRscPix
-    ChavePixTipo = tcCPF
-    Psp = pspBancoDoBrasil
-    PspAmbiente = taHomologacao
-    OnOnGetStatusCobranca = RscPix1OnGetStatusCobranca
-    Left = 70
-    Top = 57
-  end
   object FDMemTable1: TFDMemTable
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
@@ -751,5 +743,41 @@ object frmPIX_Tela: TfrmPIX_Tela
     DataSet = FDMemTable1
     Left = 256
     Top = 232
+  end
+  object RscPix1: TRscPix
+    PIX.TipoChavePix = tcCPF
+    PSP.TipoPsp = pspSicredi
+    PSP.TipoPspAmbiente = taSandBox
+    OnOnGetStatusCobranca = RscPix1OnGetStatusCobranca
+    Left = 96
+    Top = 56
+  end
+  object DWClientREST1: TDWClientREST
+    UseSSL = True
+    CertMode = sslmClient
+    SSLMethod = sslvSSLv23
+    SSLVersions = [sslvSSLv23]
+    PortCert = 0
+    UserAgent = 
+      'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, l' +
+      'ike Gecko) Chrome/41.0.2227.0 Safari/537.36'
+    Accept = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    AcceptEncoding = 'gzip, deflate, br'
+    ContentEncoding = 'multipart/form-data'
+    MaxAuthRetries = 0
+    ContentType = 'application/json'
+    RequestCharset = esUtf8
+    ProxyOptions.BasicAuthentication = False
+    ProxyOptions.ProxyPort = 0
+    RequestTimeOut = 5000
+    ConnectTimeOut = 5000
+    AllowCookies = False
+    HandleRedirects = False
+    RedirectMaximum = 1
+    VerifyCert = False
+    AuthenticationOptions.AuthorizationOption = rdwAONone
+    AccessControlAllowOrigin = '*'
+    Left = 227
+    Top = 59
   end
 end

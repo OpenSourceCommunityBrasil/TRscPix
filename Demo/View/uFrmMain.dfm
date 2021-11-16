@@ -187,9 +187,9 @@ object Form1: TForm1
     end
   end
   object Panel2: TPanel
-    Left = 649
+    Left = 641
     Top = 145
-    Width = 405
+    Width = 413
     Height = 471
     Align = alClient
     Color = clSilver
@@ -199,7 +199,7 @@ object Form1: TForm1
       AlignWithMargins = True
       Left = 4
       Top = 130
-      Width = 397
+      Width = 405
       Height = 50
       Align = alTop
       Caption = 'Chave Pix para Contribu'#237#231#227'o: E-MAIL: ronierys2@hotmail.com'
@@ -216,7 +216,7 @@ object Form1: TForm1
       AlignWithMargins = True
       Left = 4
       Top = 48
-      Width = 397
+      Width = 405
       Height = 76
       Align = alTop
       Caption = 
@@ -230,12 +230,12 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       WordWrap = True
-      ExplicitWidth = 396
+      ExplicitWidth = 404
     end
     object Image1: TImage
       Left = 1
       Top = 183
-      Width = 403
+      Width = 411
       Height = 287
       Align = alClient
       Center = True
@@ -481,7 +481,7 @@ object Form1: TForm1
       AlignWithMargins = True
       Left = 4
       Top = 4
-      Width = 397
+      Width = 405
       Height = 38
       Align = alTop
       Alignment = taCenter
@@ -501,7 +501,7 @@ object Form1: TForm1
   object pnlLeft: TPanel
     Left = 0
     Top = 145
-    Width = 649
+    Width = 641
     Height = 471
     Align = alLeft
     BevelOuter = bvNone
@@ -509,7 +509,7 @@ object Form1: TForm1
     object gbConfigImpressora: TGroupBox
       Left = 0
       Top = 354
-      Width = 649
+      Width = 641
       Height = 115
       Align = alTop
       Caption = 'Impressora'
@@ -560,7 +560,7 @@ object Form1: TForm1
       end
       object Label29: TLabel
         Left = 376
-        Top = 15
+        Top = 13
         Width = 71
         Height = 13
         Caption = 'P'#225'g. de c'#243'digo'
@@ -658,7 +658,7 @@ object Form1: TForm1
     object GroupBox1: TGroupBox
       Left = 0
       Top = 0
-      Width = 649
+      Width = 641
       Height = 224
       Align = alTop
       Caption = 'Configura'#231#245'es de Seguran'#231'a Pix'
@@ -772,7 +772,7 @@ object Form1: TForm1
     object Panel3: TPanel
       Left = 0
       Top = 224
-      Width = 649
+      Width = 641
       Height = 130
       Align = alTop
       TabOrder = 2
@@ -828,11 +828,19 @@ object Form1: TForm1
       object grbxPix: TGroupBox
         Left = 185
         Top = 1
-        Width = 463
+        Width = 455
         Height = 128
         Align = alClient
         Caption = 'Configura'#231#245'es PIX'
         TabOrder = 1
+        object Label9: TLabel
+          Left = 215
+          Top = 23
+          Width = 67
+          Height = 13
+          Caption = 'Tempo Minuto'
+          Transparent = False
+        end
         object edtCidadeRecebedor: TLabeledEdit
           Left = 115
           Top = 40
@@ -845,9 +853,9 @@ object Form1: TForm1
           Text = 'Manaus'
         end
         object edtMsgPix: TLabeledEdit
-          Left = 219
+          Left = 301
           Top = 40
-          Width = 225
+          Width = 143
           Height = 21
           EditLabel.Width = 51
           EditLabel.Height = 13
@@ -906,6 +914,16 @@ object Form1: TForm1
           EditLabel.Caption = 'edtTxIdDev'
           TabOrder = 6
         end
+        object edtDuracaoMinutos: TSpinEdit
+          Left = 215
+          Top = 39
+          Width = 75
+          Height = 22
+          MaxValue = 999
+          MinValue = 1
+          TabOrder = 7
+          Value = 5
+        end
       end
     end
   end
@@ -918,7 +936,7 @@ object Form1: TForm1
     ConfigQRCode.LarguraModulo = 4
     ConfigQRCode.ErrorLevel = 0
     LinhasEntreCupons = 0
-    Left = 520
-    Top = 312
+    Left = 664
+    Top = 96
   end
 end
