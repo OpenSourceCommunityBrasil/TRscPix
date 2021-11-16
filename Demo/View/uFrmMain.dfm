@@ -189,7 +189,7 @@ object Form1: TForm1
   object Panel2: TPanel
     Left = 641
     Top = 145
-    Width = 413
+    Width = 410
     Height = 471
     Align = alClient
     Color = clSilver
@@ -199,7 +199,7 @@ object Form1: TForm1
       AlignWithMargins = True
       Left = 4
       Top = 130
-      Width = 405
+      Width = 402
       Height = 50
       Align = alTop
       Caption = 'Chave Pix para Contribu'#237#231#227'o: E-MAIL: ronierys2@hotmail.com'
@@ -216,7 +216,7 @@ object Form1: TForm1
       AlignWithMargins = True
       Left = 4
       Top = 48
-      Width = 394
+      Width = 402
       Height = 76
       Align = alTop
       Caption = 
@@ -230,12 +230,12 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       WordWrap = True
-      ExplicitWidth = 404
+      ExplicitWidth = 391
     end
     object Image1: TImage
       Left = 1
       Top = 183
-      Width = 411
+      Width = 408
       Height = 287
       Align = alClient
       Center = True
@@ -481,7 +481,7 @@ object Form1: TForm1
       AlignWithMargins = True
       Left = 4
       Top = 4
-      Width = 405
+      Width = 402
       Height = 38
       Align = alTop
       Alignment = taCenter
@@ -940,9 +940,7 @@ object Form1: TForm1
     Top = 96
   end
   object RscPix1: TRscPix
-    ChavePixTipo = tcCPF
-    Psp = pspSicredi
-    PspAmbiente = taSandBox
+    PIX.TipoChavePix = tcCPF
     Left = 576
     Top = 64
   end
