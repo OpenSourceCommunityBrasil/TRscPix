@@ -13,6 +13,5 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TForm1, Form1);
-  Application.CreateForm(TfrmPIX_Tela, frmPIX_Tela);
   Application.Run;
 end.

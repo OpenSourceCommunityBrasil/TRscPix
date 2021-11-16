@@ -4,6 +4,7 @@
 # TRscPix Componente para desenvolvimento de aplicações que usam a api PIX
 
 ## O componente Abstrai a comunicação com os PSP's
+## O componente ainda esta em desenvolvimento
 
 ## O componente faz uso das bibliotecas do:
 

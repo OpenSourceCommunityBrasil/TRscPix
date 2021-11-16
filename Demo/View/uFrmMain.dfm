@@ -939,9 +939,4 @@ object Form1: TForm1
     Left = 664
     Top = 96
   end
-  object RscPix1: TRscPix
-    PIX.TipoChavePix = tcCPF
-    Left = 576
-    Top = 64
-  end
 end

@@ -10,7 +10,7 @@ uses
   ACBrBase, configuraserial, IniFiles,  System.UITypes,
 
   uRscPix.Variaveis, uRscPix.Tipos,
-  uRscPix.Validations, ACBrSocket, ACBrPicpay, RscPix, Data.DB, Vcl.Grids,
+  uRscPix.Validations, ACBrSocket, ACBrPicpay, Data.DB, Vcl.Grids,
   Vcl.DBGrids, Vcl.Imaging.pngimage, uRESTDWBase, uRscPix.Classes
 
 
