@@ -103,11 +103,10 @@ type
   private
     { Private declarations }
     procedure ProcurarImpressora;
-    procedure AdicionarLinhaImpressao(ALinha: String);
+    procedure AdicionarLinhaImpressao(ALinha: AnsiString);
     procedure ConfigurarPosPrinter;
     procedure AtivarPosPrinter;
-
-    procedure ConfigTelaPix;
+    procedure SetConfigTelaPix;
   public
     { Public declarations }
   end;
@@ -120,7 +119,7 @@ implementation
 
 {$R *.dfm}
 
-procedure TForm1.AdicionarLinhaImpressao(ALinha: String);
+procedure TForm1.AdicionarLinhaImpressao(ALinha: AnsiString);
 begin
   if ACBrPosPrinter1.Ativo then
     ACBrPosPrinter1.Imprimir(ALinha);
@@ -210,7 +209,7 @@ begin
       SL.Add('');
       SL.Add('</corte_total>');
 
-      AdicionarLinhaImpressao(SL.Text);
+      AdicionarLinhaImpressao(AnsiString(SL.Text));
     finally
        SL.Free;
     end;
@@ -226,7 +225,7 @@ procedure TForm1.Button1Click(Sender: TObject);
 begin
   frmPIX_Tela := TfrmPIX_Tela.Create(nil);
   try
-    ConfigTelaPix;
+    SetConfigTelaPix;
 
     frmPIX_Tela.GerarPix;
 
@@ -254,7 +253,7 @@ procedure TForm1.Button2Click(Sender: TObject);
 begin
   frmPIX_Tela := TfrmPIX_Tela.Create(nil);
   try
-    ConfigTelaPix;
+    SetConfigTelaPix;
 
     frmPIX_Tela.ConsultaPixPorTXID(True);
 
@@ -271,7 +270,7 @@ procedure TForm1.Button3Click(Sender: TObject);
 begin
   frmPIX_Tela := TfrmPIX_Tela.Create(nil);
   try
-    ConfigTelaPix;
+    SetConfigTelaPix;
 
     frmPIX_Tela.AtualizarPix('REMOVIDA_PELO_USUARIO_RECEBEDOR');
 
@@ -288,7 +287,7 @@ procedure TForm1.Button4Click(Sender: TObject);
 begin
   frmPIX_Tela := TfrmPIX_Tela.Create(nil);
   try
-    ConfigTelaPix;
+    SetConfigTelaPix;
 
     frmPIX_Tela.SolicitarDevolucaoPixRecebido(True);
 
@@ -305,7 +304,8 @@ procedure TForm1.Button5Click(Sender: TObject);
 begin
   frmPIX_Tela := TfrmPIX_Tela.Create(nil);
   try
-    ConfigTelaPix;
+
+    SetConfigTelaPix;
 
     frmPIX_Tela.ConsultaListaPixPorPeriodo(True);
 
@@ -322,8 +322,7 @@ procedure TForm1.Button6Click(Sender: TObject);
 begin
   frmPIX_Tela := TfrmPIX_Tela.Create(nil);
   try
-    ConfigTelaPix;
-
+    SetConfigTelaPix;
 
     frmPIX_Tela.ConsultarPixRecebido(True);
 
@@ -340,8 +339,7 @@ procedure TForm1.Button7Click(Sender: TObject);
 begin
   frmPIX_Tela := TfrmPIX_Tela.Create(nil);
   try
-    ConfigTelaPix;
-
+    SetConfigTelaPix;
 
     frmPIX_Tela.ConsultarDevolucaoPixRecebido(True);
 
@@ -401,11 +399,13 @@ begin
 end;
 
 procedure TForm1.CriarConfigIni;
+var
+  ConfigIni : TIniFile;
 begin
   try
     if not FileExists(PathConfigIni) then
       begin
-        var ConfigIni := TIniFile.Create(PathConfigIni);
+        ConfigIni := TIniFile.Create(PathConfigIni);
         try
           ConfigIni.WriteString('PIX', 'Certificado', '');
           ConfigIni.WriteString('PIX', 'Senha Certificado', '');
@@ -439,6 +439,13 @@ begin
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
+var
+  O:  TACBrPosPrinterModelo;
+  P:  TACBrPosPaginaCodigo;
+  Q:  TTipoQrCode;
+  R:  TTipoChavePIX;
+  S:  TPSP;
+  T:  TTipoAmbiente;
 begin
   Self.Width  :=  654;
 
@@ -446,34 +453,34 @@ begin
   CriarConfigIni;
 
   cbxModeloPosPrinter.Items.Clear ;
-  For var N := Low(TACBrPosPrinterModelo) to High(TACBrPosPrinterModelo) do
-     cbxModeloPosPrinter.Items.Add( GetEnumName(TypeInfo(TACBrPosPrinterModelo), integer(N) ) ) ;
+  For O := Low(TACBrPosPrinterModelo) to High(TACBrPosPrinterModelo) do
+     cbxModeloPosPrinter.Items.Add( GetEnumName(TypeInfo(TACBrPosPrinterModelo), integer(O) ) ) ;
 
   cbxPagCodigo.Items.Clear ;
-  For var O := Low(TACBrPosPaginaCodigo) to High(TACBrPosPaginaCodigo) do
-     cbxPagCodigo.Items.Add( GetEnumName(TypeInfo(TACBrPosPaginaCodigo), integer(O) ) ) ;
+  For P := Low(TACBrPosPaginaCodigo) to High(TACBrPosPaginaCodigo) do
+     cbxPagCodigo.Items.Add( GetEnumName(TypeInfo(TACBrPosPaginaCodigo), integer(P) ) ) ;
 
   cbbTipoQRCode.Clear;
-  For var O := Low(TTipoQrCode) to High(TTipoQrCode) do
-     cbbTipoQRCode.Items.Add( GetEnumName(TypeInfo(TTipoQrCode), integer(O)));
+  For Q := Low(TTipoQrCode) to High(TTipoQrCode) do
+     cbbTipoQRCode.Items.Add( GetEnumName(TypeInfo(TTipoQrCode), integer(Q)));
   if cbbTipoQRCode.Items.Count > 0 then
     cbbTipoQRCode.ItemIndex :=  0;
 
   CbbTipoChavePix.Clear;
-  For var O := Low(TTipoChavePIX) to High(TTipoChavePIX) do
-     CbbTipoChavePix.Items.Add( GetEnumName(TypeInfo(TTipoChavePIX), integer(O)));
+  For R := Low(TTipoChavePIX) to High(TTipoChavePIX) do
+     CbbTipoChavePix.Items.Add( GetEnumName(TypeInfo(TTipoChavePIX), integer(R)));
   if CbbTipoChavePix.Items.Count > 0 then
     CbbTipoChavePix.ItemIndex :=  0;
 
   CbbPSP.Clear;
-  For var O := Low(TTipoPSP) to High(TTipoPSP) do
-     CbbPSP.Items.Add( GetEnumName(TypeInfo(TTipoPSP), integer(O)));
+  For S := Low(TPSP) to High(TPSP) do
+     CbbPSP.Items.Add( GetEnumName(TypeInfo(TPSP), integer(S)));
   if CbbPSP.Items.Count > 0 then
     CbbPSP.ItemIndex :=  0;
 
   CbbTipoAmbiente.Clear;
-  For var O := Low(TTipoAmbiente) to High(TTipoAmbiente) do
-     CbbTipoAmbiente.Items.Add( GetEnumName(TypeInfo(TTipoAmbiente), integer(O)));
+  For T := Low(TTipoAmbiente) to High(TTipoAmbiente) do
+     CbbTipoAmbiente.Items.Add( GetEnumName(TypeInfo(TTipoAmbiente), integer(T)));
   if CbbTipoAmbiente.Items.Count > 0 then
     CbbTipoAmbiente.ItemIndex :=  0;
 
@@ -488,9 +495,11 @@ begin
 end;
 
 procedure TForm1.GravarConfigIni;
+var
+  ConfigIni : TIniFile;
 begin
   try
-    var ConfigIni := TIniFile.Create(PathConfigIni);
+    ConfigIni := TIniFile.Create(PathConfigIni);
     try
       ConfigIni.WriteString('PIX', 'Certificado', edtCertificado.Text);
       ConfigIni.WriteString('PIX', 'Senha Certificado', edtSenhaCertificado.Text);
@@ -522,9 +531,11 @@ begin
 end;
 
 procedure TForm1.LerConfigIni;
+var
+  ConfigIni : TIniFile;
 begin
   try
-    var ConfigIni := TIniFile.Create(PathConfigIni);
+    ConfigIni := TIniFile.Create(PathConfigIni);
     try
       edtCertificado.Text       :=  ConfigIni.ReadString('PIX', 'Certificado', '');
       edtSenhaCertificado.Text  :=  ConfigIni.ReadString('PIX', 'Senha Certificado', '');
@@ -576,5 +587,38 @@ begin
   {$EndIf}
 end;
 
+
+procedure TForm1.SetConfigTelaPix;
+begin
+    {configurar impressora}
+    frmPIX_Tela.ACBrPosPrinterPIX.Desativar;
+    frmPIX_Tela.ACBrPosPrinterPIX.Modelo := TACBrPosPrinterModelo( cbxModeloPosPrinter.ItemIndex );
+    frmPIX_Tela.ACBrPosPrinterPIX.PaginaDeCodigo := TACBrPosPaginaCodigo( cbxPagCodigo.ItemIndex );
+    frmPIX_Tela.ACBrPosPrinterPIX.Porta := cbxPorta.Text;
+    frmPIX_Tela.ACBrPosPrinterPIX.ColunasFonteNormal := seColunas.Value;
+    frmPIX_Tela.ACBrPosPrinterPIX.LinhasEntreCupons := seLinhasPular.Value;
+    frmPIX_Tela.ACBrPosPrinterPIX.EspacoEntreLinhas := seEspLinhas.Value;
+    {======================}
+
+    {Configurar PIX}
+    frmPIX_Tela.RscPix1.ChavePixTipo   :=  TTipoChavePIX(CbbTipoChavePix.ItemIndex);
+    frmPIX_Tela.RscPix1.ChavePIX       :=  edtChavePix.Text;
+    frmPIX_Tela.RscPix1.Psp            :=  TPSP(CbbPSP.ItemIndex);
+    frmPIX_Tela.RscPix1.PspAmbiente    :=  TTipoAmbiente(CbbTipoAmbiente.ItemIndex);
+    frmPIX_Tela.RscPix1.PixTipoQRCode  :=  TTipoQrCode(cbbTipoQRCode.ItemIndex);
+
+    frmPIX_Tela.RscPix1.Developer_application_key :=  edtDeveloperKey.Text;
+    frmPIX_Tela.RscPix1.Developer_Client_ID       :=  edtClientID.Text;
+    frmPIX_Tela.RscPix1.Developer_Client_Secret   :=  edtClientSecreat.Text;
+    frmPIX_Tela.RscPix1.RecebedorNome             :=  edtNomeRecebedore.Text;
+    {======================}
+
+    frmPIX_Tela.RscPix1.PIXValor            :=  StrToFloatDef(edtValorPix.Text, 0);
+    frmPIX_Tela.RscPix1.PixTXID             :=  edtTXID.Text;
+    frmPIX_Tela.RscPix1.PixE2eid            :=  edtEndToEndId.Text;
+    frmPIX_Tela.RscPix1.PixTXIDDev          :=  edtTxIdDev.Text;
+    frmPIX_Tela.RscPix1.PixMensagem         :=  edtMsgPix.Text;
+    frmPIX_Tela.RscPix1.RecebedorCidade     :=  edtCidadeRecebedor.Text;
+end;
 
 end.

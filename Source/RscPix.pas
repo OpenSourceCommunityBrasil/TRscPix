@@ -450,6 +450,7 @@ var
 
 
    RequestBody : TStringList;
+   borey: string;
 
    nResp : Integer;
 
@@ -605,6 +606,7 @@ begin
         Resultado.txid  :=  PixCobranca.TXID;
         Resultado.chave :=  PIX.ChavePix;
         Resultado.valor  := StrToFloatDef(cValor, 0);
+          borey := DWCR_PIX.DefaultCustomHeader.ToString;
 
 
         if Resultado.textoImagemQRcode = '' then
@@ -613,6 +615,8 @@ begin
         Resultado_Cod := 200;
         Exit;
       end;
+    if Assigned(JsonEnviar) then
+      JsonEnviar.Free;
   end;
 end;
 
@@ -788,12 +792,10 @@ begin
                             RequestBody.Add('grant_type=client_credentials');
                             RequestBody.Add('scope=cob.read cob.write pix.read pix.write');
 
-
                         end;
       pspBancoDoBrasil: begin //SAND BOX - OK
                             RequestBody.Add('grant_type=client_credentials');
                             RequestBody.Add('scope=cob.read cob.write pix.read pix.write');
-
 
                         end;
       pspSantander    : begin  //sANDbOX - OK
@@ -807,14 +809,12 @@ begin
                             RequestBody.Add('client_id='+FDeveloper.Client_ID);
                             RequestBody.Add('client_secret='+FDeveloper.Client_Secret);
 
-
                         end;
       pspSicoob       : begin
                             RequestBody.Add('grant_type=client_credentials');
                             RequestBody.Add('client_id='+FDeveloper.Client_ID);
                             RequestBody.Add('client_secret='+FDeveloper.Client_Secret);
                             RequestBody.Add('scope=cob.read cob.write pix.read pix.write');
-
 
                         end;
       pspBradesco     : begin
@@ -829,6 +829,13 @@ begin
     DWCR_PIX.HostCert :=  FPSP.UrlHostCert;
     DWCR_PIX.PortCert :=  443;//PADRAO
     DWCR_PIX.KeyFile  :=  Certificado.DiretorioCertificadoSenha;
+
+//                            DWCR_PIX.CertMode := sslmClient;
+//                            DWCR_PIX.CertFile := Certificado_Nome;
+//                            DWCR_PIX.HostCert :=  FHostCert;
+//                            DWCR_PIX.PortCert := 443;//PADRAO
+//                            DWCR_PIX.KeyFile  := Certificado_Senha;
+
 
 
     try

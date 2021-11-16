@@ -4,7 +4,7 @@ object Form1: TForm1
   BorderStyle = bsSingle
   Caption = 'PIX - By: Roniery Santos Cardoso'
   ClientHeight = 616
-  ClientWidth = 1054
+  ClientWidth = 1051
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,7 +20,7 @@ object Form1: TForm1
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 1054
+    Width = 1051
     Height = 145
     Align = alTop
     BevelOuter = bvNone
@@ -32,10 +32,10 @@ object Form1: TForm1
     ParentBackground = False
     TabOrder = 0
     DesignSize = (
-      1054
+      1051
       145)
     object Label1: TLabel
-      Left = 895
+      Left = 892
       Top = 7
       Width = 75
       Height = 16
@@ -50,7 +50,7 @@ object Form1: TForm1
       ExplicitLeft = 950
     end
     object cbbTipoQRCode: TComboBox
-      Left = 895
+      Left = 892
       Top = 26
       Width = 145
       Height = 21
@@ -216,7 +216,7 @@ object Form1: TForm1
       AlignWithMargins = True
       Left = 4
       Top = 48
-      Width = 405
+      Width = 394
       Height = 76
       Align = alTop
       Caption = 
@@ -938,5 +938,12 @@ object Form1: TForm1
     LinhasEntreCupons = 0
     Left = 664
     Top = 96
+  end
+  object RscPix1: TRscPix
+    ChavePixTipo = tcCPF
+    Psp = pspSicredi
+    PspAmbiente = taSandBox
+    Left = 576
+    Top = 64
   end
 end
