@@ -450,7 +450,6 @@ var
 
 
    RequestBody : TStringList;
-   borey: string;
 
    nResp : Integer;
 
@@ -615,8 +614,6 @@ begin
         Resultado_Cod := 200;
         Exit;
       end;
-    if Assigned(JsonEnviar) then
-      JsonEnviar.Free;
   end;
 end;
 
