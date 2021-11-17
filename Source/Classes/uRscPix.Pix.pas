@@ -31,60 +31,7 @@ implementation
 
 procedure TTPix.SetChavePix(const Value: string);
 begin
-  case TipoChavePix of
-    tcCPF:
-      begin
-        if IsCPF(Value) then
-          begin
-            FChavePIX := GetStrNumber(Value);
-          end
-        else
-          begin
-            FChavePIX := EmptyStr;
-            raise Exception.Create('A Chave Pix informada não é um CFP válido.');
-          end;
-      end;
-    tcCNPJ:
-      begin
-        if IsCNPJ(Value) then
-          begin
-            FChavePIX := GetStrNumber(Value);
-          end
-        else
-          begin
-            FChavePIX := EmptyStr;
-            raise Exception.Create('A Chave Pix informada não é um CNPJ válido.');
-          end;
-      end;
-    tcTelefone:
-      begin
-        if IsCelular(Value) then
-          begin
-            FChavePIX := GetStrNumber(Value);
-          end
-        else
-          begin
-            FChavePIX := EmptyStr;
-            raise Exception.Create('A Chave Pix informada não é um Nº de TELEFONE válido.');
-          end;
-      end;
-    tcEmail:
-      begin
-        if IsEMail(Value) then
-          begin
-            FChavePIX := Value;
-          end
-        else
-          begin
-            FChavePIX := EmptyStr;
-            raise Exception.Create('A Chave Pix informada não é um E-MAIL válido.');
-          end;
-      end;
-    tcAleatoria:
-      begin
-        FChavePIX := Value;
-      end;
-  end;
+  FChavePIX := Value;
 end;
 
 

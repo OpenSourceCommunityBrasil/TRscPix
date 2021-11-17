@@ -93,6 +93,7 @@ type
     procedure SetDateConsutInicial(const Value: TDateTime);
     {========================================}
 
+    {========================================}
     procedure InOnGetStatusCobranca(Sender : TObject; Const sStatus: String = '');
     procedure SetResultadoErro(const Value: TRetornoErro);
     procedure SetResultadoErroPutToken(const Value: TRetornoErroPostToken);
@@ -102,6 +103,11 @@ type
     procedure SetPSP(const Value: TPSP);
     procedure SetPixCobranca(const Value: TPixCobranca);
     procedure SetToken(const Value: TToken);
+    {========================================}
+
+    {========================================}
+    Function ValidaChavePix:  Boolean;
+    {========================================}
   protected
     { Protected declarations }
   public
@@ -182,6 +188,9 @@ var
   nResp   : Integer;
   Stream  : TStringStream;
 begin
+  if not ValidaChavePix then
+    exit;
+
   GetURLToken;
   GetToToken;
 
@@ -245,6 +254,9 @@ var
   nResp         : Integer;
   Stream        : TStringStream;
 begin
+  if not ValidaChavePix then
+    exit;
+
   GetURLToken;
   GetToToken;
 
@@ -312,6 +324,9 @@ var
   RequestHeader : TStringList;
   JasonData     : TJSONObject;
 begin
+  if not ValidaChavePix then
+    exit;
+
   GetURLToken;
   GetToToken;
 
@@ -374,6 +389,9 @@ var
   nResp         : Integer;
   Stream        : TStringStream;
 begin
+  if not ValidaChavePix then
+    exit;
+
   GetURLToken;
   GetToToken;
 
@@ -463,6 +481,8 @@ var
    JSonInfo       : TJSOnObject;
 
 begin
+  if not ValidaChavePix then
+    exit;
 
   cValor := FormatFloat('#0.00',PixCobranca.Valor);
 
@@ -919,6 +939,9 @@ var
   JSonInfo       : TJSOnObject;
 
 begin
+  if not ValidaChavePix then
+    exit;
+
   GetURLToken;
   GetToToken;
 
@@ -1193,6 +1216,9 @@ var
   JasonValor    : TJSONObject;
   RequestBody   : TStringList;
 begin
+  if not ValidaChavePix then
+    exit;
+
   GetURLToken;
   GetToToken;
 
@@ -1273,5 +1299,61 @@ begin
   end;
 end;
 
+
+function TRscPix.ValidaChavePix: Boolean;
+begin
+  Result  :=  False;
+
+  case PIX.TipoChavePix of
+    tcCPF:
+      begin
+        if IsCPF(PIX.ChavePix) then
+          begin
+            Result  :=  True;
+          end
+        else
+          begin
+            raise Exception.Create('A Chave Pix informada não é um CFP válido.');
+          end;
+      end;
+    tcCNPJ:
+      begin
+        if IsCNPJ(PIX.ChavePix) then
+          begin
+            Result  :=  True;
+          end
+        else
+          begin
+            raise Exception.Create('A Chave Pix informada não é um CNPJ válido.');
+          end;
+      end;
+    tcTelefone:
+      begin
+        if IsCelular(PIX.ChavePix) then
+          begin
+            Result  :=  True;
+          end
+        else
+          begin
+            raise Exception.Create('A Chave Pix informada não é um Nº de TELEFONE válido.');
+          end;
+      end;
+    tcEmail:
+      begin
+        if IsEMail(PIX.ChavePix) then
+          begin
+            Result  :=  True;
+          end
+        else
+          begin
+            raise Exception.Create('A Chave Pix informada não é um E-MAIL válido.');
+          end;
+      end;
+    tcAleatoria:
+      begin
+        Result  :=  True;
+      end;
+  end;
+end;
 
 end.
