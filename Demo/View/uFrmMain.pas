@@ -367,8 +367,9 @@ begin
     frmPIX_Tela.RscPix1.Certificado.DiretorioCertificado        :=  edtCertificado.Text;
     frmPIX_Tela.RscPix1.Certificado.DiretorioCertificadoSenha   :=  edtSenhaCertificado.Text;
 
-    frmPIX_Tela.RscPix1.PIX.ChavePIX                  :=  edtChavePix.Text;
     frmPIX_Tela.RscPix1.PIX.TipoChavePix              :=  TTipoChavePIX(CbbTipoChavePix.ItemIndex);
+    frmPIX_Tela.RscPix1.PIX.ChavePIX                  :=  edtChavePix.Text;
+
     frmPIX_Tela.RscPix1.PIX.NomeTitularConta          :=  edtNomeRecebedore.Text;
     frmPIX_Tela.RscPix1.PIX.CidadeTitularConta        :=  edtCidadeRecebedor.Text;
 
