@@ -7,22 +7,34 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, PIX_Tela, Vcl.ExtCtrls,
   REST.Types, Data.Bind.Components, Data.Bind.ObjectScope, REST.Client,
   uDWAbout, uDWResponseTranslator, Vcl.Buttons, Vcl.Samples.Spin, System.TypInfo, ACBrPosPrinter,
-  ACBrBase, configuraserial, IniFiles,  System.UITypes,
+  ACBrBase, configuraserial, IniFiles,  System.UITypes, System.DateUtils,
 
   uRscPix.Variaveis, uRscPix.Tipos,
   uRscPix.Validations, ACBrSocket, ACBrPicpay, Data.DB, Vcl.Grids,
-  Vcl.DBGrids, Vcl.Imaging.pngimage, uRESTDWBase, uRscPix.Classes
+  Vcl.DBGrids, Vcl.Imaging.pngimage, uRESTDWBase, uRscPix.Classes,
+  IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient, IdHTTP,
+  IdIOHandler, IdIOHandlerSocket, IdIOHandlerStack, IdSSL, IdSSLOpenSSL,
+  Vcl.ComCtrls,
+
+
+  RscPix, uRscPix.funcoes
 
 
   ;
 
 type
-  TForm1 = class(TForm)
-    Panel1: TPanel;
-    cbbTipoQRCode: TComboBox;
-    Label1: TLabel;
-    Panel2: TPanel;
-    pnlLeft: TPanel;
+  TFrmMain = class(TForm)
+    ACBrPosPrinter1: TACBrPosPrinter;
+    gb_Config_Seg: TGroupBox;
+    Label2: TLabel;
+    edtCertificado: TLabeledEdit;
+    edtSenhaCertificado: TLabeledEdit;
+    edtClientID: TLabeledEdit;
+    edtClientSecreat: TLabeledEdit;
+    edtDeveloperKey: TLabeledEdit;
+    edtChavePix: TLabeledEdit;
+    CbbTipoChavePix: TComboBox;
+    edtNomeRecebedore: TLabeledEdit;
     gbConfigImpressora: TGroupBox;
     Label25: TLabel;
     Label26: TLabel;
@@ -39,48 +51,79 @@ type
     cbxPorta: TComboBox;
     cbxPagCodigo: TComboBox;
     btTestarPosPrinter: TBitBtn;
-    BitBtn1: TBitBtn;
-    GroupBox1: TGroupBox;
-    Label2: TLabel;
-    edtCertificado: TLabeledEdit;
-    edtSenhaCertificado: TLabeledEdit;
-    edtClientID: TLabeledEdit;
-    edtClientSecreat: TLabeledEdit;
-    edtDeveloperKey: TLabeledEdit;
-    edtChavePix: TLabeledEdit;
-    CbbTipoChavePix: TComboBox;
-    edtNomeRecebedore: TLabeledEdit;
-    grbxPSP: TGroupBox;
-    CbbPSP: TComboBox;
-    CbbTipoAmbiente: TComboBox;
+    edtDuracaoMinutos: TSpinEdit;
+    Label9: TLabel;
+    edtTxIdDev: TLabeledEdit;
+    edtEndToEndId: TLabeledEdit;
+    Label1: TLabel;
+    cbbTipoQRCode: TComboBox;
+    Button1: TButton;
+    gb_Consulta_Periodo: TGroupBox;
     Label3: TLabel;
     Label6: TLabel;
-    Image1: TImage;
-    Label8: TLabel;
-    btnDoar: TButton;
-    Panel3: TPanel;
-    grbxPix: TGroupBox;
-    edtCidadeRecebedor: TLabeledEdit;
-    edtMsgPix: TLabeledEdit;
-    edtValorPix: TLabeledEdit;
+    dtp_Data_Inicial: TDateTimePicker;
+    Button5: TButton;
+    dtp_Data_Final: TDateTimePicker;
+    dtp_Hora_Inicial: TDateTimePicker;
+    dtp_Hora_Final: TDateTimePicker;
+    grbxPSP: TGroupBox;
     Label4: TLabel;
     Label5: TLabel;
-    edtTXID: TLabeledEdit;
-    edtPayload: TLabeledEdit;
+    CbbPSP: TComboBox;
+    CbbTipoAmbiente: TComboBox;
+    gb_Consulta_Pix_TXID: TGroupBox;
+    Button6: TButton;
+    edt_E2eID: TLabeledEdit;
     GroupBox2: TGroupBox;
-    Button1: TButton;
     Button2: TButton;
     Button3: TButton;
     GroupBox3: TGroupBox;
-    Button5: TButton;
-    Button6: TButton;
     Button7: TButton;
     Button4: TButton;
-    edtEndToEndId: TLabeledEdit;
-    ACBrPosPrinter1: TACBrPosPrinter;
-    edtTxIdDev: TLabeledEdit;
-    edtDuracaoMinutos: TSpinEdit;
-    Label9: TLabel;
+    Panel1: TPanel;
+    BitBtn1: TBitBtn;
+    edtCidadeRecebedor: TLabeledEdit;
+    btn_Certificados: TSpeedButton;
+    Open_Dialog: TOpenDialog;
+    pnl_tela: TPanel;
+    pnl_menu: TPanel;
+    pnl_Configs: TPanel;
+    pnl_Funcoes: TPanel;
+    PnlBtn_Funcoes: TPanel;
+    PnlBtn_Configs: TPanel;
+    Pnl_MenuFuncoes: TPanel;
+    PnlBtn_FuncCobranca: TPanel;
+    PnlBtn_FuncConsulta: TPanel;
+    pnl_FuncCobranca: TPanel;
+    pnl_FuncConsulta: TPanel;
+    GroupBox1: TGroupBox;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    Panel4: TPanel;
+    Panel5: TPanel;
+    Label8: TLabel;
+    Panel6: TPanel;
+    edtTXID: TEdit;
+    SpeedButton1: TSpeedButton;
+    GroupBox4: TGroupBox;
+    Label10: TLabel;
+    edtValorPix: TEdit;
+    Label11: TLabel;
+    edtMsgPix: TEdit;
+    pnl_CobToolsRet: TPanel;
+    Panel7: TPanel;
+    Label12: TLabel;
+    Panel8: TPanel;
+    Panel9: TPanel;
+    mmPayload: TMemo;
+    btnCancelar: TBitBtn;
+    btnImprQrCode: TBitBtn;
+    Label13: TLabel;
+    imgQRCODE: TImage;
+    Panel10: TPanel;
+    lblStatus: TLabel;
+    Label14: TLabel;
+    Label15: TLabel;
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btTestarPosPrinterClick(Sender: TObject);
@@ -92,77 +135,206 @@ type
     procedure LerConfigIni;
     procedure GravarConfigIni;
     procedure BitBtn1Click(Sender: TObject);
-    procedure btnDoarClick(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button5Click(Sender: TObject);
     procedure Button6Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button7Click(Sender: TObject);
+    procedure btn_CertificadosClick(Sender: TObject);
+
+    { funções espeficaic}
+    procedure PnlsBtnMouseLeave(Sender: TObject);
+    procedure PnlsBtnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure PnlBtn_ConfigsClick(Sender: TObject);
+    procedure PnlBtn_FuncoesClick(Sender: TObject);
+    procedure PnlBtn_FuncCobrancaClick(Sender: TObject);
+    procedure PnlBtn_FuncConsultaClick(Sender: TObject);
+    procedure SpeedButton1Click(Sender: TObject);
+    procedure btnImprQrCodeClick(Sender: TObject);
   private
+
+    bRecebido  : Boolean;
+    cQrCode,
+    cFantasia  : String;
+
+
+    procedure SetResetConfigPnlBtn(Sender: TObject);
+    procedure SetConfigClick(Sender: TObject);
     { Private declarations }
     procedure ProcurarImpressora;
     procedure AdicionarLinhaImpressao(ALinha: AnsiString);
     procedure ConfigurarPosPrinter;
     procedure AtivarPosPrinter;
     procedure SetConfigTelaPix;
+
+    procedure SetConfigPixObrig(Sender: TObject);
+
+    procedure SetConfigPixGeraCobranca(Sender: TObject);
+
+    procedure SetConfigPix(Sender: TObject);
+
+    {-------------------------------------------------------------------}
+    procedure InOnCobGet_(Sender : TObject; Const Status: String = ''; Erro: String = '');
+
   public
     { Public declarations }
+    procedure GerarPix(Sender: TObject);
+    procedure AtualizarPix(cStatus : String);
+    procedure ConsultaPixPorTXID(dMostraMensagem : Boolean);
+    procedure ConsultaListaPixPorPeriodo( dMostraMensagem      : Boolean ;
+                                          _Data_Hora_Inicial    : TDateTime ;
+                                          _Data_Hora_Final      : TDateTime );
+    procedure ConsultarPixRecebido( dMostraMensagem : Boolean ; _E2eid : String );
+    procedure SolicitarDevolucaoPixRecebido(dMostraMensagem : Boolean);
+    procedure ConsultarDevolucaoPixRecebido(dMostraMensagem : Boolean);
   end;
 
 var
-  Form1: TForm1;
+  FrmMain: TFrmMain;
   PathConfigIni : String;
 
 implementation
 
 {$R *.dfm}
 
-procedure TForm1.AdicionarLinhaImpressao(ALinha: AnsiString);
+function Selecionar_Diretorio( Titulo : String ; var Dir : String ) : Boolean ;
 begin
-  if ACBrPosPrinter1.Ativo then
-    ACBrPosPrinter1.Imprimir(ALinha);
+result := False ;
+with TFileOpenDialog.Create(nil) do
+     try
+       Title := Titulo ;
+       Options := [fdoPickFolders, fdoPathMustExist, fdoForceFileSystem] ;
+       OkButtonLabel := 'Selecionar';
+       DefaultFolder := Dir;
+       FileName := Dir;
+       if Execute then
+          begin
+          Dir := FileName ;
+          result := True ;
+          end;
+     finally
+       Free;
+     end;
 end;
 
-procedure TForm1.AtivarPosPrinter;
+
+
+
+
+procedure TFrmMain.AdicionarLinhaImpressao(ALinha: AnsiString);
 begin
-  ConfigurarPosPrinter;
-  if (ACBrPosPrinter1.Porta <> '') then
+if ACBrPosPrinter1.Ativo then
+   ACBrPosPrinter1.Imprimir(ALinha);
+end;
+
+
+
+
+
+
+procedure TFrmMain.AtivarPosPrinter;
+begin
+ConfigurarPosPrinter;
+if (ACBrPosPrinter1.Porta <> '') then
     ACBrPosPrinter1.Ativar
-  else
+    else
     raise Exception.Create('Porta não definida');
 end;
 
-procedure TForm1.BitBtn1Click(Sender: TObject);
+
+
+
+
+
+
+
+
+
+
+procedure TFrmMain.AtualizarPix(cStatus: String);
+begin
+
+end;
+
+procedure TFrmMain.BitBtn1Click(Sender: TObject);
 begin
   GravarConfigIni;
   LerConfigIni;
   MessageDlg('Configurações Gravadas Com Sucesso!', TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOK], 0);
 end;
 
-procedure TForm1.btnDoarClick(Sender: TObject);
+procedure TFrmMain.btnImprQrCodeClick(Sender: TObject);
+var
+  mImp  : TStringList;
 begin
-  case Self.Width of
-    654:
-      begin
-        Self.Width  :=  1060;
-        btnDoar.Caption :=  'Esconder Contribuir';
-      end;
-    1060:
-      begin
-        Self.Width  :=  654;
-        btnDoar.Caption :=  'Contribuir';
-      end;
+  try
+    if (ACBrPosPrinter1.Porta <> '') then
+      ACBrPosPrinter1.Ativar
+    else
+      raise Exception.Create('Porta não definida');
+
+    ACBrPosPrinter1.CortaPapel    := True;
+    ACBrPosPrinter1.TraduzirTags  := True;
+
+    //Configurando o QrCOde
+    ACBrPosPrinter1.configqrcode.Tipo               := 2;
+    ACBrPosPrinter1.configqrcode.LarguraModulo      := 6;//4;
+    ACBrPosPrinter1.configqrcode.ErrorLevel         := 0;
+
+    //aplicando
+    mImp  := TStringList.Create;
+    mImp.Clear;
+    mImp.Add('</zera>');
+    mImp.Add('</ce>');
+    mImp.Add('<a><n>'+cFantasia+'</n></a>');
+    mImp.Add('</ce>');
+    mImp.Add('<qrcode>'+cQrCode+'</qrcode>');
+    mImp.Add('</ce>');
+    mImp.Add('<n><e><a>'+edtValorPix.Text+'</a></e></n>');
+    mImp.Add('</fn>');
+    mImp.Add('</ce>');
+    mImp.Add('</corte_total>');
+    ACBrPosPrinter1.Ativar;
+    ACBrPosPrinter1.Buffer.Text := mImp.Text;
+    ACBrPosPrinter1.Imprimir;
+
+  finally
+    ACBrPosPrinter1.Desativar;
+    mImp.Free;
   end;
 end;
 
-procedure TForm1.btProcuraImpressorasClick(Sender: TObject);
+procedure TFrmMain.btn_CertificadosClick(Sender: TObject);
+ var Dir : String ;
 begin
-  ProcurarImpressora;
+Open_Dialog.DefaultExt := '*.cer' ;
+Open_Dialog.Filter := 'Arquivos cer|*.cer' ;
+if Open_Dialog.Execute then
+   begin
+   edtCertificado.Text := Open_Dialog.FileName ;
+   end;
 end;
 
-procedure TForm1.btSerialClick(Sender: TObject);
+
+
+
+
+
+
+
+procedure TFrmMain.btProcuraImpressorasClick(Sender: TObject);
+begin
+ProcurarImpressora;
+end;
+
+
+
+
+
+
+
+procedure TFrmMain.btSerialClick(Sender: TObject);
 var
   frConfiguraSerial: TfrConfiguraSerial;
 begin
@@ -182,7 +354,7 @@ begin
   end ;
 end;
 
-procedure TForm1.btTestarPosPrinterClick(Sender: TObject);
+procedure TFrmMain.btTestarPosPrinterClick(Sender: TObject);
 var
   SL: TStringList;
 begin
@@ -221,35 +393,60 @@ begin
   end
 end;
 
-procedure TForm1.Button1Click(Sender: TObject);
+procedure TFrmMain.Button1Click(Sender: TObject);
+var
+  Pix : TRscPix;
 begin
-  frmPIX_Tela := TfrmPIX_Tela.Create(nil);
+  if Trim(edtTXID.Text) = '' then
+    begin
+      MessageDlg('Campo do TXID deve ser informado na transação.', TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
+      edtTXID.SetFocus ;
+      Exit;
+    end;
+
+  Pix := TRscPix.Create(Self);
   try
-    SetConfigTelaPix;
-
-    frmPIX_Tela.GerarPix;
-
-        if frmPIX_Tela.RscPix1.Resultado_Cod = 200 then
-        begin
-          if frmPIX_Tela.RscPix1.Resultado.textoImagemQRcode <> '' then
-          begin
-            edtPayload.Text  :=  frmPIX_Tela.RscPix1.Resultado.textoImagemQRcode;
-            edtTXID.Text := frmPIX_Tela.RscPix1.Resultado.txid;
-          end
-          else
-          begin
-            edtPayload.Text  :=  frmPIX_Tela.RscPix1.Resultado.location;
-            edtTXID.Text := frmPIX_Tela.RscPix1.Resultado.txid;
-          end;
-
-          frmPIX_Tela.ShowModal;
-        end;
+    Pix.OnCobGet  :=  InOnCobGet_;
+    SetConfigPixGeraCobranca(Pix);
+    Pix.CriarCobranca;
+//    GerarPix(Pix);
   finally
-    frmPIX_Tela.Free;
+    Pix.Free;
   end;
+
+
+
+//  frmPIX_Tela := TfrmPIX_Tela.Create(nil);
+//  try
+//    SetConfigTelaPix ;
+//
+//    frmPIX_Tela.GerarPix ;
+//
+//    if frmPIX_Tela.RscPix1.Resultado_Cod = 200 then
+//      begin
+//        if frmPIX_Tela.RscPix1.Resultado.textoImagemQRcode <> '' then
+//         begin
+//           edtPayload.Text  :=  frmPIX_Tela.RscPix1.Resultado.textoImagemQRcode ;
+//           edtTXID.Text := frmPIX_Tela.RscPix1.Resultado.txid ;
+//         end
+//        else
+//          begin
+//            edtPayload.Text  :=  frmPIX_Tela.RscPix1.Resultado.location ;
+//            edtTXID.Text := frmPIX_Tela.RscPix1.Resultado.txid ;
+//          end;
+//        frmPIX_Tela.ShowModal ;
+//      end;
+//  finally
+//   frmPIX_Tela.Free ;
+//  end;
 end;
 
-procedure TForm1.Button2Click(Sender: TObject);
+
+
+
+
+
+procedure TFrmMain.Button2Click(Sender: TObject);
 begin
   frmPIX_Tela := TfrmPIX_Tela.Create(nil);
   try
@@ -266,7 +463,7 @@ begin
   end;
 end;
 
-procedure TForm1.Button3Click(Sender: TObject);
+procedure TFrmMain.Button3Click(Sender: TObject);
 begin
   frmPIX_Tela := TfrmPIX_Tela.Create(nil);
   try
@@ -283,7 +480,7 @@ begin
   end;
 end;
 
-procedure TForm1.Button4Click(Sender: TObject);
+procedure TFrmMain.Button4Click(Sender: TObject);
 begin
   frmPIX_Tela := TfrmPIX_Tela.Create(nil);
   try
@@ -300,42 +497,62 @@ begin
   end;
 end;
 
-procedure TForm1.Button5Click(Sender: TObject);
+
+
+
+
+procedure TFrmMain.Button5Click(Sender: TObject);
 begin
-  frmPIX_Tela := TfrmPIX_Tela.Create(nil);
-  try
+frmPIX_Tela := TfrmPIX_Tela.Create(nil);
+ try
+ SetConfigTelaPix ;
 
-    SetConfigTelaPix;
+ frmPIX_Tela.ConsultaListaPixPorPeriodo( True ,
+                                         StrToDateTime(DateToStr(dtp_Data_Inicial.Date) + TimeToStr(dtp_Hora_Inicial.Time)) ,
+                                         StrToDateTime(DateToStr(dtp_Data_Final.Date) + TimeToStr(dtp_Hora_Final.Time)) );
 
-    frmPIX_Tela.ConsultaListaPixPorPeriodo(True);
-
-    if frmPIX_Tela.RscPix1.Resultado_Cod = 200 then
+ if frmPIX_Tela.RscPix1.Resultado_Cod = 200 then
     begin
-      frmPIX_Tela.ShowModal;
+    frmPIX_Tela.ShowModal ;
     end;
-  finally
-    frmPIX_Tela.Free;
-  end;
+ finally
+   frmPIX_Tela.Free ;
+ end;
 end;
 
-procedure TForm1.Button6Click(Sender: TObject);
+
+
+
+
+procedure TFrmMain.Button6Click(Sender: TObject);
 begin
-  frmPIX_Tela := TfrmPIX_Tela.Create(nil);
-  try
-    SetConfigTelaPix;
-
-    frmPIX_Tela.ConsultarPixRecebido(True);
-
-    if frmPIX_Tela.RscPix1.Resultado_Cod = 200 then
+frmPIX_Tela := TfrmPIX_Tela.Create(nil);
+ try
+ SetConfigTelaPix ;
+ if Trim(edt_E2eID.Text) = ''  then
     begin
-      frmPIX_Tela.ShowModal;
+    MessageDlg('Digite o campo E2eID' , TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
+    edt_E2eID.SetFocus ;
+    Exit;
     end;
-  finally
-    frmPIX_Tela.Free;
-  end;
+ frmPIX_Tela.ConsultarPixRecebido(True , edt_E2eID.Text) ;
+ if frmPIX_Tela.RscPix1.Resultado_Cod = 200 then
+    begin
+    frmPIX_Tela.ShowModal;
+    end;
+ finally
+   frmPIX_Tela.Free;
+ end;
 end;
 
-procedure TForm1.Button7Click(Sender: TObject);
+
+
+
+
+
+
+
+procedure TFrmMain.Button7Click(Sender: TObject);
 begin
   frmPIX_Tela := TfrmPIX_Tela.Create(nil);
   try
@@ -352,7 +569,47 @@ begin
   end;
 end;
 
-procedure TForm1.SetConfigTelaPix;
+procedure TFrmMain.SetResetConfigPnlBtn(Sender: TObject);
+var
+  P:  integer;
+begin
+  if Sender is TPanel then
+    begin
+      for P := 0 to Pred(TPanel(Sender).ControlCount) do
+        begin
+          if TPanel(Sender).Controls[P] is TPanel then
+            begin
+              TPanel(TPanel(Sender).Controls[P]).Tag    :=  0;
+              TPanel(TPanel(Sender).Controls[P]).Color  :=  clMenuHighlight;
+            end;
+        end;
+    end;
+
+
+
+//  PnlBtn_Configs.Tag    :=  0;
+//  PnlBtn_Configs.Color  :=  clMenuHighlight;
+//
+//  PnlBtn_Funcoes.Tag    :=  0;
+//  PnlBtn_Funcoes.Color  :=  clMenuHighlight
+
+end;
+
+procedure TFrmMain.SolicitarDevolucaoPixRecebido(dMostraMensagem: Boolean);
+begin
+
+end;
+
+procedure TFrmMain.SpeedButton1Click(Sender: TObject);
+begin
+  edtTXID.Text  :=  'RSC1996'
+                  + IntToStr(Random(9999))
+                  + IntToStr(Random(9999))
+                  + IntToStr(Random(9999))
+                  + 'EZL1991';
+end;
+
+procedure TFrmMain.SetConfigTelaPix;
 begin
     {configurar impressora}
     frmPIX_Tela.ACBrPosPrinterPIX.Desativar;
@@ -367,29 +624,79 @@ begin
     frmPIX_Tela.RscPix1.Certificado.DiretorioCertificado        :=  edtCertificado.Text;
     frmPIX_Tela.RscPix1.Certificado.DiretorioCertificadoSenha   :=  edtSenhaCertificado.Text;
 
-    frmPIX_Tela.RscPix1.PIX.TipoChavePix              :=  TTipoChavePIX(CbbTipoChavePix.ItemIndex);
-    frmPIX_Tela.RscPix1.PIX.ChavePIX                  :=  edtChavePix.Text;
+    frmPIX_Tela.RscPix1.PIX.TipoChavePix                        :=  TTipoChavePIX(CbbTipoChavePix.ItemIndex);
+    frmPIX_Tela.RscPix1.PIX.ChavePIX                            :=  edtChavePix.Text;
 
-    frmPIX_Tela.RscPix1.PIX.NomeTitularConta          :=  edtNomeRecebedore.Text;
-    frmPIX_Tela.RscPix1.PIX.CidadeTitularConta        :=  edtCidadeRecebedor.Text;
+    frmPIX_Tela.RscPix1.PIX.NomeTitularConta                    :=  edtNomeRecebedore.Text;
+    frmPIX_Tela.RscPix1.PIX.CidadeTitularConta                  :=  edtCidadeRecebedor.Text;
 
-    frmPIX_Tela.RscPix1.Psp.TipoPsp                   :=  TTipoPSP(CbbPSP.ItemIndex);
-    frmPIX_Tela.RscPix1.PSP.TipoPspAmbiente           :=  TTipoAmbiente(CbbTipoAmbiente.ItemIndex);
+    frmPIX_Tela.RscPix1.PSP.TipoPsp                             :=  TTipoPSP(CbbPSP.ItemIndex);
+    frmPIX_Tela.RscPix1.PSP.TipoPspAmbiente                     :=  TTipoAmbiente(CbbTipoAmbiente.ItemIndex);
 
-    frmPIX_Tela.RscPix1.Developer.Application_key     :=  edtDeveloperKey.Text;
-    frmPIX_Tela.RscPix1.Developer.Client_ID           :=  edtClientID.Text;
-    frmPIX_Tela.RscPix1.Developer.Client_Secret       :=  edtClientSecreat.Text;
+    frmPIX_Tela.RscPix1.Developer.Application_key               :=  edtDeveloperKey.Text;
+    frmPIX_Tela.RscPix1.Developer.Client_ID                     :=  edtClientID.Text;
+    frmPIX_Tela.RscPix1.Developer.Client_Secret                 :=  edtClientSecreat.Text;
 
-    frmPIX_Tela.RscPix1.PixCobranca.Valor             :=  StrToFloatDef(edtValorPix.Text, 0);
-    frmPIX_Tela.RscPix1.PixCobranca.TXID              :=  edtTXID.Text;
-    frmPIX_Tela.RscPix1.PixCobranca.E2eid             :=  edtEndToEndId.Text;
-    frmPIX_Tela.RscPix1.PixCobranca.TXIDDev           :=  edtTxIdDev.Text;
-    frmPIX_Tela.RscPix1.PixCobranca.TipoQRCode        :=  TTipoQrCode(cbbTipoQRCode.ItemIndex);
-    frmPIX_Tela.RscPix1.PixCobranca.DuracaoMinutos    :=  edtDuracaoMinutos.Value;
+    frmPIX_Tela.RscPix1.PixCobranca.Valor                       :=  StrToFloatDef(edtValorPix.Text, 0);
+    frmPIX_Tela.RscPix1.PixCobranca.TXID                        :=  edtTXID.Text ;
+    frmPIX_Tela.RscPix1.PixCobranca.E2eid                       :=  edtEndToEndId.Text ;
+    frmPIX_Tela.RscPix1.PixCobranca.TXIDDev                     :=  edtTxIdDev.Text;
+    frmPIX_Tela.RscPix1.PixCobranca.TipoQRCode                  :=  TTipoQrCode(cbbTipoQRCode.ItemIndex);
+    frmPIX_Tela.RscPix1.PixCobranca.DuracaoMinutos              :=  edtDuracaoMinutos.Value;
+    frmPIX_Tela.RscPix1.PixCobranca.Mensagem                    :=  Trim(edtMsgPix.Text);
 
 end;
 
-procedure TForm1.ConfigurarPosPrinter;
+
+procedure TFrmMain.SetConfigClick(Sender: TObject);
+begin
+  TPanel(Sender).Color := clNavy;
+  TPanel(Sender).Tag := 1;
+end;
+
+
+
+procedure TFrmMain.SetConfigPix(Sender: TObject);
+begin
+    TRscPix(Sender).PixCobranca.Valor                       :=  StrToFloatDef(edtValorPix.Text, 0);
+    TRscPix(Sender).PixCobranca.TXID                        :=  edtTXID.Text ;
+    TRscPix(Sender).PixCobranca.E2eid                       :=  edtEndToEndId.Text ;
+    TRscPix(Sender).PixCobranca.TXIDDev                     :=  edtTxIdDev.Text;
+    TRscPix(Sender).PixCobranca.Mensagem                    :=  Trim(edtMsgPix.Text);
+end;
+
+procedure TFrmMain.SetConfigPixGeraCobranca(Sender: TObject);
+begin
+  SetConfigPixObrig(Sender);
+
+  TRscPix(Sender).PixCobranca.Valor                       :=  StrToFloatDef(edtValorPix.Text, 0);
+  TRscPix(Sender).PixCobranca.TXID                        :=  edtTXID.Text ;
+  TRscPix(Sender).PixCobranca.Mensagem                    :=  Trim(edtMsgPix.Text);
+end;
+
+procedure TFrmMain.SetConfigPixObrig(Sender: TObject);
+begin
+    TRscPix(Sender).PIX.NomeTitularConta                    :=  edtNomeRecebedore.Text;
+    TRscPix(Sender).PIX.CidadeTitularConta                  :=  edtCidadeRecebedor.Text;
+
+    TRscPix(Sender).Certificado.DiretorioCertificado        :=  edtCertificado.Text;
+    TRscPix(Sender).Certificado.DiretorioCertificadoSenha   :=  edtSenhaCertificado.Text;
+
+    TRscPix(Sender).Developer.Application_key               :=  edtDeveloperKey.Text;
+    TRscPix(Sender).Developer.Client_ID                     :=  edtClientID.Text;
+    TRscPix(Sender).Developer.Client_Secret                 :=  edtClientSecreat.Text;
+
+    TRscPix(Sender).PSP.TipoPsp                             :=  TTipoPSP(CbbPSP.ItemIndex);
+    TRscPix(Sender).PSP.TipoPspAmbiente                     :=  TTipoAmbiente(CbbTipoAmbiente.ItemIndex);
+
+    TRscPix(Sender).PIX.TipoChavePix                        :=  TTipoChavePIX(CbbTipoChavePix.ItemIndex);
+    TRscPix(Sender).PIX.ChavePIX                            :=  edtChavePix.Text;
+
+    TRscPix(Sender).PixCobranca.TipoQRCode                  :=  TTipoQrCode(cbbTipoQRCode.ItemIndex);
+    TRscPix(Sender).PixCobranca.DuracaoMinutos              :=  edtDuracaoMinutos.Value;
+end;
+
+procedure TFrmMain.ConfigurarPosPrinter;
 begin
   ACBrPosPrinter1.Desativar;
   ACBrPosPrinter1.Modelo := TACBrPosPrinterModelo( cbxModeloPosPrinter.ItemIndex );
@@ -400,7 +707,34 @@ begin
   ACBrPosPrinter1.EspacoEntreLinhas := seEspLinhas.Value;
 end;
 
-procedure TForm1.CriarConfigIni;
+
+
+
+
+
+procedure TFrmMain.ConsultaListaPixPorPeriodo(dMostraMensagem: Boolean;
+  _Data_Hora_Inicial, _Data_Hora_Final: TDateTime);
+begin
+
+end;
+
+procedure TFrmMain.ConsultaPixPorTXID(dMostraMensagem: Boolean);
+begin
+
+end;
+
+procedure TFrmMain.ConsultarDevolucaoPixRecebido(dMostraMensagem: Boolean);
+begin
+
+end;
+
+procedure TFrmMain.ConsultarPixRecebido(dMostraMensagem: Boolean;
+  _E2eid: String);
+begin
+
+end;
+
+procedure TFrmMain.CriarConfigIni;
 var
   ConfigIni : TIniFile;
 begin
@@ -440,7 +774,7 @@ begin
   end;
 end;
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TFrmMain.FormCreate(Sender: TObject);
 var
   O:  TACBrPosPrinterModelo;
   P:  TACBrPosPaginaCodigo;
@@ -449,7 +783,8 @@ var
   S:  TTipoPSP;
   T:  TTipoAmbiente;
 begin
-  Self.Width  :=  654;
+//  PC.ActivePageIndex := 0 ;
+//  PC_Funcoes.ActivePageIndex := 0 ;
 
   PathConfigIni :=  ExtractFilePath(ParamStr(0)) + 'Config.ini';
   CriarConfigIni;
@@ -486,17 +821,67 @@ begin
   if CbbTipoAmbiente.Items.Count > 0 then
     CbbTipoAmbiente.ItemIndex :=  0;
 
-  ProcurarImpressora;
+  ProcurarImpressora ;
 
-  LerConfigIni;
+  LerConfigIni ;
+
+  PnlBtn_ConfigsClick(PnlBtn_Configs);
+  PnlBtn_FuncCobrancaClick(PnlBtn_FuncCobranca);
 end;
 
-procedure TForm1.FormShow(Sender: TObject);
+procedure TFrmMain.GerarPix(Sender: TObject);
+var
+  cValor : String ;
+  iMinuto : integer;
 begin
-  btnDoar.Click;
+  iMinuto :=  0;
+
+  TRscPix(Sender).CriarCobranca;
+
+  if TRscPix(Sender).Resultado_Cod = 200 then
+    begin
+      lblStatus.Caption := 'Situação: '+TRscPix(Sender).ResultadoCobPut.status;
+
+      if TRscPix(Sender).ResultadoCobPut.textoImagemQRcode <> '' then
+        begin
+          mmPayload.Text  :=  TRscPix(Sender).ResultadoCobPut.textoImagemQRcode;
+          QRCodeWin(imgQRCODE, TRscPix(Sender).ResultadoCobPut.textoImagemQRcode);
+          cQrCode := TRscPix(Sender).ResultadoCobPut.textoImagemQRcode;
+        end
+      else
+        begin
+          mmPayload.Text  :=  TRscPix(Sender).ResultadoCobPut.location;
+          QRCodeWin(imgQRCODE, TRscPix(Sender).ResultadoCobPut.location);
+          cQrCode := TRscPix(Sender).ResultadoCobPut.location;
+        end;
+
+      cValor := StringReplace(TRscPix(Sender).ResultadoCobPut.valor.original, '.', ',', [rfReplaceAll]);
+      Label15.Caption := 'Valor Retornado: R$ '+FormatFLoat('###,###,##0.00',StrToCurr(cValor));
+
+//      repeat
+//        Inc(iMinuto, 1);
+//        TRscPix(Sender).ConsultarCobranca;
+//
+//
+//        Label14.Caption :=  IntToStr((TRscPix(Sender).ResultadoCobGet.calendario.expiracao * 60) - iMinuto);
+//        Sleep(3000);
+//
+//
+//      until (((TRscPix(Sender).ResultadoCobGet.calendario.expiracao * 60) = iMinuto)
+//            or (TRscPix(Sender).ResultadoCobPut.status = 'CONCLUIDA'));
+
+
+
+    end
+  else
+    begin
+      lblStatus.Caption  := 'Situação: Erro ao Gerar';
+      MessageBox(0, PChar(TRscPix(Sender).Retorno), PChar('Erro'), MB_ICONERROR + mb_ok);
+  //      MessageBox(0, PChar(TRscPix(Sender).ResultadoErro.message  + #13#10  + 'Código Erro: ' + TRscPix(Sender).ResultadoErro.statusCode.ToString), PChar(TRscPix(Sender).ResultadoErro.error), MB_ICONERROR + mb_ok);
+    end;
 end;
 
-procedure TForm1.GravarConfigIni;
+procedure TFrmMain.GravarConfigIni;
 var
   ConfigIni : TIniFile;
 begin
@@ -532,23 +917,56 @@ begin
   end;
 end;
 
-procedure TForm1.LerConfigIni;
+
+
+procedure TFrmMain.InOnCobGet_(Sender: TObject; const Status: String;
+  Erro: String);
+var
+  cValor : String ;
+begin
+  if Status <> 'NAO_CRIADO' then
+    begin
+      lblStatus.Caption := 'Situação: ' +  Status;
+      if TRscPix(Sender).ResultadoCobPut.textoImagemQRcode <> '' then
+        begin
+          mmPayload.Text  :=  TRscPix(Sender).ResultadoCobPut.textoImagemQRcode;
+          QRCodeWin(imgQRCODE, TRscPix(Sender).ResultadoCobPut.textoImagemQRcode);
+          cQrCode := TRscPix(Sender).ResultadoCobPut.textoImagemQRcode;
+        end
+      else
+        begin
+          mmPayload.Text  :=  TRscPix(Sender).ResultadoCobPut.location;
+          QRCodeWin(imgQRCODE, TRscPix(Sender).ResultadoCobPut.location);
+          cQrCode := TRscPix(Sender).ResultadoCobPut.location;
+        end;
+      cValor := StringReplace(TRscPix(Sender).ResultadoCobPut.valor.original, '.', ',', [rfReplaceAll]);
+      Label15.Caption := 'Valor Retornado: R$ '+FormatFLoat('#0.00',StrToCurr(cValor));
+    end
+  else
+    begin
+      lblStatus.Caption  := 'Situação: '  + Erro;
+      MessageDlg(Erro, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
+    end;
+end;
+
+procedure TFrmMain.LerConfigIni;
 var
   ConfigIni : TIniFile;
 begin
   try
     ConfigIni := TIniFile.Create(PathConfigIni);
     try
-      edtCertificado.Text       :=  ConfigIni.ReadString('PIX', 'Certificado', '');
-      edtSenhaCertificado.Text  :=  ConfigIni.ReadString('PIX', 'Senha Certificado', '');
-      edtClientID.Text          :=  ConfigIni.ReadString('PIX', 'Client ID', '');
-      edtClientSecreat.Text     :=  ConfigIni.ReadString('PIX', 'Client Secreat', '');
-      edtDeveloperKey.Text      :=  ConfigIni.ReadString('PIX', 'Developer Application Key', '');
-      edtChavePix.Text          :=  ConfigIni.ReadString('PIX', 'Chave PIX', '');
+      edtCertificado.Text       :=  ConfigIni.ReadString('PIX', 'Certificado', 'D:\Projetos\DBSistema\Exe\DBPdvEx\Utilitarios\CertificadoDigital\Certificado_Atenas_2022.pfx');
+      edtSenhaCertificado.Text  :=  ConfigIni.ReadString('PIX', 'Senha Certificado', '586270');
+      edtClientID.Text          :=  ConfigIni.ReadString('PIX', 'Client ID', 'eyJpZCI6IjVkIiwiY29kaWdvUHVibGljYWRvciI6MCwiY29kaWdvU29mdHdhcmUiOjI5MTgyLCJzZXF1ZW5jaWFsSW5zdGFsYWNhbyI6MX0');
+      edtClientSecreat.Text     :=  ConfigIni.ReadString('PIX', 'Client Secreat', 'eyJpZCI6ImM4YzAwOTAtYjUyNS00N2RjLWE2ZGEtZGI1YmQ0OWRmYWQ3NDZiYjI2YTQtOCIsImNvZGlnb1B1YmxpY2Fkb3Ii'+
+                                                                                  'OjAsImNvZGlnb1NvZnR3YXJlIjoyOTE4Miwic2VxdWVuY2lhbEluc3RhbGFjYW8iOjEsInNlcXVlbmNpYWxDcmVkZW5jaWFsIjoxLCJhbWJpZW50ZSI6ImhvbW9sb2dhY2FvIiwiaWF0IjoxNjQ0MDY5ODYzODU2fQ');
+      edtDeveloperKey.Text      :=  ConfigIni.ReadString('PIX', 'Developer Application Key', 'd27b07790affab401368e17dc0050e56b9b1a5b8');
+      edtChavePix.Text          :=  ConfigIni.ReadString('PIX', 'Chave PIX', 'atenassoftwares');
       CbbTipoChavePix.ItemIndex :=  ConfigIni.ReadInteger('PIX', 'Tipo Chave PIX', 0);
       cbbTipoQRCode.ItemIndex   :=  ConfigIni.ReadInteger('PIX', 'Tipo QRCode', 0);
-      edtCidadeRecebedor.Text   :=  ConfigIni.ReadString('PIX', 'Cidade Recebedor', '');
-      edtNomeRecebedore.Text    :=  ConfigIni.ReadString('PIX', 'Nome Recebedor', '');
+      edtCidadeRecebedor.Text   :=  ConfigIni.ReadString('PIX', 'Cidade Recebedor', 'Sumaré');
+      edtNomeRecebedore.Text    :=  ConfigIni.ReadString('PIX', 'Nome Recebedor', 'Marcelo Ferreira');
       CbbPSP.ItemIndex          :=  ConfigIni.ReadInteger('PIX', 'PSP', 0);
       CbbTipoAmbiente.ItemIndex :=  ConfigIni.ReadInteger('PIX', 'Tipo Ambiente', 0);
 
@@ -568,7 +986,50 @@ begin
   end;
 end;
 
-procedure TForm1.ProcurarImpressora;
+
+procedure TFrmMain.PnlBtn_ConfigsClick(Sender: TObject);
+begin
+  pnl_Configs.BringToFront;
+  SetResetConfigPnlBtn(pnl_menu);
+  SetConfigClick(Sender);
+end;
+
+procedure TFrmMain.PnlBtn_FuncCobrancaClick(Sender: TObject);
+begin
+  pnl_FuncCobranca.BringToFront;
+  SetResetConfigPnlBtn(Pnl_MenuFuncoes);
+  SetConfigClick(Sender);
+end;
+
+procedure TFrmMain.PnlBtn_FuncConsultaClick(Sender: TObject);
+begin
+  pnl_FuncConsulta.BringToFront;
+  SetResetConfigPnlBtn(Pnl_MenuFuncoes);
+  SetConfigClick(Sender);
+end;
+
+procedure TFrmMain.PnlBtn_FuncoesClick(Sender: TObject);
+begin
+  pnl_Funcoes.BringToFront;
+  SetResetConfigPnlBtn(pnl_menu);
+  SetConfigClick(Sender);
+end;
+
+procedure TFrmMain.PnlsBtnMouseLeave(Sender: TObject);
+begin
+  if TPanel(Sender).Tag = 0 then
+    TPanel(Sender).Color  :=  clMenuHighlight
+  else
+    TPanel(Sender).Color  :=  clNavy;
+end;
+
+procedure TFrmMain.PnlsBtnMouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  TPanel(Sender).Color  :=  clHotLight;
+end;
+
+procedure TFrmMain.ProcurarImpressora;
 begin
   cbxPorta.Items.Clear;
   ACBrPosPrinter1.Device.AcharPortasSeriais( cbxPorta.Items );
@@ -588,5 +1049,9 @@ begin
    cbxPorta.Items.Add('c:\temp\ecf.txt') ;
   {$EndIf}
 end;
+
+
+
+
 
 end.

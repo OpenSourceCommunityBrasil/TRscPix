@@ -2,7 +2,7 @@ program Demo_Pix;
 
 uses
   Vcl.Forms,
-  uFrmMain in '..\View\uFrmMain.pas' {Form1},
+  uFrmMain in '..\View\uFrmMain.pas' {FrmMain},
   PIX_Tela in '..\View\PIX_Tela.pas' {frmPIX_Tela},
   configuraserial in '..\View\configuraserial.pas' {frConfiguraSerial};
 
@@ -12,6 +12,6 @@ begin
   ReportMemoryLeaksOnShutdown :=  True;
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TFrmMain, FrmMain);
   Application.Run;
 end.

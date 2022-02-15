@@ -11,6 +11,7 @@ interface
 
 type
   TOnGetStatusCobranca  = procedure(Sender : TObject; Const sStatus: String = '')  of object;
+  TNotifica             = procedure(Sender : TObject; Const Status: String = ''; Erro: String = '')  of object;
 
 type
 

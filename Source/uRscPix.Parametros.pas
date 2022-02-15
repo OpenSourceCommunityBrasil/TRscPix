@@ -49,7 +49,7 @@ type
     FRecebedor          : TRecebedor;
     Frevisao            : Integer;
     Flocation           : String;
-    Fvalor              : Currency;
+    Fvalor              : TValor;
     Fsolicitacaopagador : String;
     Finfo_adicionais    : TArray<Tinfo_adicionais>;
 
@@ -68,26 +68,35 @@ type
     FinfoPagador:        string;
 
   public
-    property txid               : String                    read Ftxid                write Ftxid;
-
-    property chave              : String                    read Fchave               write Fchave;
-    property calendario         : Tcalendario               read Fcalendario          write Fcalendario;
+    {Cob}
     property status             : String                    read Fstatus              write Fstatus;
-    property revisao            : Integer                   read Frevisao             write Frevisao;
+    property calendario         : Tcalendario               read Fcalendario          write Fcalendario;
     property location           : String                    read Flocation            write Flocation;
+    property textoImagemQRcode  : String                    read ftextoImagemQRcode   write ftextoImagemQRcode;
+    property txid               : String                    read Ftxid                write Ftxid;
+    property revisao            : Integer                   read Frevisao             write Frevisao;
+    property valor              : TValor                    read Fvalor               write Fvalor;
+    property chave              : String                    read Fchave               write Fchave;
+    property solicitacaopagador : String                    read Fsolicitacaopagador  write Fsolicitacaopagador;
+
+
+
+
+
+
     property Recebedor          : TRecebedor                read FRecebedor           write FRecebedor;
 
-    property solicitacaopagador : String                    read Fsolicitacaopagador  write Fsolicitacaopagador;
+
     property info_adicionais    : TArray<Tinfo_adicionais>  read Finfo_adicionais     write Finfo_adicionais;
 
     property data_inicio_criacao: String                    read fdata_inicio_criacao write fdata_inicio_criacao;
     property data_final_criacao : String                    read fdata_final_criacao  write fdata_final_criacao;
-    property textoImagemQRcode  : String                    read ftextoImagemQRcode   write ftextoImagemQRcode;
+
 
     property pix    : TArray<TPIXParams>  read Fpix     write Fpix;
 
     property endToEndID         : String                    read FendToEndID          write FendToEndID;
-    property valor              : Currency                  read Fvalor               write Fvalor;
+
     property Horario            : string                    read FHorario             write FHorario;
     property infoPagador        : string                    read FinfoPagador         write FinfoPagador;
     property Pagador            : TPagador                  read fpagador             write fpagador;

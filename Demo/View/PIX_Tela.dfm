@@ -727,10 +727,14 @@ object frmPIX_Tela: TfrmPIX_Tela
       FieldName = 'inforpagador'
     end
     object FDMemTable1endtoebdid: TStringField
+      DisplayWidth = 60
       FieldName = 'endtoebdid'
+      Size = 60
     end
     object FDMemTable1txid: TStringField
+      DisplayWidth = 60
       FieldName = 'txid'
+      Size = 60
     end
     object FDMemTable1valor: TCurrencyField
       FieldName = 'valor'
