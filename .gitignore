@@ -1,25 +1,7 @@
 # ignore an entire directory
 /dcu/
 /.git/
-/__history/
-/__recovery/
-/Controles/__history/
-
-/Demo/Projeto/__recovery/
-/Demo/Projeto/__history/
-
-/Demo/View/__recovery/
-/Demo/View/__history/
-
-/Demo/Binarios/
-/Demo/DCUs/
-
-
-/Projeto/__history/
-/Projeto/Win32/
-
-/Source/__history/
-/Source/__recovery/
+*.cer
 
 
 
