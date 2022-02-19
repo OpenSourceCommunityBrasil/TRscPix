@@ -86,7 +86,7 @@ begin
       pspSicoob:        begin
                           FURLToken           := 'https://api-homol.sicoob.com.br/cooperado/pix/token';
                           FURLAPI             := 'https://api-homol.sicoob.com.br/cooperado/pix/api/v2';
-                          FUrlHostCert        := '';
+                          FUrlHostCert        := 'https://api-homol.sicoob.com.br';
 
                           FEndPoint_Cob       := '/cob/{txid}';
 //                          fRecebidoTagPIX := True;
@@ -148,7 +148,7 @@ begin
       pspSicoob:        begin
                           FURLToken           := 'https://api-homol.sicoob.com.br/cooperado/pix/token';
                           FURLAPI             := 'https://api-homol.sicoob.com.br/cooperado/pix/api/v2';
-                          FUrlHostCert        := '';
+                          FUrlHostCert        := 'https://api-homol.sicoob.com.br';
 
                           FEndPoint_Cob       := '/cob/{txid}';
 //                          fRecebidoTagPIX := True;
@@ -208,7 +208,7 @@ begin
        pspSicoob:       begin
                           FURLToken           := 'https://apis.sisbr.com.br/cooperado/pix/token';
                           FURLAPI             := 'https://apis.sisbr.com.br/cooperado/pix/api/v2/';
-                          FUrlHostCert        := '';
+                          FUrlHostCert        := 'https://api.sicoob.com.br';
 
                           FEndPoint_Cob       := '/cob/{txid}';
 //                          fRecebidoTagPIX := True;

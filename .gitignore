@@ -8,6 +8,11 @@
 # ignore a file type
 #*.gitignore
 
+*.pem
+*.pfx
+*.key
+
+*.txt
 
 # Delphi compiler-generated binaries (safe to delete)
 *.bpl
