@@ -750,9 +750,9 @@ object frmPIX_Tela: TfrmPIX_Tela
   end
   object RscPix1: TRscPix
     Seguranca.SSLVersions = [sslvSSLv3, sslvTLSv1_2]
-    PIX.TipoChavePix = tcEmail
-    PIX.DuracaoMinutos = 0
-    PIX.TipoQRCode = tqDinamico
+    TitularPix.TipoChavePix = tcCPF
+    TitularPix.DuracaoMinutos = 0
+    TitularPix.TipoQRCode = tqDinamico
     PSP.TipoPsp = pspSicredi
     PSP.TipoPspAmbiente = taSandBox
     Left = 96

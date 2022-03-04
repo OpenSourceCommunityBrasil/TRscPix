@@ -544,277 +544,6 @@ object FrmMain: TFrmMain
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 2
-      object pnl_FuncConsulta: TPanel
-        Left = 0
-        Top = 41
-        Width = 1004
-        Height = 410
-        Align = alClient
-        BevelOuter = bvNone
-        TabOrder = 2
-        object GroupBox3: TGroupBox
-          AlignWithMargins = True
-          Left = 292
-          Top = 144
-          Width = 265
-          Height = 125
-          Margins.Left = 15
-          Margins.Top = 0
-          Margins.Right = 0
-          Margins.Bottom = 0
-          Caption = 'Pix'
-          TabOrder = 0
-          object Button7: TButton
-            AlignWithMargins = True
-            Left = 11
-            Top = 69
-            Width = 241
-            Height = 25
-            Margins.Left = 5
-            Margins.Top = 0
-            Margins.Right = 5
-            Margins.Bottom = 0
-            Caption = 'Consultar Devolu'#231'ao Pix'
-            TabOrder = 0
-            OnClick = Button7Click
-          end
-          object Button4: TButton
-            AlignWithMargins = True
-            Left = 11
-            Top = 39
-            Width = 241
-            Height = 25
-            Margins.Left = 5
-            Margins.Top = 0
-            Margins.Right = 5
-            Margins.Bottom = 0
-            Caption = 'Solicitar Devolu'#231'ao Pix'
-            TabOrder = 1
-            OnClick = Button4Click
-          end
-        end
-        object GroupBox2: TGroupBox
-          Left = 9
-          Top = 144
-          Width = 265
-          Height = 120
-          Caption = 'Cobran'#231'a Pix'
-          TabOrder = 1
-          object Button2: TButton
-            AlignWithMargins = True
-            Left = 12
-            Top = 40
-            Width = 241
-            Height = 25
-            Margins.Left = 5
-            Margins.Top = 0
-            Margins.Right = 5
-            Margins.Bottom = 0
-            Caption = 'Consultar Cobran'#231'a Pix'
-            TabOrder = 0
-            OnClick = Button2Click
-          end
-          object Button3: TButton
-            AlignWithMargins = True
-            Left = 12
-            Top = 69
-            Width = 241
-            Height = 25
-            Margins.Left = 5
-            Margins.Top = 0
-            Margins.Right = 5
-            Margins.Bottom = 0
-            Caption = 'Cancelar Cobran'#231'a Pix'
-            TabOrder = 1
-            OnClick = Button3Click
-          end
-        end
-        object gb_Consulta_Pix_TXID: TGroupBox
-          Left = 289
-          Top = 22
-          Width = 265
-          Height = 113
-          Caption = 'Consulta Pix'
-          TabOrder = 2
-          object Button6: TButton
-            AlignWithMargins = True
-            Left = 16
-            Top = 74
-            Width = 241
-            Height = 25
-            Margins.Left = 5
-            Margins.Top = 0
-            Margins.Right = 5
-            Margins.Bottom = 0
-            Caption = 'Consultar Pix'
-            TabOrder = 0
-            OnClick = Button6Click
-          end
-          object edt_E2eID: TLabeledEdit
-            Left = 16
-            Top = 36
-            Width = 237
-            Height = 21
-            EditLabel.Width = 28
-            EditLabel.Height = 13
-            EditLabel.Caption = 'e2eId'
-            TabOrder = 1
-          end
-        end
-        object gb_Consulta_Periodo: TGroupBox
-          Left = 9
-          Top = 8
-          Width = 265
-          Height = 113
-          Caption = 'Consultar Pix Recebidos por Periodo'
-          TabOrder = 3
-          object Label3: TLabel
-            Left = 12
-            Top = 24
-            Width = 13
-            Height = 13
-            Caption = 'De'
-          end
-          object Label6: TLabel
-            Left = 12
-            Top = 47
-            Width = 17
-            Height = 13
-            Caption = 'At'#233
-          end
-          object dtp_Data_Inicial: TDateTimePicker
-            Left = 35
-            Top = 20
-            Width = 98
-            Height = 21
-            Date = 44600.000000000000000000
-            Time = 0.521547824071603800
-            TabOrder = 0
-          end
-          object Button5: TButton
-            AlignWithMargins = True
-            Left = 12
-            Top = 74
-            Width = 241
-            Height = 25
-            Margins.Left = 5
-            Margins.Top = 0
-            Margins.Right = 5
-            Margins.Bottom = 0
-            Caption = 'Consultar Lista de Pix Recebios Por Per'#237'odo'
-            TabOrder = 1
-            OnClick = Button5Click
-          end
-          object dtp_Data_Final: TDateTimePicker
-            Left = 35
-            Top = 47
-            Width = 98
-            Height = 21
-            Date = 44600.000000000000000000
-            Time = 0.521547824071603800
-            TabOrder = 2
-          end
-          object dtp_Hora_Inicial: TDateTimePicker
-            Left = 143
-            Top = 20
-            Width = 98
-            Height = 21
-            Date = 44600.000000000000000000
-            Time = 0.521547824071603800
-            Kind = dtkTime
-            TabOrder = 3
-          end
-          object dtp_Hora_Final: TDateTimePicker
-            Left = 143
-            Top = 47
-            Width = 98
-            Height = 21
-            Date = 44600.000000000000000000
-            Time = 0.521547824071603800
-            Kind = dtkTime
-            TabOrder = 4
-          end
-        end
-        object edtTxIdDev: TLabeledEdit
-          Left = 599
-          Top = 42
-          Width = 214
-          Height = 21
-          EditLabel.Width = 57
-          EditLabel.Height = 13
-          EditLabel.Caption = 'edtTxIdDev'
-          TabOrder = 4
-        end
-        object edtEndToEndId: TLabeledEdit
-          Left = 602
-          Top = 93
-          Width = 211
-          Height = 21
-          EditLabel.Width = 58
-          EditLabel.Height = 13
-          EditLabel.Caption = 'endToEndId'
-          TabOrder = 5
-        end
-      end
-      object Pnl_MenuFuncoes: TPanel
-        Left = 0
-        Top = 0
-        Width = 1004
-        Height = 41
-        Align = alTop
-        BevelOuter = bvNone
-        Color = clSilver
-        Padding.Left = 2
-        Padding.Top = 2
-        Padding.Right = 2
-        Padding.Bottom = 2
-        ParentBackground = False
-        TabOrder = 0
-        object PnlBtn_FuncCobranca: TPanel
-          AlignWithMargins = True
-          Left = 5
-          Top = 5
-          Width = 100
-          Height = 31
-          Align = alLeft
-          BevelOuter = bvNone
-          Caption = 'COBRAN'#199'A'
-          Color = clMenuHighlight
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWhite
-          Font.Height = -13
-          Font.Name = 'Tahoma'
-          Font.Style = []
-          ParentBackground = False
-          ParentFont = False
-          TabOrder = 0
-          OnClick = PnlBtn_FuncCobrancaClick
-          OnMouseLeave = PnlsBtnMouseLeave
-          OnMouseMove = PnlsBtnMouseMove
-        end
-        object PnlBtn_FuncConsulta: TPanel
-          AlignWithMargins = True
-          Left = 111
-          Top = 5
-          Width = 100
-          Height = 31
-          Align = alLeft
-          BevelOuter = bvNone
-          Caption = 'CONSULTA'
-          Color = clMenuHighlight
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWhite
-          Font.Height = -13
-          Font.Name = 'Tahoma'
-          Font.Style = []
-          ParentBackground = False
-          ParentFont = False
-          TabOrder = 1
-          OnClick = PnlBtn_FuncConsultaClick
-          OnMouseLeave = PnlsBtnMouseLeave
-          OnMouseMove = PnlsBtnMouseMove
-        end
-      end
       object pnl_FuncCobranca: TPanel
         Left = 0
         Top = 41
@@ -1439,6 +1168,277 @@ object FrmMain: TFrmMain
               ExplicitHeight = 180
             end
           end
+        end
+      end
+      object Pnl_MenuFuncoes: TPanel
+        Left = 0
+        Top = 0
+        Width = 1004
+        Height = 41
+        Align = alTop
+        BevelOuter = bvNone
+        Color = clSilver
+        Padding.Left = 2
+        Padding.Top = 2
+        Padding.Right = 2
+        Padding.Bottom = 2
+        ParentBackground = False
+        TabOrder = 0
+        object PnlBtn_FuncCobranca: TPanel
+          AlignWithMargins = True
+          Left = 5
+          Top = 5
+          Width = 100
+          Height = 31
+          Align = alLeft
+          BevelOuter = bvNone
+          Caption = 'COBRAN'#199'A'
+          Color = clMenuHighlight
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWhite
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentBackground = False
+          ParentFont = False
+          TabOrder = 0
+          OnClick = PnlBtn_FuncCobrancaClick
+          OnMouseLeave = PnlsBtnMouseLeave
+          OnMouseMove = PnlsBtnMouseMove
+        end
+        object PnlBtn_FuncConsulta: TPanel
+          AlignWithMargins = True
+          Left = 111
+          Top = 5
+          Width = 100
+          Height = 31
+          Align = alLeft
+          BevelOuter = bvNone
+          Caption = 'CONSULTA'
+          Color = clMenuHighlight
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWhite
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentBackground = False
+          ParentFont = False
+          TabOrder = 1
+          OnClick = PnlBtn_FuncConsultaClick
+          OnMouseLeave = PnlsBtnMouseLeave
+          OnMouseMove = PnlsBtnMouseMove
+        end
+      end
+      object pnl_FuncConsulta: TPanel
+        Left = 0
+        Top = 41
+        Width = 1004
+        Height = 410
+        Align = alClient
+        BevelOuter = bvNone
+        TabOrder = 2
+        object GroupBox3: TGroupBox
+          AlignWithMargins = True
+          Left = 292
+          Top = 144
+          Width = 265
+          Height = 125
+          Margins.Left = 15
+          Margins.Top = 0
+          Margins.Right = 0
+          Margins.Bottom = 0
+          Caption = 'Pix'
+          TabOrder = 0
+          object Button7: TButton
+            AlignWithMargins = True
+            Left = 11
+            Top = 69
+            Width = 241
+            Height = 25
+            Margins.Left = 5
+            Margins.Top = 0
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Caption = 'Consultar Devolu'#231'ao Pix'
+            TabOrder = 0
+            OnClick = Button7Click
+          end
+          object Button4: TButton
+            AlignWithMargins = True
+            Left = 11
+            Top = 39
+            Width = 241
+            Height = 25
+            Margins.Left = 5
+            Margins.Top = 0
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Caption = 'Solicitar Devolu'#231'ao Pix'
+            TabOrder = 1
+            OnClick = Button4Click
+          end
+        end
+        object GroupBox2: TGroupBox
+          Left = 9
+          Top = 144
+          Width = 265
+          Height = 120
+          Caption = 'Cobran'#231'a Pix'
+          TabOrder = 1
+          object Button2: TButton
+            AlignWithMargins = True
+            Left = 12
+            Top = 40
+            Width = 241
+            Height = 25
+            Margins.Left = 5
+            Margins.Top = 0
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Caption = 'Consultar Cobran'#231'a Pix'
+            TabOrder = 0
+            OnClick = Button2Click
+          end
+          object Button3: TButton
+            AlignWithMargins = True
+            Left = 12
+            Top = 69
+            Width = 241
+            Height = 25
+            Margins.Left = 5
+            Margins.Top = 0
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Caption = 'Cancelar Cobran'#231'a Pix'
+            TabOrder = 1
+            OnClick = Button3Click
+          end
+        end
+        object gb_Consulta_Pix_TXID: TGroupBox
+          Left = 289
+          Top = 22
+          Width = 265
+          Height = 113
+          Caption = 'Consulta Pix'
+          TabOrder = 2
+          object Button6: TButton
+            AlignWithMargins = True
+            Left = 16
+            Top = 74
+            Width = 241
+            Height = 25
+            Margins.Left = 5
+            Margins.Top = 0
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Caption = 'Consultar Pix'
+            TabOrder = 0
+            OnClick = Button6Click
+          end
+          object edt_E2eID: TLabeledEdit
+            Left = 16
+            Top = 36
+            Width = 237
+            Height = 21
+            EditLabel.Width = 28
+            EditLabel.Height = 13
+            EditLabel.Caption = 'e2eId'
+            TabOrder = 1
+          end
+        end
+        object gb_Consulta_Periodo: TGroupBox
+          Left = 9
+          Top = 8
+          Width = 265
+          Height = 113
+          Caption = 'Consultar Pix Recebidos por Periodo'
+          TabOrder = 3
+          object Label3: TLabel
+            Left = 12
+            Top = 24
+            Width = 13
+            Height = 13
+            Caption = 'De'
+          end
+          object Label6: TLabel
+            Left = 12
+            Top = 47
+            Width = 17
+            Height = 13
+            Caption = 'At'#233
+          end
+          object dtp_Data_Inicial: TDateTimePicker
+            Left = 35
+            Top = 20
+            Width = 98
+            Height = 21
+            Date = 44600.000000000000000000
+            Time = 0.521547824071603800
+            TabOrder = 0
+          end
+          object Button5: TButton
+            AlignWithMargins = True
+            Left = 12
+            Top = 74
+            Width = 241
+            Height = 25
+            Margins.Left = 5
+            Margins.Top = 0
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Caption = 'Consultar Lista de Pix Recebios Por Per'#237'odo'
+            TabOrder = 1
+            OnClick = Button5Click
+          end
+          object dtp_Data_Final: TDateTimePicker
+            Left = 35
+            Top = 47
+            Width = 98
+            Height = 21
+            Date = 44600.000000000000000000
+            Time = 0.521547824071603800
+            TabOrder = 2
+          end
+          object dtp_Hora_Inicial: TDateTimePicker
+            Left = 143
+            Top = 20
+            Width = 98
+            Height = 21
+            Date = 44600.000000000000000000
+            Time = 0.521547824071603800
+            Kind = dtkTime
+            TabOrder = 3
+          end
+          object dtp_Hora_Final: TDateTimePicker
+            Left = 143
+            Top = 47
+            Width = 98
+            Height = 21
+            Date = 44600.000000000000000000
+            Time = 0.521547824071603800
+            Kind = dtkTime
+            TabOrder = 4
+          end
+        end
+        object edtTxIdDev: TLabeledEdit
+          Left = 599
+          Top = 42
+          Width = 214
+          Height = 21
+          EditLabel.Width = 57
+          EditLabel.Height = 13
+          EditLabel.Caption = 'edtTxIdDev'
+          TabOrder = 4
+        end
+        object edtEndToEndId: TLabeledEdit
+          Left = 602
+          Top = 93
+          Width = 211
+          Height = 21
+          EditLabel.Width = 58
+          EditLabel.Height = 13
+          EditLabel.Caption = 'endToEndId'
+          TabOrder = 5
         end
       end
     end

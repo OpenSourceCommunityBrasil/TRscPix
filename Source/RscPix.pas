@@ -74,7 +74,6 @@ type
     FTitularPix: TTitularPix;
     FDeveloper: TDeveloper;
     FPSP: TPSP;
-//    FPixCobranca: TPixCobranca;
     FToken: TToken;
 
   private
@@ -84,25 +83,14 @@ type
     FInstanteGeradoToken: Cardinal;
 
     FRetorno: string;
-    FResultado_Cod: Integer;
+
     Finfo_adicionais_Nome: String;
     Finfo_adicionais_Valor: String;
     FDevedor_Documento: String;
     FRecebidoTagPIX: Boolean;
-    FResultado: TPix_Parametros;
     FDevedor_Nome: String;
     FDevedor_Documento_Tipo: TTipoPessoa;
-    FPermiteCancelar: Boolean;
-    FPermiteRevisar: Boolean;
-    FDateConsutFinal: TDateTime;
-    FDateConsutInicial: TDateTime;
 
-//    FResultadoErro: TRetornoErro;
-//    FResultadoErroPutToken: TRetornoErroPostToken;
-
-    FResultadoCobGet: TPix_Parametros;
-    FResultadoCobPatch: TPix_Parametros;
-//    FResultadoCobPut: TRespCobPut;
     {notifica}
     FOnGetStatusCobranca: TOnGetStatusCobranca;
     FOnCobGet: TNotificaCobGet;
@@ -118,8 +106,6 @@ type
     procedure Setinfo_adicionais_Nome(const Value: String);
     procedure Setinfo_adicionais_Valor(const Value: String);
     procedure SetRecebidoTagPIX(const Value: Boolean);
-    procedure SetResultado(const Value: TPix_Parametros);
-    procedure SetResultado_Cod(const Value: Integer);
     procedure SetRetorno(const Value: string);
     { Private declarations }
 
@@ -129,13 +115,9 @@ type
     function GetMerchantAccountInformation: string;
     function GetAdditionalDataFieldTemplate: string;
     function GetCRC16(Payload: string): string;
-    procedure SetPermiteCancelar(const Value: Boolean);
-    procedure SetPermiteRevisar(const Value: Boolean);
 
     {========================================}
     procedure GetToToken ;
-    procedure SetDateConsutFinal(const Value: TDateTime);
-    procedure SetDateConsutInicial(const Value: TDateTime);
     {========================================}
 
     {========================================}
@@ -157,10 +139,6 @@ type
 
     {========================================}
     Function ValidaChavePix:  Boolean;
-
-    procedure SetResultadoCobGet(const Value: TPix_Parametros);
-    procedure SetResultadoCobPatch(const Value: TPix_Parametros);
-
     {========================================}
 
 
@@ -213,10 +191,6 @@ type
     property Developer                  : TDeveloper read FDeveloper write SetDeveloper;
     property PSP                        : TPSP read FPSP write SetPSP;
 
-
-
-
-//    property OnOnGetStatusCobranca      : TOnGetStatusCobranca  read  FOnGetStatusCobranca write  FOnGetStatusCobranca;
     property OnCobGet                   : TNotificaCobGet       read  FOnCobGet            write  FOnCobGet;
     property OnCobPut                   : TNotificaCobPut       read  FOnCobPut            write  FOnCobPut;
     property OnCobPatch                 : TNotificaCobPatch     read  FOnCobPatch          write  FOnCobPatch;
@@ -240,10 +214,6 @@ begin
 end;
 
 { TPix }
-
-
-
-
 
 
 procedure TRscPix.ConsultarCobranca(sTXID: string);
@@ -393,10 +363,6 @@ begin
   end;
 end;
 
-
-
-
-
 procedure TRscPix.GetListPixsRecebPeriodo(dtData_Hora_Inicial, dtData_Hora_Final: TDateTime; iPagIndex: integer);
 var
   cURL    : String ;
@@ -477,13 +443,6 @@ begin
     MyPixListRebPer.Free;
   end;
 end;
-
-
-
-
-
-
-
 
 procedure TRscPix.ConsultarDevolucaoPix(sE2eid, sTXIDDev: string);
 var
@@ -567,14 +526,6 @@ begin
     MyPixSDev.Free;
   end;
 end;
-
-
-
-
-
-
-
-
 
 constructor TRscPix.Create(AOwner: TComponent);
 begin
@@ -785,42 +736,6 @@ begin
   FDeveloper.DisposeOf;
   FPSP.DisposeOf;
   Token.DisposeOf;
-
-
-  if Assigned(FResultado) then
-    begin
-//     FResultado.calendario.Free;
-//     FResultado.Recebedor.Free;
-//     FResultado.valor.Free;
-     FResultado.DisposeOf;
-    end;
-  if Assigned(FResultadoCobGet) then
-    begin
-//     FResultadoCobGet.calendario.Free;
-//     FResultadoCobGet.Recebedor.Free;
-//     FResultadoCobGet.valor.Free;
-     FResultadoCobGet.DisposeOf;
-    end;
-  if Assigned(FResultadoCobPatch) then
-    begin
-//     FResultadoCobPatch.calendario.Free;
-//     FResultadoCobPatch.Recebedor.Free;
-//     FResultadoCobPatch.valor.Free;
-     FResultadoCobPatch.DisposeOf;
-    end;
-//  if Assigned(FResultadoCobPut) then
-//    begin
-//     FResultadoCobPut.calendario.Free;
-//     FResultadoCobPut.Recebedor.Free;
-//     FResultadoCobPut.valor.Free;
-//     FResultadoCobPut.Free;
-//    end;
-
-//  if Assigned(FResultadoErro) then
-//    begin
-//      FResultadoErro.Free;
-//    end;
-
   DWCR_PIX.Free;
   inherited;
 end;
@@ -1047,12 +962,6 @@ begin
   Result := GetValue(ID_POINT_OF_INITIATION_METHOD,'12');
 end;
 
-//procedure TRscPix.GetURLToken ;
-//begin
-//  if FPSP.URLToken = '' then
-//     FPSP.URLToken := 'URL do Token deve ser informada.' ;
-//end;
-
 function TRscPix.GetValue(Id, Value: string): string;
 var Size:  Integer;
 begin
@@ -1083,12 +992,6 @@ begin
   if Assigned(FOnCobPut) then
      FOnCobPut(Sender, RespCobPut, Erro);
 end;
-
-//procedure TRscPix.InOnGetStatusCobranca(Sender: TObject; const sStatus: String);
-//begin
-//  if Assigned(FOnGetStatusCobranca) then
-//     FOnGetStatusCobranca(Sender, sStatus);
-//end;
 
 procedure TRscPix.InOnPixGet(Sender: TObject; const RespPixGet: TRespPixGet;
   Erro: String);
@@ -1244,8 +1147,6 @@ begin
          //body
          RequestBody.Add(JsonEnviar.ToString);//JSON
 
-//         fRetorno := JsonEnviar.ToString;
-
         try
            nResp := DWCR_PIX.Patch(cURL,requestBody,Stream,false);
 
@@ -1298,16 +1199,6 @@ begin
   FSeguranca := Value;
 end;
 
-procedure TRscPix.SetDateConsutFinal(const Value: TDateTime);
-begin
-  FDateConsutFinal := Value;
-end;
-
-procedure TRscPix.SetDateConsutInicial(const Value: TDateTime);
-begin
-  FDateConsutInicial := Value;
-end;
-
 procedure TRscPix.SetDevedor_Documento(const Value: String);
 begin
   FDevedor_Documento := Value;
@@ -1349,27 +1240,10 @@ begin
   Finfo_adicionais_Valor := Value;
 end;
 
-procedure TRscPix.SetPermiteCancelar(const Value: Boolean);
-begin
-  FPermiteCancelar := Value;
-end;
-
-procedure TRscPix.SetPermiteRevisar(const Value: Boolean);
-begin
-  FPermiteRevisar := Value;
-end;
-
 procedure TRscPix.SetTitularPix(const Value: TTitularPix);
 begin
   FTitularPix := Value;
 end;
-
-
-//procedure TRscPix.SetPixCobranca(const Value: TPixCobranca);
-//begin
-////  FPixCobranca := Value;
-//end;
-
 
 procedure TRscPix.SetPSP(const Value: TPSP);
 begin
@@ -1379,41 +1253,6 @@ end;
 procedure TRscPix.SetRecebidoTagPIX(const Value: Boolean);
 begin
   FRecebidoTagPIX := Value;
-end;
-
-procedure TRscPix.SetResultado(const Value: TPix_Parametros);
-begin
-  FResultado := Value;
-end;
-
-procedure TRscPix.SetResultadoCobGet(const Value: TPix_Parametros);
-begin
-  FResultadoCobGet := Value;
-end;
-
-procedure TRscPix.SetResultadoCobPatch(const Value: TPix_Parametros);
-begin
-  FResultadoCobPatch := Value;
-end;
-
-//procedure TRscPix.SetResultadoCobPut(const Value: TRespCobPut);
-//begin
-//  FResultadoCobPut := Value;
-//end;
-
-//procedure TRscPix.SetResultadoErro(const Value: TRetornoErro);
-//begin
-//  FResultadoErro := Value;
-//end;
-//
-//procedure TRscPix.SetResultadoErroPutToken(const Value: TRetornoErroPostToken);
-//begin
-//  FResultadoErroPutToken := Value;
-//end;
-
-procedure TRscPix.SetResultado_Cod(const Value: Integer);
-begin
-  FResultado_Cod := Value;
 end;
 
 procedure TRscPix.SetRetorno(const Value: string);

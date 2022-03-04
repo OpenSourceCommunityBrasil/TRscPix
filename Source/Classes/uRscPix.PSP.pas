@@ -224,7 +224,7 @@ begin
        pspSicoob:       begin
                           FURLToken           := 'https://apis.sisbr.com.br/cooperado/pix/token';
                           FURLAPI             := 'https://apis.sisbr.com.br/cooperado/pix/api/v2/';
-                          FUrlHostCert        := 'https://api.sicoob.com.br';
+                          FUrlHostCert        := 'https://apis.sisbr.com.br';
 
                           FEndPoint_Cob       := '/cob/{txid}';
                           fPermiteRevisar     := False;

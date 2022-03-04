@@ -29,7 +29,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.CheckLst,
   Vcl.Buttons, Vcl.Imaging.pngimage, Vcl.ComCtrls, ACBrGIF, Data.FMTBcd,
   Data.DB, Datasnap.DBClient, Datasnap.Provider, Data.SqlExpr, ACBrBase,
-  ACBrPosPrinter, uDWResponseTranslator, uDWAbout, RLPrinters,
+  ACBrPosPrinter, uDWResponseTranslator, uDWAbout,
   FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Comp.DataSet,
