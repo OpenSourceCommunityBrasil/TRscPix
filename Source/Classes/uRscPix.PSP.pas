@@ -1,3 +1,31 @@
+{=======================================}
+{             RSC SISTEMAS              }
+{        SOLUÇÕES TECNOLÓGICAS          }
+{         rscsistemas.com.br            }
+{          +55 92 4141-2737             }
+{      contato@rscsistemas.com.br       }
+{                                       }
+{ Desenvolvidor por:                    }
+{   Roniery Santos Cardoso              }
+{     ronierys2@hotmail.com             }
+{     +55 92 984391279                  }
+{                                       }
+{                                       }
+{ Versão Original RSC SISTEMAS          }
+{ Versão: 3.0.0                         }
+{                                       }
+{ Faça uma  doação:                     }
+{ Pix - Email: ronierys2@hotmail.com    }
+{ Banco: NuBank                         }
+{                                       }
+{                                       }
+{                                       }
+{ Componente TRscPix                    }
+{ Componente OpenSource                 }
+{ license Apache-2.0                    }
+{                                       }
+{=======================================}
+
 unit uRscPix.PSP;
 
 interface
@@ -55,7 +83,6 @@ begin
                           FUrlHostCert        := 'https://api-pix-h.sicredi.com.br';
 
                           FEndPoint_Cob       := '/cob/{txid}';
-//                          fRecebidoTagPIX := False;
                           fPermiteRevisar     := False;
                           fPermiteCancelar    := False;
                         end;
@@ -66,7 +93,6 @@ begin
                           FUrlHostCert        := '';
 
                           FEndPoint_Cob       := '/cobqrcode/{txid}';
-//                          fRecebidoTagPIX := False;
                           fPermiteRevisar     := False;
                           fPermiteCancelar    := False;
                         end;
@@ -77,7 +103,6 @@ begin
                           FUrlHostCert        := 'https://trust-pix-h.santander.com.br';
 
                           FEndPoint_Cob       := '/cob/{txid}';
-//                          fRecebidoTagPIX := True;
 
                           fPermiteRevisar     := False;
                           fPermiteCancelar    := False;
@@ -89,7 +114,6 @@ begin
                           FUrlHostCert        := 'https://api-homol.sicoob.com.br';
 
                           FEndPoint_Cob       := '/cob/{txid}';
-//                          fRecebidoTagPIX := True;
                           fPermiteRevisar     := False;
                           fPermiteCancelar    := False;
                         end;
@@ -100,7 +124,6 @@ begin
                           FUrlHostCert        := '';
 
                           FEndPoint_Cob       := '/cob/{txid}';
-//                          fRecebidoTagPIX := False;
                           fPermiteRevisar     := False;
                           fPermiteCancelar    := False;
                         end;
@@ -128,7 +151,6 @@ begin
                           FUrlHostCert        := '';
 
                           FEndPoint_Cob       := '/cobqrcode/{txid}';
-//                          fRecebidoTagPIX := False;
                           fPermiteRevisar     := False;
                           fPermiteCancelar    := False;
                         end;
@@ -139,7 +161,6 @@ begin
                           FUrlHostCert        := 'https://trust-pix-h.santander.com.br';
 
                           FEndPoint_Cob       := '/cob/{txid}';
-//                          fRecebidoTagPIX := True;
 
                           fPermiteRevisar     := False;
                           fPermiteCancelar    := False;
@@ -151,7 +172,6 @@ begin
                           FUrlHostCert        := 'https://api-homol.sicoob.com.br';
 
                           FEndPoint_Cob       := '/cob/{txid}';
-//                          fRecebidoTagPIX := True;
                           fPermiteRevisar     := False;
                           fPermiteCancelar    := False;
                         end;
@@ -162,7 +182,6 @@ begin
                           FUrlHostCert        := '';
 
                           FEndPoint_Cob       := '/cob/{txid}';
-//                          fRecebidoTagPIX := False;
                           fPermiteRevisar     := False;
                           fPermiteCancelar    := False;
                         end;
@@ -178,7 +197,6 @@ begin
                           FURLAPI             :=  'https://api-pix.sicredi.com.br/api/v2';
                           FUrlHostCert        :=  'https://api-pix.sicredi.com.br';
                           FEndPoint_Cob       := '/cob/{txid}';
-//                          fRecebidoTagPIX := False;
                           fPermiteRevisar     := False;
                           fPermiteCancelar    := False;
                         end;
@@ -189,7 +207,6 @@ begin
                           FUrlHostCert        := '';
 
                           FEndPoint_Cob       := '/cobqrcode/{txid}';
-//                          fRecebidoTagPIX := False;
                           fPermiteRevisar     := False;
                           fPermiteCancelar    := False;
                         end;
@@ -200,7 +217,6 @@ begin
                           FUrlHostCert        := 'https://trust-pix-h.santander.com.br';
 
                           FEndPoint_Cob       := '/cob/{txid}';
-//                          fRecebidoTagPIX := True;
                           fPermiteRevisar     := False;
                           fPermiteCancelar    := False;
                         end;
@@ -211,7 +227,6 @@ begin
                           FUrlHostCert        := 'https://api.sicoob.com.br';
 
                           FEndPoint_Cob       := '/cob/{txid}';
-//                          fRecebidoTagPIX := True;
                           fPermiteRevisar     := False;
                           fPermiteCancelar    := False;
                         end;
@@ -222,7 +237,6 @@ begin
                           FUrlHostCert        := '';
 
                           FEndPoint_Cob       := '/cob/{txid}';
-//                          fRecebidoTagPIX := False;
                           fPermiteRevisar     := False;
                           fPermiteCancelar    := False;
                         end;

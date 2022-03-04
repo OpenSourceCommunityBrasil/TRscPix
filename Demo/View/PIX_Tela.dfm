@@ -749,18 +749,20 @@ object frmPIX_Tela: TfrmPIX_Tela
     Top = 232
   end
   object RscPix1: TRscPix
-    PIX.TipoChavePix = tcCPF
+    Seguranca.SSLVersions = [sslvSSLv3, sslvTLSv1_2]
+    PIX.TipoChavePix = tcEmail
+    PIX.DuracaoMinutos = 0
+    PIX.TipoQRCode = tqDinamico
     PSP.TipoPsp = pspSicredi
     PSP.TipoPspAmbiente = taSandBox
-    OnOnGetStatusCobranca = RscPix1OnGetStatusCobranca
     Left = 96
     Top = 56
   end
   object DWClientREST1: TDWClientREST
-    UseSSL = True
-    CertMode = sslmClient
-    SSLMethod = sslvSSLv23
-    SSLVersions = [sslvSSLv23]
+    UseSSL = False
+    CertMode = sslmUnassigned
+    SSLMethod = sslvSSLv2
+    SSLVersions = []
     PortCert = 0
     UserAgent = 
       'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, l' +
@@ -781,7 +783,7 @@ object frmPIX_Tela: TfrmPIX_Tela
     VerifyCert = False
     AuthenticationOptions.AuthorizationOption = rdwAONone
     AccessControlAllowOrigin = '*'
-    Left = 227
-    Top = 59
+    Left = 168
+    Top = 88
   end
 end

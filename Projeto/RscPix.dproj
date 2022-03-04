@@ -144,6 +144,7 @@
         <DCCReference Include="..\Source\Classes\uRscPix.InformacoesAdicionais.pas"/>
         <DCCReference Include="..\Source\Classes\uRscPix.Devolucao.pas"/>
         <DCCReference Include="..\Source\Classes\uRscPix.Pagador.pas"/>
+        <DCCReference Include="..\Source\uRscPix.ErrosToString.pas"/>
         <RcItem Include="..\Images\TRscPix.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TRscPix</ResourceId>

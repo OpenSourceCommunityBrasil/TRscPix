@@ -24,65 +24,6 @@ object FrmMain: TFrmMain
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    object pnl_menu: TPanel
-      Left = 0
-      Top = 0
-      Width = 1004
-      Height = 41
-      Align = alTop
-      BevelOuter = bvNone
-      Color = clMedGray
-      Padding.Left = 2
-      Padding.Top = 2
-      Padding.Right = 2
-      Padding.Bottom = 2
-      ParentBackground = False
-      TabOrder = 0
-      object PnlBtn_Funcoes: TPanel
-        AlignWithMargins = True
-        Left = 196
-        Top = 5
-        Width = 185
-        Height = 31
-        Align = alLeft
-        BevelOuter = bvNone
-        Caption = 'FUN'#199#213'ES'
-        Color = clMenuHighlight
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWhite
-        Font.Height = -13
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentBackground = False
-        ParentFont = False
-        TabOrder = 0
-        OnClick = PnlBtn_FuncoesClick
-        OnMouseLeave = PnlsBtnMouseLeave
-        OnMouseMove = PnlsBtnMouseMove
-      end
-      object PnlBtn_Configs: TPanel
-        AlignWithMargins = True
-        Left = 5
-        Top = 5
-        Width = 185
-        Height = 31
-        Align = alLeft
-        BevelOuter = bvNone
-        Caption = 'CONFIGURA'#199#213'ES'
-        Color = clMenuHighlight
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWhite
-        Font.Height = -13
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentBackground = False
-        ParentFont = False
-        TabOrder = 1
-        OnClick = PnlBtn_ConfigsClick
-        OnMouseLeave = PnlsBtnMouseLeave
-        OnMouseMove = PnlsBtnMouseMove
-      end
-    end
     object pnl_Configs: TPanel
       Left = 0
       Top = 41
@@ -536,6 +477,65 @@ object FrmMain: TFrmMain
         end
       end
     end
+    object pnl_menu: TPanel
+      Left = 0
+      Top = 0
+      Width = 1004
+      Height = 41
+      Align = alTop
+      BevelOuter = bvNone
+      Color = clMedGray
+      Padding.Left = 2
+      Padding.Top = 2
+      Padding.Right = 2
+      Padding.Bottom = 2
+      ParentBackground = False
+      TabOrder = 0
+      object PnlBtn_Funcoes: TPanel
+        AlignWithMargins = True
+        Left = 196
+        Top = 5
+        Width = 185
+        Height = 31
+        Align = alLeft
+        BevelOuter = bvNone
+        Caption = 'FUN'#199#213'ES'
+        Color = clMenuHighlight
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -13
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentBackground = False
+        ParentFont = False
+        TabOrder = 0
+        OnClick = PnlBtn_FuncoesClick
+        OnMouseLeave = PnlsBtnMouseLeave
+        OnMouseMove = PnlsBtnMouseMove
+      end
+      object PnlBtn_Configs: TPanel
+        AlignWithMargins = True
+        Left = 5
+        Top = 5
+        Width = 185
+        Height = 31
+        Align = alLeft
+        BevelOuter = bvNone
+        Caption = 'CONFIGURA'#199#213'ES'
+        Color = clMenuHighlight
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -13
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentBackground = False
+        ParentFont = False
+        TabOrder = 1
+        OnClick = PnlBtn_ConfigsClick
+        OnMouseLeave = PnlsBtnMouseLeave
+        OnMouseMove = PnlsBtnMouseMove
+      end
+    end
     object pnl_Funcoes: TPanel
       Left = 0
       Top = 41
@@ -544,65 +544,6 @@ object FrmMain: TFrmMain
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 2
-      object Pnl_MenuFuncoes: TPanel
-        Left = 0
-        Top = 0
-        Width = 1004
-        Height = 41
-        Align = alTop
-        BevelOuter = bvNone
-        Color = clSilver
-        Padding.Left = 2
-        Padding.Top = 2
-        Padding.Right = 2
-        Padding.Bottom = 2
-        ParentBackground = False
-        TabOrder = 0
-        object PnlBtn_FuncCobranca: TPanel
-          AlignWithMargins = True
-          Left = 5
-          Top = 5
-          Width = 100
-          Height = 31
-          Align = alLeft
-          BevelOuter = bvNone
-          Caption = 'COBRAN'#199'A'
-          Color = clMenuHighlight
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWhite
-          Font.Height = -13
-          Font.Name = 'Tahoma'
-          Font.Style = []
-          ParentBackground = False
-          ParentFont = False
-          TabOrder = 0
-          OnClick = PnlBtn_FuncCobrancaClick
-          OnMouseLeave = PnlsBtnMouseLeave
-          OnMouseMove = PnlsBtnMouseMove
-        end
-        object PnlBtn_FuncConsulta: TPanel
-          AlignWithMargins = True
-          Left = 111
-          Top = 5
-          Width = 100
-          Height = 31
-          Align = alLeft
-          BevelOuter = bvNone
-          Caption = 'CONSULTA'
-          Color = clMenuHighlight
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWhite
-          Font.Height = -13
-          Font.Name = 'Tahoma'
-          Font.Style = []
-          ParentBackground = False
-          ParentFont = False
-          TabOrder = 1
-          OnClick = PnlBtn_FuncConsultaClick
-          OnMouseLeave = PnlsBtnMouseLeave
-          OnMouseMove = PnlsBtnMouseMove
-        end
-      end
       object pnl_FuncConsulta: TPanel
         Left = 0
         Top = 41
@@ -689,8 +630,8 @@ object FrmMain: TFrmMain
           end
         end
         object gb_Consulta_Pix_TXID: TGroupBox
-          Left = 292
-          Top = 8
+          Left = 289
+          Top = 22
           Width = 265
           Height = 113
           Caption = 'Consulta Pix'
@@ -795,8 +736,8 @@ object FrmMain: TFrmMain
           end
         end
         object edtTxIdDev: TLabeledEdit
-          Left = 423
-          Top = 87
+          Left = 599
+          Top = 42
           Width = 214
           Height = 21
           EditLabel.Width = 57
@@ -805,14 +746,73 @@ object FrmMain: TFrmMain
           TabOrder = 4
         end
         object edtEndToEndId: TLabeledEdit
-          Left = 459
-          Top = 189
+          Left = 602
+          Top = 93
           Width = 211
           Height = 21
           EditLabel.Width = 58
           EditLabel.Height = 13
           EditLabel.Caption = 'endToEndId'
           TabOrder = 5
+        end
+      end
+      object Pnl_MenuFuncoes: TPanel
+        Left = 0
+        Top = 0
+        Width = 1004
+        Height = 41
+        Align = alTop
+        BevelOuter = bvNone
+        Color = clSilver
+        Padding.Left = 2
+        Padding.Top = 2
+        Padding.Right = 2
+        Padding.Bottom = 2
+        ParentBackground = False
+        TabOrder = 0
+        object PnlBtn_FuncCobranca: TPanel
+          AlignWithMargins = True
+          Left = 5
+          Top = 5
+          Width = 100
+          Height = 31
+          Align = alLeft
+          BevelOuter = bvNone
+          Caption = 'COBRAN'#199'A'
+          Color = clMenuHighlight
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWhite
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentBackground = False
+          ParentFont = False
+          TabOrder = 0
+          OnClick = PnlBtn_FuncCobrancaClick
+          OnMouseLeave = PnlsBtnMouseLeave
+          OnMouseMove = PnlsBtnMouseMove
+        end
+        object PnlBtn_FuncConsulta: TPanel
+          AlignWithMargins = True
+          Left = 111
+          Top = 5
+          Width = 100
+          Height = 31
+          Align = alLeft
+          BevelOuter = bvNone
+          Caption = 'CONSULTA'
+          Color = clMenuHighlight
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWhite
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentBackground = False
+          ParentFont = False
+          TabOrder = 1
+          OnClick = PnlBtn_FuncConsultaClick
+          OnMouseLeave = PnlsBtnMouseLeave
+          OnMouseMove = PnlsBtnMouseMove
         end
       end
       object pnl_FuncCobranca: TPanel
@@ -1027,20 +1027,35 @@ object FrmMain: TFrmMain
               Text = 'Sem Deus o Homem N'#227'o '#233' Nada'
             end
           end
-          object Button1: TButton
+          object btn_GerarCabranca: TButton
             AlignWithMargins = True
             Left = 30
-            Top = 276
+            Top = 292
             Width = 305
             Height = 34
             Margins.Left = 30
             Margins.Top = 0
             Margins.Right = 30
-            Margins.Bottom = 100
+            Margins.Bottom = 10
             Align = alBottom
             Caption = 'Gerar Combran'#231'a'
             TabOrder = 2
-            OnClick = Button1Click
+            OnClick = btn_GerarCabrancaClick
+          end
+          object btn_SimulaPgto: TButton
+            AlignWithMargins = True
+            Left = 30
+            Top = 336
+            Width = 305
+            Height = 34
+            Margins.Left = 30
+            Margins.Top = 0
+            Margins.Right = 30
+            Margins.Bottom = 40
+            Align = alBottom
+            Caption = 'Simular Pagamento'
+            TabOrder = 3
+            OnClick = btn_SimulaPgtoClick
           end
         end
         object pnl_CobToolsRet: TPanel
@@ -1442,7 +1457,7 @@ object FrmMain: TFrmMain
   end
   object Open_Dialog: TOpenDialog
     Options = [ofHideReadOnly, ofNoChangeDir, ofEnableSizing]
-    Left = 36
-    Top = 428
+    Left = 68
+    Top = 332
   end
 end

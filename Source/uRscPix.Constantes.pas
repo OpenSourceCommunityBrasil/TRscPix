@@ -1,3 +1,31 @@
+{=======================================}
+{             RSC SISTEMAS              }
+{        SOLUÇÕES TECNOLÓGICAS          }
+{         rscsistemas.com.br            }
+{          +55 92 4141-2737             }
+{      contato@rscsistemas.com.br       }
+{                                       }
+{ Desenvolvidor por:                    }
+{   Roniery Santos Cardoso              }
+{     ronierys2@hotmail.com             }
+{     +55 92 984391279                  }
+{                                       }
+{                                       }
+{ Versão Original RSC SISTEMAS          }
+{ Versão: 3.0.0                         }
+{                                       }
+{ Faça uma  doação:                     }
+{ Pix - Email: ronierys2@hotmail.com    }
+{ Banco: NuBank                         }
+{                                       }
+{                                       }
+{                                       }
+{ Componente TRscPix                    }
+{ Componente OpenSource                 }
+{ license Apache-2.0                    }
+{                                       }
+{=======================================}
+
 unit uRscPix.Constantes;
 
 interface
@@ -23,13 +51,19 @@ const
   ID_CRC16                                    = '63';
 
 
+
   {Error}
   {Erros Gerais}
-  RequisicaoInvalida                = 'Requisição inválida.'; {400}
+  Sucesso                           = 'Sucesso na Requisição.'; {200}
+  ObteveExito                       = 'Exito na Criação.'; {201}
+  RequisicaoInvalida                = 'Requisição inválida, há algo de errado com os dados informados.'; {400}
+  NaoAutorizado                     = 'Não autorizado.'; {401}
   AcessoNegado                      = 'Requisição de participante autenticado que viola alguma regra de permissão.'; {403}
   NaoEncontrado                     = 'Entidade não encontrada.'; {404}
+  NaoPermitido                      = 'Método não permitido.'; {405}
   PermanentementeRemovido           = 'Indica que a entidade existia, mas foi permanentemente removida.'; {410}
-  ErroInternoDoServidor             = 'Condição inesperada ao processar requisição.'; {500}
+  MuitosPedidos                     = 'Muitos pedidos, Tente novamente em instantes'; {429}
+  ErroInternoDoServidor             = 'Erro Interno do Servidor, Condição inesperada ao processar requisição.'; {500}
   ServicoIndisponivel               = 'Serviço não está disponível no momento. Serviço solicitado pode estar em manutenção ou para a janela de funcionamento.'; {503}
   IndisponibilidadePorTempoEsgotado = 'Indica que o serviço demorou além do esperado para retornar.'; {504}
 

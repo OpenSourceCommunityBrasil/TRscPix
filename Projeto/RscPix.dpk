@@ -28,6 +28,7 @@ package RscPix;
 {$ENDIF IMPLICITBUILDING}
 {$IMPLICITBUILD ON}
 
+
 requires
   rtl,
   IndySystem,
@@ -61,7 +62,9 @@ contains
   uRscPix.Valor in '..\Source\Classes\uRscPix.Valor.pas',
   uRscPix.InformacoesAdicionais in '..\Source\Classes\uRscPix.InformacoesAdicionais.pas',
   uRscPix.Devolucao in '..\Source\Classes\uRscPix.Devolucao.pas',
-  uRscPix.Pagador in '..\Source\Classes\uRscPix.Pagador.pas';
+  uRscPix.Pagador in '..\Source\Classes\uRscPix.Pagador.pas',
+  uRscPix.ErrosToString in '..\Source\uRscPix.ErrosToString.pas';//,
+//  Unit1 in 'Unit1.pas';
 
 end.
 

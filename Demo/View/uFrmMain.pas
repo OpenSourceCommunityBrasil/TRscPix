@@ -1,3 +1,25 @@
+{=======================================}
+{             RSC SISTEMAS              }
+{        SOLUÇÕES TECNOLÓGICAS          }
+{         rscsistemas.com.br            }
+{          +55 92 4141-2737             }
+{      contato@rscsistemas.com.br       }
+{                                       }
+{ Desenvolvidor por:                    }
+{   Roniery Santos Cardoso              }
+{     ronierys2@hotmail.com             }
+{     +55 92 984391279                  }
+{                                       }
+{                                       }
+{ Versão Original RSC SISTEMAS          }
+{ Versão: 3.0.0                         }
+{                                       }
+{ Componente TscPix                     }
+{ Componente OpenSource                 }
+{ license Apache-2.0                    }
+{                                       }
+{=======================================}
+
 unit uFrmMain;
 
 interface
@@ -57,7 +79,7 @@ type
     edtEndToEndId: TLabeledEdit;
     Label1: TLabel;
     cbbTipoQRCode: TComboBox;
-    Button1: TButton;
+    btn_GerarCabranca: TButton;
     gb_Consulta_Periodo: TGroupBox;
     Label3: TLabel;
     Label6: TLabel;
@@ -124,7 +146,8 @@ type
     lblStatus: TLabel;
     Label14: TLabel;
     Label15: TLabel;
-    procedure Button1Click(Sender: TObject);
+    btn_SimulaPgto: TButton;
+    procedure btn_GerarCabrancaClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btTestarPosPrinterClick(Sender: TObject);
     procedure btProcuraImpressorasClick(Sender: TObject);
@@ -152,6 +175,7 @@ type
     procedure PnlBtn_FuncConsultaClick(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
     procedure btnImprQrCodeClick(Sender: TObject);
+    procedure btn_SimulaPgtoClick(Sender: TObject);
   private
 
     bRecebido  : Boolean;
@@ -175,7 +199,10 @@ type
     procedure SetConfigPix(Sender: TObject);
 
     {-------------------------------------------------------------------}
-    procedure InOnCobGet_(Sender : TObject; Const Status: String = ''; Erro: String = '');
+    procedure InOnCobGet_(Sender : TObject; Const RespCobGet: TRespCobGet = nil; Erro: String = '');
+    procedure InOnCobPut_(Sender : TObject; Const RespCobPut: TRespCobPut = nil; Erro: String = '');
+    procedure InOnCobPatch_(Sender : TObject; Const RespCobPatch: TRespCobPatch = nil; Erro: String = '');
+    procedure InOnToken_(Sender : TObject; Const Token: TToken = nil; Erro: String = '');
 
   public
     { Public declarations }
@@ -393,23 +420,17 @@ begin
   end
 end;
 
-procedure TFrmMain.Button1Click(Sender: TObject);
+procedure TFrmMain.btn_GerarCabrancaClick(Sender: TObject);
 var
   Pix : TRscPix;
 begin
-  if Trim(edtTXID.Text) = '' then
-    begin
-      MessageDlg('Campo do TXID deve ser informado na transação.', TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
-      edtTXID.SetFocus ;
-      Exit;
-    end;
-
   Pix := TRscPix.Create(Self);
   try
     Pix.OnCobGet  :=  InOnCobGet_;
+    Pix.OnToken   :=  InOnToken_;
+    Pix.OnCobPut  :=  InOnCobPut_;
     SetConfigPixGeraCobranca(Pix);
-    Pix.CriarCobranca;
-//    GerarPix(Pix);
+    Pix.CriarCobranca(StrToFloatDef(edtValorPix.Text, 0), edtTXID.Text, edtMsgPix.Text);
   finally
     Pix.Free;
   end;
@@ -442,42 +463,84 @@ begin
 end;
 
 
-
-
-
-
-procedure TFrmMain.Button2Click(Sender: TObject);
+procedure TFrmMain.btn_SimulaPgtoClick(Sender: TObject);
+var
+  Pix : TRscPix;
 begin
-  frmPIX_Tela := TfrmPIX_Tela.Create(nil);
+  Pix := TRscPix.Create(Self);
   try
-    SetConfigTelaPix;
-
-    frmPIX_Tela.ConsultaPixPorTXID(True);
-
-    if frmPIX_Tela.RscPix1.Resultado_Cod = 200 then
-    begin
-      frmPIX_Tela.ShowModal;
-    end;
+    Pix.OnCobGet  :=  InOnCobGet_;
+    Pix.OnToken   :=  InOnToken_;
+    Pix.OnCobPut  :=  InOnCobPut_;
+    SetConfigPixGeraCobranca(Pix);
+    Pix.SimularPagamentoPix(mmPayload.Text);
   finally
-    frmPIX_Tela.Free;
+    Pix.Free;
   end;
 end;
 
-procedure TFrmMain.Button3Click(Sender: TObject);
+procedure TFrmMain.Button2Click(Sender: TObject);
+var
+  Pix : TRscPix;
 begin
-  frmPIX_Tela := TfrmPIX_Tela.Create(nil);
+  Pix := TRscPix.Create(Self);
   try
-    SetConfigTelaPix;
-
-    frmPIX_Tela.AtualizarPix('REMOVIDA_PELO_USUARIO_RECEBEDOR');
-
-    if frmPIX_Tela.RscPix1.Resultado_Cod = 200 then
-    begin
-      frmPIX_Tela.ShowModal;
-    end;
+    Pix.OnCobGet    :=  InOnCobGet_;
+    Pix.OnToken     :=  InOnToken_;
+    Pix.OnCobPut    :=  InOnCobPut_;
+    Pix.OnCobPatch  :=  InOnCobPatch_;
+    SetConfigPixObrig(Pix);
+    Pix.ConsultarCobranca(edtTXID.Text);
   finally
-    frmPIX_Tela.Free;
+    Pix.Free;
   end;
+
+
+//  frmPIX_Tela := TfrmPIX_Tela.Create(nil);
+//  try
+//    SetConfigTelaPix;
+//
+//    frmPIX_Tela.ConsultaPixPorTXID(True);
+//
+////    if frmPIX_Tela.RscPix1.Resultado_Cod = 200 then
+////    begin
+////      frmPIX_Tela.ShowModal;
+////    end;
+//  finally
+//    frmPIX_Tela.Free;
+//  end;
+end;
+
+procedure TFrmMain.Button3Click(Sender: TObject);
+var
+  Pix : TRscPix;
+begin
+  Pix := TRscPix.Create(Self);
+  try
+    Pix.OnCobGet    :=  InOnCobGet_;
+    Pix.OnToken     :=  InOnToken_;
+    Pix.OnCobPut    :=  InOnCobPut_;
+    Pix.OnCobPatch  :=  InOnCobPatch_;
+    SetConfigPixObrig(Pix);
+    Pix.CancelarCobranca('REMOVIDA_PELO_USUARIO_RECEBEDOR', StrToFloatDef(edtValorPix.Text, 0), edtTXID.Text, edtMsgPix.Text);
+  finally
+    Pix.Free;
+  end;
+
+
+//  frmPIX_Tela := TfrmPIX_Tela.Create(nil);
+//  try
+//    SetConfigTelaPix;
+//
+//    frmPIX_Tela.AtualizarPix('REMOVIDA_PELO_USUARIO_RECEBEDOR');
+//
+////    if frmPIX_Tela.RscPix1.Resultado_Cod = 200 then
+////    begin
+////      frmPIX_Tela.ShowModal;
+////    end;
+//  finally
+//    frmPIX_Tela.Free;
+//  end;
 end;
 
 procedure TFrmMain.Button4Click(Sender: TObject);
@@ -488,10 +551,10 @@ begin
 
     frmPIX_Tela.SolicitarDevolucaoPixRecebido(True);
 
-    if frmPIX_Tela.RscPix1.Resultado_Cod = 200 then
-    begin
-      frmPIX_Tela.ShowModal;
-    end;
+//    if frmPIX_Tela.RscPix1.Resultado_Cod = 200 then
+//    begin
+//      frmPIX_Tela.ShowModal;
+//    end;
   finally
     frmPIX_Tela.Free;
   end;
@@ -511,10 +574,10 @@ frmPIX_Tela := TfrmPIX_Tela.Create(nil);
                                          StrToDateTime(DateToStr(dtp_Data_Inicial.Date) + TimeToStr(dtp_Hora_Inicial.Time)) ,
                                          StrToDateTime(DateToStr(dtp_Data_Final.Date) + TimeToStr(dtp_Hora_Final.Time)) );
 
- if frmPIX_Tela.RscPix1.Resultado_Cod = 200 then
-    begin
-    frmPIX_Tela.ShowModal ;
-    end;
+// if frmPIX_Tela.RscPix1.Resultado_Cod = 200 then
+//    begin
+//    frmPIX_Tela.ShowModal ;
+//    end;
  finally
    frmPIX_Tela.Free ;
  end;
@@ -536,10 +599,10 @@ frmPIX_Tela := TfrmPIX_Tela.Create(nil);
     Exit;
     end;
  frmPIX_Tela.ConsultarPixRecebido(True , edt_E2eID.Text) ;
- if frmPIX_Tela.RscPix1.Resultado_Cod = 200 then
-    begin
-    frmPIX_Tela.ShowModal;
-    end;
+// if frmPIX_Tela.RscPix1.Resultado_Cod = 200 then
+//    begin
+//    frmPIX_Tela.ShowModal;
+//    end;
  finally
    frmPIX_Tela.Free;
  end;
@@ -560,10 +623,10 @@ begin
 
     frmPIX_Tela.ConsultarDevolucaoPixRecebido(True);
 
-    if frmPIX_Tela.RscPix1.Resultado_Cod = 200 then
-    begin
-      frmPIX_Tela.ShowModal;
-    end;
+//    if frmPIX_Tela.RscPix1.Resultado_Cod = 200 then
+//    begin
+//      frmPIX_Tela.ShowModal;
+//    end;
   finally
     frmPIX_Tela.Free;
   end;
@@ -606,6 +669,8 @@ begin
                   + IntToStr(Random(9999))
                   + IntToStr(Random(9999))
                   + IntToStr(Random(9999))
+                  + IntToStr(Random(9999))
+                  + IntToStr(Random(9999))
                   + 'EZL1991';
 end;
 
@@ -621,14 +686,14 @@ begin
     frmPIX_Tela.ACBrPosPrinterPIX.EspacoEntreLinhas := seEspLinhas.Value;
     {======================}
     {Configurar PIX}
-    frmPIX_Tela.RscPix1.Certificado.DiretorioCertificado        :=  edtCertificado.Text;
-    frmPIX_Tela.RscPix1.Certificado.DiretorioCertificadoSenha   :=  edtSenhaCertificado.Text;
+    frmPIX_Tela.RscPix1.Seguranca.CertFile        :=  edtCertificado.Text;
+    frmPIX_Tela.RscPix1.Seguranca.CertKeyFile   :=  edtSenhaCertificado.Text;
 
-    frmPIX_Tela.RscPix1.PIX.TipoChavePix                        :=  TTipoChavePIX(CbbTipoChavePix.ItemIndex);
-    frmPIX_Tela.RscPix1.PIX.ChavePIX                            :=  edtChavePix.Text;
+    frmPIX_Tela.RscPix1.TitularPix.TipoChavePix                        :=  TTipoChavePIX(CbbTipoChavePix.ItemIndex);
+    frmPIX_Tela.RscPix1.TitularPix.ChavePIX                            :=  edtChavePix.Text;
 
-    frmPIX_Tela.RscPix1.PIX.NomeTitularConta                    :=  edtNomeRecebedore.Text;
-    frmPIX_Tela.RscPix1.PIX.CidadeTitularConta                  :=  edtCidadeRecebedor.Text;
+    frmPIX_Tela.RscPix1.TitularPix.NomeTitularConta                    :=  edtNomeRecebedore.Text;
+    frmPIX_Tela.RscPix1.TitularPix.CidadeTitularConta                  :=  edtCidadeRecebedor.Text;
 
     frmPIX_Tela.RscPix1.PSP.TipoPsp                             :=  TTipoPSP(CbbPSP.ItemIndex);
     frmPIX_Tela.RscPix1.PSP.TipoPspAmbiente                     :=  TTipoAmbiente(CbbTipoAmbiente.ItemIndex);
@@ -637,13 +702,13 @@ begin
     frmPIX_Tela.RscPix1.Developer.Client_ID                     :=  edtClientID.Text;
     frmPIX_Tela.RscPix1.Developer.Client_Secret                 :=  edtClientSecreat.Text;
 
-    frmPIX_Tela.RscPix1.PixCobranca.Valor                       :=  StrToFloatDef(edtValorPix.Text, 0);
-    frmPIX_Tela.RscPix1.PixCobranca.TXID                        :=  edtTXID.Text ;
-    frmPIX_Tela.RscPix1.PixCobranca.E2eid                       :=  edtEndToEndId.Text ;
-    frmPIX_Tela.RscPix1.PixCobranca.TXIDDev                     :=  edtTxIdDev.Text;
-    frmPIX_Tela.RscPix1.PixCobranca.TipoQRCode                  :=  TTipoQrCode(cbbTipoQRCode.ItemIndex);
-    frmPIX_Tela.RscPix1.PixCobranca.DuracaoMinutos              :=  edtDuracaoMinutos.Value;
-    frmPIX_Tela.RscPix1.PixCobranca.Mensagem                    :=  Trim(edtMsgPix.Text);
+//    frmPIX_Tela.RscPix1.PixCobranca.Valor                       :=  StrToFloatDef(edtValorPix.Text, 0);
+//    frmPIX_Tela.RscPix1.PixCobranca.TXID                        :=  edtTXID.Text ;
+//    frmPIX_Tela.RscPix1.PixCobranca.E2eid                       :=  edtEndToEndId.Text ;
+//    frmPIX_Tela.RscPix1.PixCobranca.TXIDDev                     :=  edtTxIdDev.Text;
+//    frmPIX_Tela.RscPix1.PixCobranca.TipoQRCode                  :=  TTipoQrCode(cbbTipoQRCode.ItemIndex);
+//    frmPIX_Tela.RscPix1.PixCobranca.DuracaoMinutos              :=  edtDuracaoMinutos.Value;
+//    frmPIX_Tela.RscPix1.PixCobranca.Mensagem                    :=  Trim(edtMsgPix.Text);
 
 end;
 
@@ -658,29 +723,29 @@ end;
 
 procedure TFrmMain.SetConfigPix(Sender: TObject);
 begin
-    TRscPix(Sender).PixCobranca.Valor                       :=  StrToFloatDef(edtValorPix.Text, 0);
-    TRscPix(Sender).PixCobranca.TXID                        :=  edtTXID.Text ;
-    TRscPix(Sender).PixCobranca.E2eid                       :=  edtEndToEndId.Text ;
-    TRscPix(Sender).PixCobranca.TXIDDev                     :=  edtTxIdDev.Text;
-    TRscPix(Sender).PixCobranca.Mensagem                    :=  Trim(edtMsgPix.Text);
-end;
+//    TRscPix(Sender).PixCobranca.Valor                       :=  StrToFloatDef(edtValorPix.Text, 0);
+//    TRscPix(Sender).PixCobranca.TXID                        :=  edtTXID.Text ;
+//    TRscPix(Sender).PixCobranca.E2eid                       :=  edtEndToEndId.Text ;
+//    TRscPix(Sender).PixCobranca.TXIDDev                     :=  edtTxIdDev.Text;
+//    TRscPix(Sender).PixCobranca.Mensagem                    :=  Trim(edtMsgPix.Text);
+end;
 
 procedure TFrmMain.SetConfigPixGeraCobranca(Sender: TObject);
 begin
   SetConfigPixObrig(Sender);
 
-  TRscPix(Sender).PixCobranca.Valor                       :=  StrToFloatDef(edtValorPix.Text, 0);
-  TRscPix(Sender).PixCobranca.TXID                        :=  edtTXID.Text ;
-  TRscPix(Sender).PixCobranca.Mensagem                    :=  Trim(edtMsgPix.Text);
+//  TRscPix(Sender).PixCobranca.Valor                       :=  StrToFloatDef(edtValorPix.Text, 0);
+//  TRscPix(Sender).PixCobranca.TXID                        :=  edtTXID.Text ;
+//  TRscPix(Sender).PixCobranca.Mensagem                    :=  Trim(edtMsgPix.Text);
 end;
 
 procedure TFrmMain.SetConfigPixObrig(Sender: TObject);
 begin
-    TRscPix(Sender).PIX.NomeTitularConta                    :=  edtNomeRecebedore.Text;
-    TRscPix(Sender).PIX.CidadeTitularConta                  :=  edtCidadeRecebedor.Text;
+    TRscPix(Sender).TitularPix.NomeTitularConta                    :=  edtNomeRecebedore.Text;
+    TRscPix(Sender).TitularPix.CidadeTitularConta                  :=  edtCidadeRecebedor.Text;
 
-    TRscPix(Sender).Certificado.DiretorioCertificado        :=  edtCertificado.Text;
-    TRscPix(Sender).Certificado.DiretorioCertificadoSenha   :=  edtSenhaCertificado.Text;
+    TRscPix(Sender).Seguranca.CertFile                      :=  edtCertificado.Text;
+    TRscPix(Sender).Seguranca.CertKeyFile                   :=  edtSenhaCertificado.Text;
 
     TRscPix(Sender).Developer.Application_key               :=  edtDeveloperKey.Text;
     TRscPix(Sender).Developer.Client_ID                     :=  edtClientID.Text;
@@ -689,11 +754,10 @@ begin
     TRscPix(Sender).PSP.TipoPsp                             :=  TTipoPSP(CbbPSP.ItemIndex);
     TRscPix(Sender).PSP.TipoPspAmbiente                     :=  TTipoAmbiente(CbbTipoAmbiente.ItemIndex);
 
-    TRscPix(Sender).PIX.TipoChavePix                        :=  TTipoChavePIX(CbbTipoChavePix.ItemIndex);
-    TRscPix(Sender).PIX.ChavePIX                            :=  edtChavePix.Text;
-
-    TRscPix(Sender).PixCobranca.TipoQRCode                  :=  TTipoQrCode(cbbTipoQRCode.ItemIndex);
-    TRscPix(Sender).PixCobranca.DuracaoMinutos              :=  edtDuracaoMinutos.Value;
+    TRscPix(Sender).TitularPix.TipoChavePix                        :=  TTipoChavePIX(CbbTipoChavePix.ItemIndex);
+    TRscPix(Sender).TitularPix.ChavePIX                            :=  edtChavePix.Text;
+    TRscPix(Sender).TitularPix.TipoQRCode                          :=  TTipoQrCode(cbbTipoQRCode.ItemIndex);
+    TRscPix(Sender).TitularPix.DuracaoMinutos                      :=  edtDuracaoMinutos.Value;
 end;
 
 procedure TFrmMain.ConfigurarPosPrinter;
@@ -836,49 +900,49 @@ var
 begin
   iMinuto :=  0;
 
-  TRscPix(Sender).CriarCobranca;
+//  TRscPix(Sender).CriarCobranca;
 
-  if TRscPix(Sender).Resultado_Cod = 200 then
-    begin
-      lblStatus.Caption := 'Situação: '+TRscPix(Sender).ResultadoCobPut.status;
-
-      if TRscPix(Sender).ResultadoCobPut.textoImagemQRcode <> '' then
-        begin
-          mmPayload.Text  :=  TRscPix(Sender).ResultadoCobPut.textoImagemQRcode;
-          QRCodeWin(imgQRCODE, TRscPix(Sender).ResultadoCobPut.textoImagemQRcode);
-          cQrCode := TRscPix(Sender).ResultadoCobPut.textoImagemQRcode;
-        end
-      else
-        begin
-          mmPayload.Text  :=  TRscPix(Sender).ResultadoCobPut.location;
-          QRCodeWin(imgQRCODE, TRscPix(Sender).ResultadoCobPut.location);
-          cQrCode := TRscPix(Sender).ResultadoCobPut.location;
-        end;
-
-      cValor := StringReplace(TRscPix(Sender).ResultadoCobPut.valor.original, '.', ',', [rfReplaceAll]);
-      Label15.Caption := 'Valor Retornado: R$ '+FormatFLoat('###,###,##0.00',StrToCurr(cValor));
-
-//      repeat
-//        Inc(iMinuto, 1);
-//        TRscPix(Sender).ConsultarCobranca;
+//  if TRscPix(Sender).Resultado_Cod = 200 then
+//    begin
+//      lblStatus.Caption := 'Situação: '+TRscPix(Sender).ResultadoCobPut.status;
+//
+//      if TRscPix(Sender).ResultadoCobPut.textoImagemQRcode <> '' then
+//        begin
+//          mmPayload.Text  :=  TRscPix(Sender).ResultadoCobPut.textoImagemQRcode;
+//          QRCodeWin(imgQRCODE, TRscPix(Sender).ResultadoCobPut.textoImagemQRcode);
+//          cQrCode := TRscPix(Sender).ResultadoCobPut.textoImagemQRcode;
+//        end
+//      else
+//        begin
+//          mmPayload.Text  :=  TRscPix(Sender).ResultadoCobPut.location;
+//          QRCodeWin(imgQRCODE, TRscPix(Sender).ResultadoCobPut.location);
+//          cQrCode := TRscPix(Sender).ResultadoCobPut.location;
+//        end;
+//
+//      cValor := StringReplace(TRscPix(Sender).ResultadoCobPut.valor.original, '.', ',', [rfReplaceAll]);
+//      Label15.Caption := 'Valor Retornado: R$ '+FormatFLoat('###,###,##0.00',StrToCurr(cValor));
+//
+////      repeat
+////        Inc(iMinuto, 1);
+////        TRscPix(Sender).ConsultarCobranca;
+////
+////
+////        Label14.Caption :=  IntToStr((TRscPix(Sender).ResultadoCobGet.calendario.expiracao * 60) - iMinuto);
+////        Sleep(3000);
+////
+////
+////      until (((TRscPix(Sender).ResultadoCobGet.calendario.expiracao * 60) = iMinuto)
+////            or (TRscPix(Sender).ResultadoCobPut.status = 'CONCLUIDA'));
 //
 //
-//        Label14.Caption :=  IntToStr((TRscPix(Sender).ResultadoCobGet.calendario.expiracao * 60) - iMinuto);
-//        Sleep(3000);
 //
-//
-//      until (((TRscPix(Sender).ResultadoCobGet.calendario.expiracao * 60) = iMinuto)
-//            or (TRscPix(Sender).ResultadoCobPut.status = 'CONCLUIDA'));
-
-
-
-    end
-  else
-    begin
-      lblStatus.Caption  := 'Situação: Erro ao Gerar';
-      MessageBox(0, PChar(TRscPix(Sender).Retorno), PChar('Erro'), MB_ICONERROR + mb_ok);
-  //      MessageBox(0, PChar(TRscPix(Sender).ResultadoErro.message  + #13#10  + 'Código Erro: ' + TRscPix(Sender).ResultadoErro.statusCode.ToString), PChar(TRscPix(Sender).ResultadoErro.error), MB_ICONERROR + mb_ok);
-    end;
+//    end
+//  else
+//    begin
+//      lblStatus.Caption  := 'Situação: Erro ao Gerar';
+//      MessageBox(0, PChar(TRscPix(Sender).Retorno), PChar('Erro'), MB_ICONERROR + mb_ok);
+//  //      MessageBox(0, PChar(TRscPix(Sender).ResultadoErro.message  + #13#10  + 'Código Erro: ' + TRscPix(Sender).ResultadoErro.statusCode.ToString), PChar(TRscPix(Sender).ResultadoErro.error), MB_ICONERROR + mb_ok);
+//    end;
 end;
 
 procedure TFrmMain.GravarConfigIni;
@@ -919,33 +983,99 @@ end;
 
 
 
-procedure TFrmMain.InOnCobGet_(Sender: TObject; const Status: String;
-  Erro: String);
+procedure TFrmMain.InOnCobGet_(Sender : TObject; Const RespCobGet: TRespCobGet = nil;
+  Erro: String = '');
 var
   cValor : String ;
 begin
-  if Status <> 'NAO_CRIADO' then
+  if (Erro = '') then
     begin
-      lblStatus.Caption := 'Situação: ' +  Status;
-      if TRscPix(Sender).ResultadoCobPut.textoImagemQRcode <> '' then
+      lblStatus.Caption := 'Situação: ' +  RespCobGet.Status;
+
+      if (RespCobGet.Status <> 'NAO_CRIADO') then
         begin
-          mmPayload.Text  :=  TRscPix(Sender).ResultadoCobPut.textoImagemQRcode;
-          QRCodeWin(imgQRCODE, TRscPix(Sender).ResultadoCobPut.textoImagemQRcode);
-          cQrCode := TRscPix(Sender).ResultadoCobPut.textoImagemQRcode;
-        end
-      else
-        begin
-          mmPayload.Text  :=  TRscPix(Sender).ResultadoCobPut.location;
-          QRCodeWin(imgQRCODE, TRscPix(Sender).ResultadoCobPut.location);
-          cQrCode := TRscPix(Sender).ResultadoCobPut.location;
+          cValor := StringReplace(RespCobGet.valor.original, '.', ',', [rfReplaceAll]);
+          Label15.Caption := 'Valor Retornado: R$ '+FormatFLoat('#0.00',StrToCurr(cValor));
+
+          if RespCobGet.textoImagemQRcode <> '' then
+            begin
+              mmPayload.Text  :=  RespCobGet.textoImagemQRcode;
+              QRCodeWin(imgQRCODE, RespCobGet.textoImagemQRcode);
+              cQrCode := RespCobGet.textoImagemQRcode;
+            end
+          else
+            begin
+              mmPayload.Text  :=  RespCobGet.location;
+              QRCodeWin(imgQRCODE, RespCobGet.location);
+              cQrCode := RespCobGet.location;
+            end;
         end;
-      cValor := StringReplace(TRscPix(Sender).ResultadoCobPut.valor.original, '.', ',', [rfReplaceAll]);
-      Label15.Caption := 'Valor Retornado: R$ '+FormatFLoat('#0.00',StrToCurr(cValor));
     end
   else
     begin
       lblStatus.Caption  := 'Situação: '  + Erro;
-      MessageDlg(Erro, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
+      MessageDlg('Erro ao Consultar Cobrança' + #13 + Erro, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
+    end;
+end;
+
+procedure TFrmMain.InOnCobPatch_(Sender: TObject;
+  const RespCobPatch: TRespCobPatch; Erro: String);
+var
+  cValor : String ;
+begin
+  if (Erro = '') then
+    begin
+      lblStatus.Caption := 'Situação: ' +  RespCobPatch.Status;
+    end
+  else
+    begin
+      lblStatus.Caption  := 'Situação: '  + Erro;
+      MessageDlg('Erro ao Revisar Cobrança' + #13 + Erro, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
+    end;
+end;
+
+procedure TFrmMain.InOnCobPut_(Sender: TObject; const RespCobPut: TRespCobPut;
+  Erro: String);
+var
+  cValor : String ;
+begin
+  if (Erro = '') then
+    begin
+      lblStatus.Caption := 'Situação: ' +  RespCobPut.Status;
+
+      if (RespCobPut.Status <> 'NAO_CRIADO') then
+        begin
+          cValor := StringReplace(RespCobPut.valor.original, '.', ',', [rfReplaceAll]);
+          Label15.Caption := 'Valor Retornado: R$ '+FormatFLoat('#0.00',StrToCurr(cValor));
+
+          if RespCobPut.textoImagemQRcode <> '' then
+            begin
+              mmPayload.Text  :=  RespCobPut.textoImagemQRcode;
+              QRCodeWin(imgQRCODE, RespCobPut.textoImagemQRcode);
+              cQrCode := RespCobPut.textoImagemQRcode;
+            end
+          else
+            begin
+              mmPayload.Text  :=  RespCobPut.location;
+              QRCodeWin(imgQRCODE, RespCobPut.location);
+              cQrCode := RespCobPut.location;
+            end;
+        end;
+    end
+  else
+    begin
+      lblStatus.Caption  := 'Situação: '  + Erro;
+      MessageDlg('Erro ao Criar Cobrança' + #13 + Erro, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
+    end;
+end;
+
+procedure TFrmMain.InOnToken_(Sender: TObject; const Token: TToken;
+  Erro: String);
+begin
+  if Erro <> '' then
+    begin
+      lblStatus.Caption  := 'Situação: '  + Erro;
+      MessageDlg('Erro ao Obter Token!' +  #13 +Erro, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
     end;
 end;
 

@@ -1,3 +1,31 @@
+{=======================================}
+{             RSC SISTEMAS              }
+{        SOLUÇÕES TECNOLÓGICAS          }
+{         rscsistemas.com.br            }
+{          +55 92 4141-2737             }
+{      contato@rscsistemas.com.br       }
+{                                       }
+{ Desenvolvidor por:                    }
+{   Roniery Santos Cardoso              }
+{     ronierys2@hotmail.com             }
+{     +55 92 984391279                  }
+{                                       }
+{                                       }
+{ Versão Original RSC SISTEMAS          }
+{ Versão: 3.0.0                         }
+{                                       }
+{ Faça uma  doação:                     }
+{ Pix - Email: ronierys2@hotmail.com    }
+{ Banco: NuBank                         }
+{                                       }
+{                                       }
+{                                       }
+{ Componente TRscPix                    }
+{ Componente OpenSource                 }
+{ license Apache-2.0                    }
+{                                       }
+{=======================================}
+
 unit uRscPix.funcoes;
 
 interface
@@ -15,7 +43,7 @@ interface
     ,Vcl.Graphics
 
 
-    ,DelphiZXingQRCode
+    ,DelphiZXingQRCode, System.DateUtils
 
     ;
 
@@ -42,11 +70,34 @@ interface
 
   function GetStrNumber(const S: string): string;
 
+  function FormatDataPix(const ADate: TDateTime; AInputIsUTC: Boolean = true) : string ;
+
 implementation
 
 
 
-
+function FormatDataPix(const ADate: TDateTime; AInputIsUTC: Boolean = true) : string ;
+const
+  SDateFormat   : string = 'yyyy''-''mm''-''dd''T''hh'':''nn'':''ss''.''00''-03:00'''; { Do not localize }
+  SOffsetFormat : string = '%s%s%.02d%.02d'; { Do not localize }
+  Neg           : array[Boolean] of string = ('+', '-'); { Do not localize }
+var
+  Bias: Integer;
+  TimeZone: TTimeZone ;
+begin
+  Result := FormatDateTime(SDateFormat, ADate);
+  if not AInputIsUTC then
+     begin
+       TimeZone := TTimeZone.Local ;
+       Bias := Trunc(TimeZone.GetUTCOffset(ADate).Negate.TotalMinutes) ;
+       if Bias <> 0 then
+          begin
+            SetLength(Result, Result.Length - 1);
+            Result := Format(SOffsetFormat, [Result, Neg[Bias > 0], Abs(Bias) div MinsPerHour,
+            Abs(Bias) mod MinsPerHour]);
+          end
+     end;
+end;
 
 
 function GetStrNumber(const S: string): string;
