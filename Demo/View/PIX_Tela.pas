@@ -62,7 +62,6 @@ type
     FDMemTable1txid: TStringField;
     FDMemTable1valor: TCurrencyField;
     FDMemTable1horario: TStringField;
-    RscPix1: TRscPix;
     DWClientREST1: TDWClientREST;
     procedure btnCancelarClick(Sender: TObject);
     procedure btnConfirmarClick(Sender: TObject);

@@ -715,9 +715,9 @@ object frmPIX_Tela: TfrmPIX_Tela
     FetchOptions.Mode = fmAll
     ResourceOptions.AssignedValues = [rvSilentMode]
     ResourceOptions.SilentMode = True
-    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.AssignedValues = [uvCheckRequired]
     UpdateOptions.CheckRequired = False
-    UpdateOptions.AutoCommitUpdates = True
+    AutoCommitUpdates = False
     Left = 40
     Top = 120
     object FDMemTable1pagador: TStringField
@@ -747,16 +747,6 @@ object frmPIX_Tela: TfrmPIX_Tela
     DataSet = FDMemTable1
     Left = 256
     Top = 232
-  end
-  object RscPix1: TRscPix
-    Seguranca.SSLVersions = [sslvSSLv3, sslvTLSv1_2]
-    TitularPix.TipoChavePix = tcCPF
-    TitularPix.DuracaoMinutos = 0
-    TitularPix.TipoQRCode = tqDinamico
-    PSP.TipoPsp = pspSicredi
-    PSP.TipoPspAmbiente = taSandBox
-    Left = 96
-    Top = 56
   end
   object DWClientREST1: TDWClientREST
     UseSSL = False

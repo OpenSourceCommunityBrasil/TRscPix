@@ -104,10 +104,10 @@ type
   TRespCobGet = class(TPix_Parametros)
   end;
 
-  TRespPixGet = class(TPix_Parametros)
+  TRespPixGet = class(TPix_Get)
   end;
 
-  TRespPixPut = class(TPix_Parametros)
+  TRespPixPut = class(TPix_Put)
   end;
 
 

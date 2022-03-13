@@ -39,18 +39,20 @@ type
 
   TPIXParams = class
       private
-          FE2eid  : String;
+          FendToEndId  : String;
           FTXIDDev        : String;
           Fvalor       : Currency;
           Fhorario     : String;
           Fpagador     : TTPagador;
           FinfoPagador : string;
           FValorToString: String;
+          FTXID: String;
 
           procedure SetValor(const Value: Currency);
       public
-          property E2eid        : String    read FE2eid         write FE2eid;
+          property endToEndId   : String    read FendToEndId    write FendToEndId;
           property TXIDDev      : String    read FTXIDDev       write FTXIDDev;
+          property TXID         : String    read FTXID          write FTXID;
           property valor        : Currency  read Fvalor         write SetValor;
           property ValorToString: String    read FValorToString;
           property horario      : String    read Fhorario       write Fhorario;
@@ -61,7 +63,6 @@ type
 
     destructor Destroy; override;
   end;
-
 
   TPix_GetListPixsRecebPeriodo = class
     private
@@ -79,12 +80,6 @@ type
       property Data_Hora_Ini_ToStr  : String read FData_Hora_Ini_ToStr;
       property Data_Hora_Fim_ToStr  : String read FData_Hora_Fim_ToStr;
   end;
-
-  {
-    property DateConsutInicial      : TDateTime read FDateConsutInicial write SetDateConsutInicial;
-    property DateConsutFinal        : TDateTime read FDateConsutFinal write SetDateConsutFinal;
-  }
-
 
   TParametrosListaPixs = class
   private
@@ -140,7 +135,7 @@ type
     property data_inicio_criacao  : String                          read fdata_inicio_criacao write fdata_inicio_criacao;
     property data_final_criacao   : String                          read fdata_final_criacao  write fdata_final_criacao;
     property pix                  : TArray<TPIXParams>              read Fpix                 write Fpix;
-    property endToEndID           : String                          read FendToEndID          write FendToEndID;
+    property endToEndId           : String                          read FendToEndID          write FendToEndID;
     property Horario              : string                          read FHorario             write FHorario;
     property infoPagador          : string                          read FinfoPagador         write FinfoPagador;
     property Pagador              : TTPagador                       read fpagador             write fpagador;
@@ -150,6 +145,75 @@ type
 
   end;
 
+  TPix_Put = class
+  private
+    fpagador: TTPagador;
+    Fvalor: Currency;
+    FendToEndID: String;
+    FinfoPagador: string;
+    Ftxid: String;
+    FHorario: string;
+    Fmotivo: String;
+    Fid: String;
+    Fstatus: String;
+    FrtrId: String;
+    procedure SetValor(const Value: Currency);
+  public
+    property endToEndId           : String                          read FendToEndID          write FendToEndID;
+    property txid                 : String                          read Ftxid                write Ftxid;
+    property valor                : Currency                        read Fvalor               write SetValor;
+    property horario              : string                          read FHorario             write FHorario;
+    property infoPagador          : string                          read FinfoPagador         write FinfoPagador;
+    property pagador              : TTPagador                       read fpagador             write fpagador;
+
+    {Devolução}
+    property id                   : String                          read Fid                  write Fid;
+    property status               : String                          read Fstatus              write Fstatus;
+    property motivo               : String                          read Fmotivo              write Fmotivo;
+    property rtrId                : String                          read FrtrId               write FrtrId;
+
+    destructor Destroy;override;
+  end;
+
+  TPix_Get = class
+  private
+    fpagador: TTPagador;
+    Fvalor: Currency;
+    FendToEndID: String;
+    FinfoPagador: string;
+    Ftxid: String;
+    Fparametros: TParametrosListaPixs;
+    Fpix: TArray<TPIXParams>;
+    Fstatus: String;
+    Fmotivo: String;
+    Fid: String;
+    FrtrId: String;
+    procedure SetValor(const Value: Currency);
+  public
+    property endToEndId           : String                          read FendToEndID          write FendToEndID;
+    property txid                 : String                          read Ftxid                write Ftxid;
+    property valor                : Currency                        read Fvalor               write SetValor;
+    property infoPagador          : string                          read FinfoPagador         write FinfoPagador;
+    property Pagador              : TTPagador                       read fpagador             write fpagador;
+
+    {Devolução}
+    property id                   : String                          read Fid                  write Fid;
+    property status               : String                          read Fstatus              write Fstatus;
+    property motivo               : String                          read Fmotivo              write Fmotivo;
+    property rtrId                : String                          read FrtrId               write FrtrId;
+
+    property pix                  : TArray<TPIXParams>              read Fpix                 write Fpix;
+    property parametros           : TParametrosListaPixs            read Fparametros          write Fparametros;
+
+    destructor Destroy;override;
+  end;
+
+{ fazer quando de vontade
+
+	"horario": {
+		"liquidacao": "2022-03-12T16:44:11.00-03:00",
+		"solicitacao": "2022-03-12T16:44:10.00-03:00"
+}
 
 implementation
 
@@ -235,7 +299,7 @@ begin
       Erro  :=  'O valor deve ser maior que Zero!';
     end;
 
-  if E2eid = '' then
+  if endToEndId = '' then
     begin
       if Erro <> '' then
         Erro  :=  Erro  + #13 + 'O E2eid deve ser informado!'
@@ -274,6 +338,61 @@ begin
   FData_Hora_Ini := Value;
 
   FData_Hora_Ini_ToStr  :=  FormatDataPix(FData_Hora_Ini);
+end;
+
+{ TPix_Get }
+
+destructor TPix_Get.Destroy;
+var Vinfo_adicionais : TInformacoesAdicionais;
+    Vdevolucao : TTDevolucao;
+    Vpix : TPIXParams;
+
+begin
+
+//
+//  if  Assigned(FRecebedor) then
+//    FRecebedor.Free;
+//
+//  if  Assigned(Fvalor) then
+//    Fvalor.DisposeOf;
+//
+//  if  Assigned(Fpagador) then
+//    Fpagador.Free;
+//
+//  if  Assigned(Fcalendario) then
+//    Fcalendario.DisposeOf;
+//
+//  for Vinfo_adicionais in Finfo_adicionais do
+//    Vinfo_adicionais.Free;
+//
+//  for Vdevolucao in FDevolucao do
+//    Vdevolucao.Free;
+
+  for Vpix in Fpix do
+    Vpix.Free;
+
+  if Assigned(Fparametros) then
+    Fparametros.Free;
+
+  inherited;
+end;
+
+procedure TPix_Get.SetValor(const Value: Currency);
+begin
+  Fvalor := Value;
+end;
+
+{ TPix_Put }
+
+destructor TPix_Put.Destroy;
+begin
+
+  inherited;
+end;
+
+procedure TPix_Put.SetValor(const Value: Currency);
+begin
+
 end;
 
 end.

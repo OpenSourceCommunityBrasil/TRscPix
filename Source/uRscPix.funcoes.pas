@@ -168,7 +168,7 @@ begin
   QRCode := TDelphiZXingQRCode.Create;
   try
     QRCode.Data := texto;
-    QRCode.Encoding := TQRCodeEncoding.qrAuto;
+    QRCode.Encoding := TQRCodeEncoding.qrUTF8BOM;
     QRCode.QuietZone := 4;
     imgQRCode.Picture.Bitmap.SetSize(QRCode.Rows, QRCode.Columns);
     for Row := 0 to QRCode.Rows - 1 do

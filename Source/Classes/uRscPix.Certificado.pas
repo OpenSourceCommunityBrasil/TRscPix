@@ -42,11 +42,13 @@ type
       FUseSSL,
       FVerifyCert       : Boolean;
       FSSLVersions      : TIdSSLVersions;
+      FSSLMethod        : TIdSSLVersion;
 
     published
       property CertFile                   : string                    Read FCertFile            Write FCertFile;
       property CertKeyFile                : string                    Read FCertKeyFile         Write FCertKeyFile;
       Property SSLVersions                : TIdSSLVersions            Read FSSLVersions         Write FSSLVersions;
+      Property SSLMethod                  : TIdSSLVersion             Read FSSLMethod           Write FSSLMethod;
       Property VerifyCert                 : Boolean                   Read FVerifyCert          Write FVerifyCert default True;
       Property UseSSL                     : Boolean                   Read FUseSSL              Write FUseSSL default True;
   end;
