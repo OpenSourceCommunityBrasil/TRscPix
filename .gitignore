@@ -2,7 +2,7 @@
 /dcu/
 /.git/
 *.cer
-*.dll
+#*.dll
 
 
 # ignore a file type
