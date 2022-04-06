@@ -589,10 +589,16 @@ var
   ResultCobPut   : TRespCobPut;
   DWCR_CobCriar  :  TDWClientREST;
 begin
-  if not ValidaChavePix then
-     exit;
+  ResultCobPut  :=  nil;
 
-    ResultCobPut  :=  nil;
+  if not ValidaChavePix then
+    begin
+      InOnCobPut(Self, nil, 'Chave Invalida');
+      exit;
+    end;
+
+
+
     MyPixCob := TPixCobranca.Create;
     try
       try
@@ -601,7 +607,7 @@ begin
         MyPixCob.TXID     :=  sTXID;
       except on E: Exception do
         begin
-          InOnCobPut(Self, nil, e.Message);
+
           Exit;
         end;
       end;
@@ -693,8 +699,8 @@ begin
                                  Retorno       := UTF8ToWideString(Stream.DataString);
                                  ResultCobPut  := TJson.JsonToObject<TRespCobPut>(Retorno);
 
-                                 if ResultCobPut.textoImagemQRcode = '' then
-                                    ResultCobPut.textoImagemQRcode := GeraPayload ;
+//                                 if ResultCobPut.textoImagemQRcode = '' then
+//                                    ResultCobPut.textoImagemQRcode := GeraPayload ;
 
                                  InOnCobPut(Self, ResultCobPut, '');
                                 end;

@@ -113,14 +113,11 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
+        <DCCReference Include="RestDatawareCORE.dcp"/>
         <DCCReference Include="rtl.dcp"/>
-        <DCCReference Include="IndySystem.dcp"/>
-        <DCCReference Include="IndyProtocols.dcp"/>
-        <DCCReference Include="IndyCore.dcp"/>
         <DCCReference Include="vcl.dcp"/>
         <DCCReference Include="soaprtl.dcp"/>
         <DCCReference Include="dbrtl.dcp"/>
-        <DCCReference Include="RestDatawareCORE.dcp"/>
         <DCCReference Include="RESTComponents.dcp"/>
         <DCCReference Include="..\Source\RscPix.pas"/>
         <DCCReference Include="..\Source\uRscPix.Variaveis.pas"/>

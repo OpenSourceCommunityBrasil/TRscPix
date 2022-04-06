@@ -331,7 +331,7 @@ begin
   Open_Dialog.Filter := 'Arquivos pem|*.pem|Arquivos cer|*.cer' ;
   if Open_Dialog.Execute then
      begin
-      edtSenhaCertificado.Text := Open_Dialog.FileName ;
+      edtCertificado.Text := Open_Dialog.FileName ;
      end;
 end;
 
@@ -412,7 +412,7 @@ begin
   Open_Dialog.Filter := 'Arquivos key|*.key' ;
   if Open_Dialog.Execute then
      begin
-      edtCertificado.Text := Open_Dialog.FileName ;
+      edtSenhaCertificado.Text := Open_Dialog.FileName ;
      end;
 end;
 
