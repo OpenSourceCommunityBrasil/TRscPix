@@ -88,7 +88,7 @@ object FrmMain: TFrmMain
                   AlignWithMargins = True
                   Left = 3
                   Top = 3
-                  Width = 131
+                  Width = 65
                   Height = 13
                   Align = alTop
                   Caption = 'Tipo QRCode'
@@ -98,7 +98,6 @@ object FrmMain: TFrmMain
                   Font.Name = 'MS Sans Serif'
                   Font.Style = []
                   ParentFont = False
-                  ExplicitWidth = 65
                 end
                 object cbbTipoQRCode: TComboBox
                   AlignWithMargins = True
@@ -124,12 +123,11 @@ object FrmMain: TFrmMain
                   AlignWithMargins = True
                   Left = 3
                   Top = 3
-                  Width = 138
+                  Width = 67
                   Height = 13
                   Align = alTop
                   Caption = 'Tempo Minuto'
                   Transparent = True
-                  ExplicitWidth = 67
                 end
                 object edtDuracaoMinutos: TSpinEdit
                   AlignWithMargins = True
@@ -162,7 +160,7 @@ object FrmMain: TFrmMain
               AlignWithMargins = True
               Left = 8
               Top = 15
-              Width = 284
+              Width = 142
               Height = 13
               Margins.Left = 6
               Margins.Top = 0
@@ -170,13 +168,12 @@ object FrmMain: TFrmMain
               Margins.Bottom = 0
               Align = alTop
               Caption = 'TXID (De 26 a 35 Caracteres)'
-              ExplicitWidth = 142
             end
             object Label10: TLabel
               AlignWithMargins = True
               Left = 8
               Top = 55
-              Width = 284
+              Width = 24
               Height = 13
               Margins.Left = 6
               Margins.Top = 0
@@ -184,20 +181,18 @@ object FrmMain: TFrmMain
               Margins.Bottom = 0
               Align = alTop
               Caption = 'Valor'
-              ExplicitWidth = 24
             end
             object Label11: TLabel
               AlignWithMargins = True
               Left = 8
               Top = 92
-              Width = 284
+              Width = 51
               Height = 13
               Margins.Left = 6
               Margins.Right = 6
               Margins.Bottom = 0
               Align = alTop
               Caption = 'Mensagem'
-              ExplicitWidth = 51
             end
             object Panel6: TPanel
               AlignWithMargins = True
@@ -298,20 +293,19 @@ object FrmMain: TFrmMain
               AlignWithMargins = True
               Left = 8
               Top = 52
-              Width = 284
+              Width = 48
               Height = 13
               Margins.Left = 6
               Margins.Right = 6
               Margins.Bottom = 0
               Align = alTop
               Caption = 'CPF/CNPJ'
-              ExplicitWidth = 48
             end
             object Label19: TLabel
               AlignWithMargins = True
               Left = 8
               Top = 15
-              Width = 284
+              Width = 70
               Height = 13
               Margins.Left = 6
               Margins.Top = 0
@@ -319,20 +313,18 @@ object FrmMain: TFrmMain
               Margins.Bottom = 0
               Align = alTop
               Caption = 'Nome Pagador'
-              ExplicitWidth = 70
             end
             object Label20: TLabel
               AlignWithMargins = True
               Left = 8
               Top = 89
-              Width = 284
+              Width = 94
               Height = 13
               Margins.Left = 6
               Margins.Right = 6
               Margins.Bottom = 0
               Align = alTop
               Caption = 'Mensagem Pagador'
-              ExplicitWidth = 94
             end
             object edt_DocPagador: TEdit
               AlignWithMargins = True
@@ -389,7 +381,7 @@ object FrmMain: TFrmMain
               AlignWithMargins = True
               Left = 3
               Top = 335
-              Width = 398
+              Width = 41
               Height = 16
               Margins.Top = 10
               Align = alBottom
@@ -401,24 +393,22 @@ object FrmMain: TFrmMain
               Font.Style = []
               ParentFont = False
               WordWrap = True
-              ExplicitWidth = 41
             end
             object Label14: TLabel
               AlignWithMargins = True
               Left = 3
               Top = 386
-              Width = 398
+              Width = 83
               Height = 13
               Margins.Bottom = 5
               Align = alBottom
               Caption = 'Tempo Restante:'
-              ExplicitWidth = 83
             end
             object Label15: TLabel
               AlignWithMargins = True
               Left = 3
               Top = 364
-              Width = 398
+              Width = 102
               Height = 16
               Margins.Top = 10
               Align = alBottom
@@ -430,7 +420,6 @@ object FrmMain: TFrmMain
               Font.Style = []
               ParentFont = False
               WordWrap = True
-              ExplicitWidth = 102
             end
             object Panel7: TPanel
               Left = 0
@@ -447,13 +436,12 @@ object FrmMain: TFrmMain
                 AlignWithMargins = True
                 Left = 10
                 Top = 3
-                Width = 384
+                Width = 100
                 Height = 13
                 Margins.Left = 0
                 Margins.Right = 0
                 Align = alTop
                 Caption = 'Copiar Colar Payload'
-                ExplicitWidth = 100
               end
               object mmPayload: TMemo
                 Left = 10
@@ -556,7 +544,7 @@ object FrmMain: TFrmMain
                 AlignWithMargins = True
                 Left = 5
                 Top = 3
-                Width = 399
+                Width = 54
                 Height = 19
                 Margins.Left = 5
                 Margins.Right = 0
@@ -568,7 +556,6 @@ object FrmMain: TFrmMain
                 Font.Name = 'Tahoma'
                 Font.Style = []
                 ParentFont = False
-                ExplicitWidth = 54
               end
               object imgQRCODE: TImage
                 AlignWithMargins = True
@@ -779,25 +766,23 @@ object FrmMain: TFrmMain
                 AlignWithMargins = True
                 Left = 8
                 Top = 89
-                Width = 284
+                Width = 41
                 Height = 13
                 Margins.Left = 6
                 Margins.Right = 6
                 Align = alTop
                 Caption = 'TxIdDev'
-                ExplicitWidth = 41
               end
               object Label17: TLabel
                 AlignWithMargins = True
                 Left = 8
                 Top = 18
-                Width = 284
+                Width = 58
                 Height = 13
                 Margins.Left = 6
                 Margins.Right = 6
                 Align = alTop
                 Caption = 'endToEndId'
-                ExplicitWidth = 58
               end
               object Button6: TButton
                 AlignWithMargins = True
