@@ -360,16 +360,15 @@ begin
     Stream := TStringStream.Create('', TEncoding.UTF8) ;
     try
       ConfigRestClient(DWRC_PixConPer);
-      cURL := FPSP.URLAPI                                  +
-            '/pix/v1/'                                         +
-            '&inicio=' + MyPixListRebPer.Data_Hora_Ini_ToStr  +
+      cURL := FPSP.URLAPI + '/'  +
+            '?inicio=' + MyPixListRebPer.Data_Hora_Ini_ToStr  +
             '&fim='    + MyPixListRebPer.Data_Hora_Fim_ToStr  +
             '&paginaAtual=' + IntToStr(MyPixListRebPer.Index_Pag) +
-            '?gw-dev-app-key=' + Developer.Application_key ;
+            '&gw-dev-app-key=' + Developer.Application_key ;
 
       DWRC_PixConPer.ContentType  := 'application/json; charset=utf-8' ;
       DWRC_PixConPer.AuthenticationOptions.AuthorizationOption  := rdwAOBearer ;
-      TRDWAuthOptionBearerClient(DWRC_PixConPer.AuthenticationOptions.OptionParams).Token :=  'Bearer '  +  Token.AcessToken ;
+      TRDWAuthOptionBearerClient(DWRC_PixConPer.AuthenticationOptions.OptionParams).Token :=  Token.AcessToken ;
       try
         nResp := DWRC_PixConPer.Get(cURL,nil,Stream,false) ;
         case nResp of

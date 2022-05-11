@@ -1,5 +1,4 @@
 package RscPix;
-
 {$R *.res}
 {$R *.dres}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
@@ -62,4 +61,3 @@ contains
   uRscPix.ErrosToString in '..\Source\uRscPix.ErrosToString.pas';
 
 end.
-
