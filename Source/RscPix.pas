@@ -309,7 +309,7 @@ begin
            InOnPixGet(Self, RespPixGet, '');
           end;
       else
-        raise Exception.Create(ErroCobGetPatchToString(nResp));
+        raise Exception.Create(ErroPixGetToString(nResp));
       end;
     Except
      on E:exception do
@@ -360,15 +360,16 @@ begin
     Stream := TStringStream.Create('', TEncoding.UTF8) ;
     try
       ConfigRestClient(DWRC_PixConPer);
-      cURL := FPSP.URLAPI                                   +
-            '/pix'                                         +
-            '?gw-dev-app-key=' + Developer.Application_key +
+      cURL := FPSP.URLAPI                                  +
+            '/pix/v1/'                                         +
             '&inicio=' + MyPixListRebPer.Data_Hora_Ini_ToStr  +
             '&fim='    + MyPixListRebPer.Data_Hora_Fim_ToStr  +
-            '&paginaAtual=' + IntToStr(MyPixListRebPer.Index_Pag);
-      DWRC_PixConPer.ContentType  := 'application/json' ;
+            '&paginaAtual=' + IntToStr(MyPixListRebPer.Index_Pag) +
+            '?gw-dev-app-key=' + Developer.Application_key ;
+
+      DWRC_PixConPer.ContentType  := 'application/json; charset=utf-8' ;
       DWRC_PixConPer.AuthenticationOptions.AuthorizationOption  := rdwAOBearer ;
-      TRDWAuthOptionBearerClient(DWRC_PixConPer.AuthenticationOptions.OptionParams).Token := Token.AcessToken ;
+      TRDWAuthOptionBearerClient(DWRC_PixConPer.AuthenticationOptions.OptionParams).Token :=  'Bearer '  +  Token.AcessToken ;
       try
         nResp := DWRC_PixConPer.Get(cURL,nil,Stream,false) ;
         case nResp of
@@ -379,7 +380,7 @@ begin
              InOnPixGet(Self, RespPixGet, '');
             end;
         else
-          raise Exception.Create(ErroCobGetPatchToString(nResp));
+          raise Exception.Create(ErroPixGetToString(nResp));
         end;
       Except
        on E:exception do
@@ -452,7 +453,7 @@ begin
              InOnPixGet(Self, RespPixGet, '');
             end;
         else
-          raise Exception.Create(ErroCobGetPatchToString(nResp));
+          raise Exception.Create(ErroPixGetToString(nResp));
         end;
       Except
        on E:exception do
@@ -516,7 +517,6 @@ begin
         MyPixCob.TXID     :=  sTXID;
       except on E: Exception do
         begin
-
           Exit;
         end;
       end;
@@ -1327,7 +1327,7 @@ begin
              InOnPixPut(Self, ResultPixPut, '');
             end;
         else
-          raise Exception.Create(ErroCobGetPatchToString(nResp));
+          raise Exception.Create(ErroPixPutToString(nResp));
         end;
       Except
        on E:exception do
@@ -1360,7 +1360,7 @@ begin
           end
         else
           begin
-            raise Exception.Create('A Chave Pix informada não é um CFP válido.');
+            raise Exception.Create('A Chave Pix informada: '  + TitularPix.ChavePix + ' não é um CFP válido.');
           end;
       end;
     tcCNPJ:
@@ -1371,7 +1371,7 @@ begin
           end
         else
           begin
-            raise Exception.Create('A Chave Pix informada não é um CNPJ válido.');
+            raise Exception.Create('A Chave Pix informada: '  + TitularPix.ChavePix + ' não é um CNPJ válido.');
           end;
       end;
     tcTelefone:
@@ -1382,7 +1382,9 @@ begin
           end
         else
           begin
-            raise Exception.Create('A Chave Pix informada não é um Nº de TELEFONE válido.');
+            raise Exception.Create('A Chave Pix informada: '  + TitularPix.ChavePix + ' não é um Nº de TELEFONE válido.'
+                                    + #13
+                                    + 'Informe o Nº como no Ex: +5544988887777');
           end;
       end;
     tcEmail:
@@ -1393,7 +1395,7 @@ begin
           end
         else
           begin
-            raise Exception.Create('A Chave Pix informada não é um E-MAIL válido.');
+            raise Exception.Create('A Chave Pix informada: '  + TitularPix.ChavePix + ' não é um E-MAIL válido.');
           end;
       end;
     tcAleatoria:

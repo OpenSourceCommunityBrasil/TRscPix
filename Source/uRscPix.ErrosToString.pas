@@ -39,6 +39,9 @@ interface
   function ErroCobPostPutPatchToString(Erro: Integer): String;
   function ErroCobGetPatchToString(Erro: Integer): String;
 
+  function ErroPixGetToString(Erro: Integer): String;
+  function ErroPixPutToString(Erro: Integer): String;
+
 implementation
 
 function ErroGeralToString(Erro: Integer): String;
@@ -84,6 +87,42 @@ begin
     401: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  NaoAutorizado;
     403: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  AcessoNegado;
     404: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  CobNaoEncontrado;
+    405: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  NaoPermitido;
+    410: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  PermanentementeRemovido;
+    429: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  MuitosPedidos;
+    500: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  ErroInternoDoServidor;
+    503: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  ServicoIndisponivel;
+    504: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  IndisponibilidadePorTempoEsgotado;
+  else
+    Result  :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  'Erro Não Definido!';
+  end;
+end;
+
+function ErroPixGetToString(Erro: Integer): String;
+begin
+  case Erro of
+    400: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  RequisicaoInvalida;
+    401: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  NaoAutorizado;
+    403: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  PixConsultaInvalida;
+    404: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  NaoEncontrado;
+    405: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  NaoPermitido;
+    410: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  PermanentementeRemovido;
+    429: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  MuitosPedidos;
+    500: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  ErroInternoDoServidor;
+    503: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  ServicoIndisponivel;
+    504: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  IndisponibilidadePorTempoEsgotado;
+  else
+    Result  :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  'Erro Não Definido!';
+  end;
+end;
+
+function ErroPixPutToString(Erro: Integer): String;
+begin
+  case Erro of
+    400: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  PixDevolucaoInvalida;
+    401: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  NaoAutorizado;
+    403: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  AcessoNegado;
+    404: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  NaoEncontrado;
     405: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  NaoPermitido;
     410: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  PermanentementeRemovido;
     429: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  MuitosPedidos;

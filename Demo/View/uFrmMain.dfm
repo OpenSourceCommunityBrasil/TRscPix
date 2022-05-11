@@ -27,6 +27,561 @@ object FrmMain: TFrmMain
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
+    object pnl_Configs: TPanel
+      Left = 0
+      Top = 41
+      Width = 1004
+      Height = 451
+      Align = alClient
+      BevelOuter = bvNone
+      TabOrder = 1
+      object Panel1: TPanel
+        Left = 0
+        Top = 379
+        Width = 1004
+        Height = 72
+        Align = alBottom
+        TabOrder = 0
+        object BitBtn1: TBitBtn
+          AlignWithMargins = True
+          Left = 766
+          Top = 4
+          Width = 234
+          Height = 64
+          Cursor = crHandPoint
+          Align = alRight
+          Caption = 'Salvar Configura'#231#245'es'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Tahoma'
+          Font.Style = [fsBold]
+          Layout = blGlyphTop
+          ParentFont = False
+          TabOrder = 0
+          OnClick = BitBtn1Click
+        end
+      end
+      object gb_Config_Seg: TGroupBox
+        AlignWithMargins = True
+        Left = 3
+        Top = 3
+        Width = 998
+        Height = 152
+        Align = alTop
+        Caption = 'Configura'#231#245'es de Seguran'#231'a Pix'
+        TabOrder = 1
+        object Label2: TLabel
+          Left = 404
+          Top = 64
+          Width = 75
+          Height = 13
+          Caption = 'Tipo Chave PIX'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+        end
+        object btn_Cert: TSpeedButton
+          Left = 171
+          Top = 77
+          Width = 25
+          Height = 23
+          Cursor = crHandPoint
+          Glyph.Data = {
+            36040000424D3604000000000000360000002800000010000000100000000100
+            2000000000000004000000000000000000000000000000000000000000060605
+            05A7181613DF0000003D00000000000000000000000000000000000000000000
+            0000000000000000000000000000000000000000000000000000070707A7ACA8
+            A4FFA69A8DFF2C2722F30000003D000000000000000000000000000000000000
+            00000000000000000000000000000000000000000000000000001C1918E0C1B8
+            B0FFDCD7D1FFA69A8DFF2C2722F30000003D0000000000000000000000000000
+            00000000000000000000000000000000000000000000000000000000003D312D
+            28F3C1B8B0FFDCD7D1FFA69A8DFF2C2722F30000003300000012000000540000
+            0072000000680000003400000000000000000000000000000000000000000000
+            003D312D28F3C1B8B0FFDCD7D1FF998E83FF020201DB322D28F6685E53FF7E72
+            66FF796F63FF59524BFF131110CE000000360000000000000000000000000000
+            00000000003D312D28F3B2ABA3FFD0C9C3FF887B6DFFA5998BFFA99E87FFB3A9
+            6EFFAA9F73FFA39789FFA09387FF423E3AF70000004800000000000000000000
+            00000000000000000034020202DC8F8275FFAFA598FFC3B14CFFEDE143FFF9F3
+            5CFFF7EF53FFD5C435FFA7986CFFAB9F93FF32312FEE00000017000000000000
+            00000000000000000012342E29F7B3A89DFFBCA243FFE3C517FFEBD626FFEFDD
+            26FFEDDB26FFE8D026FFD2AF0BFFA3947AFF9F978FFF00000085000000000000
+            00000000000000000054726A61FFB5A998FFCD9D02FFD9B000FFDFBC00FFE2C2
+            00FFE1C000FFDCB700FFD6A900FFAA8A35FFBCB2A8FF1E1D1CCF000000000000
+            0000000000000000007391887EFFB4A17EFFCA9100FFD09E00FFD5A700FFD7AC
+            00FFD6AA00FFD3A300FFCE9800FFAD801AFFBAB0A6FF3F3D3CED000000000000
+            000000000000000000688E867EFFB4A38AFFC18000FFC78B01FFCD9607FFD09C
+            0DFFD09C10FFCD9812FFC98F13FFA57825FFC5BDB4FF353434E3000000000000
+            00000000000000000034635D57FFC7C0B7FFB27C2AFFD1A04BFFD4A54DFFD5A7
+            4DFFD5A64DFFD3A34DFFCC963FFF9E8157FFD2CDC7FF090909AF000000000000
+            00000000000000000000131110CEC8C1BAFFB19C82FFC6975CFFE6CBA6FFE7CD
+            A8FFE7CDA8FFDDB98AFFA27640FFC7C0B7FF858381FF0000004B000000000000
+            0000000000000000000000000036464340F7D8D3CDFFB8AA99FFA88357FFB794
+            6AFFAE8A5EFFA18360FFCEC7C0FFB9B6B4FF070707AA00000000000000000000
+            000000000000000000000000000000000048343231EEB9B5B1FFE3E0DCFFDDD8
+            D3FFE1DDD8FFE2DFDCFF898785FF070707AA0000000800000000000000000000
+            00000000000000000000000000000000000000000017000000851E1D1DD03F3D
+            3CED353434E3090909AF0000004B000000000000000000000000}
+          OnClick = btn_CertClick
+        end
+        object btn_KeyCert: TSpeedButton
+          Left = 358
+          Top = 78
+          Width = 25
+          Height = 23
+          Cursor = crHandPoint
+          Glyph.Data = {
+            36040000424D3604000000000000360000002800000010000000100000000100
+            2000000000000004000000000000000000000000000000000000000000060605
+            05A7181613DF0000003D00000000000000000000000000000000000000000000
+            0000000000000000000000000000000000000000000000000000070707A7ACA8
+            A4FFA69A8DFF2C2722F30000003D000000000000000000000000000000000000
+            00000000000000000000000000000000000000000000000000001C1918E0C1B8
+            B0FFDCD7D1FFA69A8DFF2C2722F30000003D0000000000000000000000000000
+            00000000000000000000000000000000000000000000000000000000003D312D
+            28F3C1B8B0FFDCD7D1FFA69A8DFF2C2722F30000003300000012000000540000
+            0072000000680000003400000000000000000000000000000000000000000000
+            003D312D28F3C1B8B0FFDCD7D1FF998E83FF020201DB322D28F6685E53FF7E72
+            66FF796F63FF59524BFF131110CE000000360000000000000000000000000000
+            00000000003D312D28F3B2ABA3FFD0C9C3FF887B6DFFA5998BFFA99E87FFB3A9
+            6EFFAA9F73FFA39789FFA09387FF423E3AF70000004800000000000000000000
+            00000000000000000034020202DC8F8275FFAFA598FFC3B14CFFEDE143FFF9F3
+            5CFFF7EF53FFD5C435FFA7986CFFAB9F93FF32312FEE00000017000000000000
+            00000000000000000012342E29F7B3A89DFFBCA243FFE3C517FFEBD626FFEFDD
+            26FFEDDB26FFE8D026FFD2AF0BFFA3947AFF9F978FFF00000085000000000000
+            00000000000000000054726A61FFB5A998FFCD9D02FFD9B000FFDFBC00FFE2C2
+            00FFE1C000FFDCB700FFD6A900FFAA8A35FFBCB2A8FF1E1D1CCF000000000000
+            0000000000000000007391887EFFB4A17EFFCA9100FFD09E00FFD5A700FFD7AC
+            00FFD6AA00FFD3A300FFCE9800FFAD801AFFBAB0A6FF3F3D3CED000000000000
+            000000000000000000688E867EFFB4A38AFFC18000FFC78B01FFCD9607FFD09C
+            0DFFD09C10FFCD9812FFC98F13FFA57825FFC5BDB4FF353434E3000000000000
+            00000000000000000034635D57FFC7C0B7FFB27C2AFFD1A04BFFD4A54DFFD5A7
+            4DFFD5A64DFFD3A34DFFCC963FFF9E8157FFD2CDC7FF090909AF000000000000
+            00000000000000000000131110CEC8C1BAFFB19C82FFC6975CFFE6CBA6FFE7CD
+            A8FFE7CDA8FFDDB98AFFA27640FFC7C0B7FF858381FF0000004B000000000000
+            0000000000000000000000000036464340F7D8D3CDFFB8AA99FFA88357FFB794
+            6AFFAE8A5EFFA18360FFCEC7C0FFB9B6B4FF070707AA00000000000000000000
+            000000000000000000000000000000000048343231EEB9B5B1FFE3E0DCFFDDD8
+            D3FFE1DDD8FFE2DFDCFF898785FF070707AA0000000800000000000000000000
+            00000000000000000000000000000000000000000017000000851E1D1DD03F3D
+            3CED353434E3090909AF0000004B000000000000000000000000}
+          OnClick = btn_KeyCertClick
+        end
+        object edtCertificado: TLabeledEdit
+          Left = 15
+          Top = 79
+          Width = 150
+          Height = 21
+          EditLabel.Width = 100
+          EditLabel.Height = 13
+          EditLabel.Caption = 'Caminho Certificado:'
+          TabOrder = 0
+        end
+        object edtSenhaCertificado: TLabeledEdit
+          Left = 202
+          Top = 80
+          Width = 150
+          Height = 21
+          EditLabel.Width = 89
+          EditLabel.Height = 13
+          EditLabel.Caption = 'Senha Certificado:'
+          TabOrder = 1
+        end
+        object edtClientID: TLabeledEdit
+          Left = 291
+          Top = 39
+          Width = 265
+          Height = 21
+          EditLabel.Width = 41
+          EditLabel.Height = 13
+          EditLabel.Caption = 'Client ID'
+          TabOrder = 2
+        end
+        object edtClientSecreat: TLabeledEdit
+          Left = 569
+          Top = 39
+          Width = 412
+          Height = 21
+          EditLabel.Width = 61
+          EditLabel.Height = 13
+          EditLabel.Caption = 'Client Secret'
+          TabOrder = 3
+        end
+        object edtDeveloperKey: TLabeledEdit
+          Left = 15
+          Top = 39
+          Width = 265
+          Height = 21
+          EditLabel.Width = 125
+          EditLabel.Height = 13
+          EditLabel.Caption = 'Developer Application Key'
+          TabOrder = 4
+        end
+        object edtChavePix: TLabeledEdit
+          Left = 569
+          Top = 79
+          Width = 425
+          Height = 21
+          EditLabel.Width = 48
+          EditLabel.Height = 13
+          EditLabel.Caption = 'Chave Pix'
+          TabOrder = 5
+        end
+        object CbbTipoChavePix: TComboBox
+          Left = 389
+          Top = 79
+          Width = 167
+          Height = 21
+          TabOrder = 6
+        end
+        object edtNomeRecebedore: TLabeledEdit
+          Left = 569
+          Top = 121
+          Width = 412
+          Height = 21
+          EditLabel.Width = 111
+          EditLabel.Height = 13
+          EditLabel.Caption = 'Nome Titular da Conta:'
+          MaxLength = 25
+          TabOrder = 7
+        end
+        object edtCidadeRecebedor: TLabeledEdit
+          Left = 15
+          Top = 121
+          Width = 541
+          Height = 21
+          EditLabel.Width = 56
+          EditLabel.Height = 13
+          EditLabel.Caption = 'Cidade Loja'
+          TabOrder = 8
+        end
+      end
+      object gbConfigImpressora: TGroupBox
+        Left = 0
+        Top = 264
+        Width = 1004
+        Height = 115
+        Align = alBottom
+        Caption = 'Impressora'
+        TabOrder = 2
+        object Label25: TLabel
+          Left = 532
+          Top = 47
+          Width = 66
+          Height = 13
+          Caption = 'Linhas '#224' pular'
+          Color = clBtnFace
+          ParentColor = False
+        end
+        object Label26: TLabel
+          Left = 407
+          Top = 47
+          Width = 98
+          Height = 13
+          Caption = 'Espa'#231'os entre linhas'
+          Color = clBtnFace
+          ParentColor = False
+        end
+        object Label27: TLabel
+          Left = 720
+          Top = 47
+          Width = 38
+          Height = 13
+          Caption = 'Colunas'
+          Color = clBtnFace
+          ParentColor = False
+        end
+        object Label28: TLabel
+          Left = 9
+          Top = 47
+          Width = 34
+          Height = 13
+          Caption = 'Modelo'
+          Transparent = False
+        end
+        object Label7: TLabel
+          Left = 204
+          Top = 47
+          Width = 26
+          Height = 13
+          Caption = 'Porta'
+          Color = clBtnFace
+          ParentColor = False
+        end
+        object Label29: TLabel
+          Left = 620
+          Top = 47
+          Width = 71
+          Height = 13
+          Caption = 'P'#225'g. de c'#243'digo'
+          Transparent = False
+        end
+        object btSerial: TSpeedButton
+          Left = 847
+          Top = 64
+          Width = 25
+          Height = 23
+          Cursor = crHandPoint
+          Glyph.Data = {
+            36040000424D3604000000000000360000002800000010000000100000000100
+            2000000000000004000000000000000000000000000000000000000000000000
+            0000000000000000000000000000000000000000000000000000000000000000
+            0000000000000000000000000000000000000000000000000000000000000000
+            0000000000000000000000000000000000000000000000000000000000000000
+            00000000000000000000000000000000000000000000000000000000000B0000
+            0051000000580000005800000058000000580000005800000058000000580000
+            005800000058000000580000005800000058000000510000000B000000B90000
+            0066000000580000005800000058000000580000005800000058000000580000
+            00580000005800000058000000580000005800000066000000B9000000A80000
+            0000000000000000000000000000000000000000000000000000000000000000
+            00000000000000000000000000000000000000000000000000A8000000A80000
+            0000000000000000000F000000B7000000A8000000A8000000A8000000A80000
+            00A8000000A8000000B70000000F0000000000000000000000A8000000A80000
+            0000000000000000007E0000005A0000001C00000037000000370000001C0000
+            001C00000037000000460000007E0000000000000000000000A8000000A80000
+            003700000037000000AA000000020000001C0000000F0000000F0000001C0000
+            001C0000000F00000011000000AA0000003700000037000000A8000000A80000
+            003700000037000000AD000000000000001C0000000F0000000F0000001C0000
+            001C0000000F0000000F000000AD0000003700000037000000A8000000A80000
+            000000000000000000A70000001C0000001C00000037000000370000001C0000
+            001C0000003700000000000000A70000000000000000000000A8000000A80000
+            0000000000000000005F000000A9000000A8000000A8000000A8000000A80000
+            00A8000000A8000000A90000005F0000000000000000000000A8000000A80000
+            0000000000000000000000000000000000000000000000000000000000000000
+            00000000000000000000000000000000000000000000000000A8000000B90000
+            0066000000580000005800000058000000580000005800000058000000580000
+            00580000005800000058000000580000005800000066000000B90000000B0000
+            0051000000580000005800000058000000580000005800000058000000580000
+            005800000058000000580000005800000058000000510000000B000000000000
+            0000000000000000000000000000000000000000000000000000000000000000
+            0000000000000000000000000000000000000000000000000000000000000000
+            0000000000000000000000000000000000000000000000000000000000000000
+            0000000000000000000000000000000000000000000000000000}
+          OnClick = btSerialClick
+        end
+        object btProcuraImpressoras: TSpeedButton
+          Left = 816
+          Top = 64
+          Width = 25
+          Height = 23
+          Cursor = crHandPoint
+          Glyph.Data = {
+            36040000424D3604000000000000360000002800000010000000100000000100
+            2000000000000004000000000000000000000000000000000000000000060605
+            05A7181613DF0000003D00000000000000000000000000000000000000000000
+            0000000000000000000000000000000000000000000000000000070707A7ACA8
+            A4FFA69A8DFF2C2722F30000003D000000000000000000000000000000000000
+            00000000000000000000000000000000000000000000000000001C1918E0C1B8
+            B0FFDCD7D1FFA69A8DFF2C2722F30000003D0000000000000000000000000000
+            00000000000000000000000000000000000000000000000000000000003D312D
+            28F3C1B8B0FFDCD7D1FFA69A8DFF2C2722F30000003300000012000000540000
+            0072000000680000003400000000000000000000000000000000000000000000
+            003D312D28F3C1B8B0FFDCD7D1FF998E83FF020201DB322D28F6685E53FF7E72
+            66FF796F63FF59524BFF131110CE000000360000000000000000000000000000
+            00000000003D312D28F3B2ABA3FFD0C9C3FF887B6DFFA5998BFFA99E87FFB3A9
+            6EFFAA9F73FFA39789FFA09387FF423E3AF70000004800000000000000000000
+            00000000000000000034020202DC8F8275FFAFA598FFC3B14CFFEDE143FFF9F3
+            5CFFF7EF53FFD5C435FFA7986CFFAB9F93FF32312FEE00000017000000000000
+            00000000000000000012342E29F7B3A89DFFBCA243FFE3C517FFEBD626FFEFDD
+            26FFEDDB26FFE8D026FFD2AF0BFFA3947AFF9F978FFF00000085000000000000
+            00000000000000000054726A61FFB5A998FFCD9D02FFD9B000FFDFBC00FFE2C2
+            00FFE1C000FFDCB700FFD6A900FFAA8A35FFBCB2A8FF1E1D1CCF000000000000
+            0000000000000000007391887EFFB4A17EFFCA9100FFD09E00FFD5A700FFD7AC
+            00FFD6AA00FFD3A300FFCE9800FFAD801AFFBAB0A6FF3F3D3CED000000000000
+            000000000000000000688E867EFFB4A38AFFC18000FFC78B01FFCD9607FFD09C
+            0DFFD09C10FFCD9812FFC98F13FFA57825FFC5BDB4FF353434E3000000000000
+            00000000000000000034635D57FFC7C0B7FFB27C2AFFD1A04BFFD4A54DFFD5A7
+            4DFFD5A64DFFD3A34DFFCC963FFF9E8157FFD2CDC7FF090909AF000000000000
+            00000000000000000000131110CEC8C1BAFFB19C82FFC6975CFFE6CBA6FFE7CD
+            A8FFE7CDA8FFDDB98AFFA27640FFC7C0B7FF858381FF0000004B000000000000
+            0000000000000000000000000036464340F7D8D3CDFFB8AA99FFA88357FFB794
+            6AFFAE8A5EFFA18360FFCEC7C0FFB9B6B4FF070707AA00000000000000000000
+            000000000000000000000000000000000048343231EEB9B5B1FFE3E0DCFFDDD8
+            D3FFE1DDD8FFE2DFDCFF898785FF070707AA0000000800000000000000000000
+            00000000000000000000000000000000000000000017000000851E1D1DD03F3D
+            3CED353434E3090909AF0000004B000000000000000000000000}
+          OnClick = btProcuraImpressorasClick
+        end
+        object seLinhasPular: TSpinEdit
+          Left = 532
+          Top = 64
+          Width = 75
+          Height = 22
+          MaxValue = 255
+          MinValue = 0
+          TabOrder = 4
+          Value = 0
+        end
+        object seEspLinhas: TSpinEdit
+          Left = 407
+          Top = 64
+          Width = 108
+          Height = 22
+          MaxValue = 255
+          MinValue = 0
+          TabOrder = 3
+          Value = 0
+        end
+        object seColunas: TSpinEdit
+          Left = 720
+          Top = 64
+          Width = 75
+          Height = 22
+          MaxValue = 999
+          MinValue = 1
+          TabOrder = 5
+          Value = 48
+        end
+        object cbxModeloPosPrinter: TComboBox
+          Left = 9
+          Top = 64
+          Width = 180
+          Height = 21
+          Style = csDropDownList
+          TabOrder = 0
+        end
+        object cbxPorta: TComboBox
+          Left = 204
+          Top = 64
+          Width = 161
+          Height = 21
+          TabOrder = 1
+        end
+        object cbxPagCodigo: TComboBox
+          Left = 620
+          Top = 64
+          Width = 76
+          Height = 21
+          Hint = 'Pagina de c'#243'digo usada pela Impressora POS'
+          Style = csDropDownList
+          TabOrder = 2
+        end
+        object btTestarPosPrinter: TBitBtn
+          Left = 887
+          Top = 15
+          Width = 115
+          Height = 98
+          Cursor = crHandPoint
+          Align = alRight
+          Caption = 'Testar Impressora'
+          Layout = blGlyphTop
+          TabOrder = 6
+          OnClick = btTestarPosPrinterClick
+        end
+      end
+      object grbxPSP: TGroupBox
+        AlignWithMargins = True
+        Left = 3
+        Top = 161
+        Width = 998
+        Height = 100
+        Align = alClient
+        Caption = 'Configura'#231#245'es Psp'
+        TabOrder = 3
+        object Label4: TLabel
+          Left = 16
+          Top = 44
+          Width = 18
+          Height = 13
+          Caption = 'Psp'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+        end
+        object Label5: TLabel
+          Left = 316
+          Top = 44
+          Width = 68
+          Height = 13
+          Caption = 'Tipo Ambiente'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+        end
+        object CbbPSP: TComboBox
+          Left = 16
+          Top = 60
+          Width = 286
+          Height = 21
+          TabOrder = 0
+        end
+        object CbbTipoAmbiente: TComboBox
+          Left = 316
+          Top = 60
+          Width = 160
+          Height = 21
+          TabOrder = 1
+        end
+      end
+    end
+    object pnl_menu: TPanel
+      Left = 0
+      Top = 0
+      Width = 1004
+      Height = 41
+      Align = alTop
+      BevelOuter = bvNone
+      Color = clMedGray
+      Padding.Left = 2
+      Padding.Top = 2
+      Padding.Right = 2
+      Padding.Bottom = 2
+      ParentBackground = False
+      TabOrder = 0
+      object PnlBtn_Funcoes: TPanel
+        AlignWithMargins = True
+        Left = 196
+        Top = 5
+        Width = 185
+        Height = 31
+        Align = alLeft
+        BevelOuter = bvNone
+        Caption = 'FUN'#199#213'ES'
+        Color = clMenuHighlight
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -13
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentBackground = False
+        ParentFont = False
+        TabOrder = 0
+        OnClick = PnlBtn_FuncoesClick
+        OnMouseLeave = PnlsBtnMouseLeave
+        OnMouseMove = PnlsBtnMouseMove
+      end
+      object PnlBtn_Configs: TPanel
+        AlignWithMargins = True
+        Left = 5
+        Top = 5
+        Width = 185
+        Height = 31
+        Align = alLeft
+        BevelOuter = bvNone
+        Caption = 'CONFIGURA'#199#213'ES'
+        Color = clMenuHighlight
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -13
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentBackground = False
+        ParentFont = False
+        TabOrder = 1
+        OnClick = PnlBtn_ConfigsClick
+        OnMouseLeave = PnlsBtnMouseLeave
+        OnMouseMove = PnlsBtnMouseMove
+      end
+    end
     object pnl_Funcoes: TPanel
       Left = 0
       Top = 41
@@ -908,561 +1463,6 @@ object FrmMain: TFrmMain
               end
             end
           end
-        end
-      end
-    end
-    object pnl_menu: TPanel
-      Left = 0
-      Top = 0
-      Width = 1004
-      Height = 41
-      Align = alTop
-      BevelOuter = bvNone
-      Color = clMedGray
-      Padding.Left = 2
-      Padding.Top = 2
-      Padding.Right = 2
-      Padding.Bottom = 2
-      ParentBackground = False
-      TabOrder = 0
-      object PnlBtn_Funcoes: TPanel
-        AlignWithMargins = True
-        Left = 196
-        Top = 5
-        Width = 185
-        Height = 31
-        Align = alLeft
-        BevelOuter = bvNone
-        Caption = 'FUN'#199#213'ES'
-        Color = clMenuHighlight
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWhite
-        Font.Height = -13
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentBackground = False
-        ParentFont = False
-        TabOrder = 0
-        OnClick = PnlBtn_FuncoesClick
-        OnMouseLeave = PnlsBtnMouseLeave
-        OnMouseMove = PnlsBtnMouseMove
-      end
-      object PnlBtn_Configs: TPanel
-        AlignWithMargins = True
-        Left = 5
-        Top = 5
-        Width = 185
-        Height = 31
-        Align = alLeft
-        BevelOuter = bvNone
-        Caption = 'CONFIGURA'#199#213'ES'
-        Color = clMenuHighlight
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWhite
-        Font.Height = -13
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentBackground = False
-        ParentFont = False
-        TabOrder = 1
-        OnClick = PnlBtn_ConfigsClick
-        OnMouseLeave = PnlsBtnMouseLeave
-        OnMouseMove = PnlsBtnMouseMove
-      end
-    end
-    object pnl_Configs: TPanel
-      Left = 0
-      Top = 41
-      Width = 1004
-      Height = 451
-      Align = alClient
-      BevelOuter = bvNone
-      TabOrder = 1
-      object Panel1: TPanel
-        Left = 0
-        Top = 379
-        Width = 1004
-        Height = 72
-        Align = alBottom
-        TabOrder = 0
-        object BitBtn1: TBitBtn
-          AlignWithMargins = True
-          Left = 766
-          Top = 4
-          Width = 234
-          Height = 64
-          Cursor = crHandPoint
-          Align = alRight
-          Caption = 'Salvar Configura'#231#245'es'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -15
-          Font.Name = 'Tahoma'
-          Font.Style = [fsBold]
-          Layout = blGlyphTop
-          ParentFont = False
-          TabOrder = 0
-          OnClick = BitBtn1Click
-        end
-      end
-      object gb_Config_Seg: TGroupBox
-        AlignWithMargins = True
-        Left = 3
-        Top = 3
-        Width = 998
-        Height = 152
-        Align = alTop
-        Caption = 'Configura'#231#245'es de Seguran'#231'a Pix'
-        TabOrder = 1
-        object Label2: TLabel
-          Left = 404
-          Top = 64
-          Width = 75
-          Height = 13
-          Caption = 'Tipo Chave PIX'
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'MS Sans Serif'
-          Font.Style = []
-          ParentFont = False
-        end
-        object btn_Cert: TSpeedButton
-          Left = 171
-          Top = 77
-          Width = 25
-          Height = 23
-          Cursor = crHandPoint
-          Glyph.Data = {
-            36040000424D3604000000000000360000002800000010000000100000000100
-            2000000000000004000000000000000000000000000000000000000000060605
-            05A7181613DF0000003D00000000000000000000000000000000000000000000
-            0000000000000000000000000000000000000000000000000000070707A7ACA8
-            A4FFA69A8DFF2C2722F30000003D000000000000000000000000000000000000
-            00000000000000000000000000000000000000000000000000001C1918E0C1B8
-            B0FFDCD7D1FFA69A8DFF2C2722F30000003D0000000000000000000000000000
-            00000000000000000000000000000000000000000000000000000000003D312D
-            28F3C1B8B0FFDCD7D1FFA69A8DFF2C2722F30000003300000012000000540000
-            0072000000680000003400000000000000000000000000000000000000000000
-            003D312D28F3C1B8B0FFDCD7D1FF998E83FF020201DB322D28F6685E53FF7E72
-            66FF796F63FF59524BFF131110CE000000360000000000000000000000000000
-            00000000003D312D28F3B2ABA3FFD0C9C3FF887B6DFFA5998BFFA99E87FFB3A9
-            6EFFAA9F73FFA39789FFA09387FF423E3AF70000004800000000000000000000
-            00000000000000000034020202DC8F8275FFAFA598FFC3B14CFFEDE143FFF9F3
-            5CFFF7EF53FFD5C435FFA7986CFFAB9F93FF32312FEE00000017000000000000
-            00000000000000000012342E29F7B3A89DFFBCA243FFE3C517FFEBD626FFEFDD
-            26FFEDDB26FFE8D026FFD2AF0BFFA3947AFF9F978FFF00000085000000000000
-            00000000000000000054726A61FFB5A998FFCD9D02FFD9B000FFDFBC00FFE2C2
-            00FFE1C000FFDCB700FFD6A900FFAA8A35FFBCB2A8FF1E1D1CCF000000000000
-            0000000000000000007391887EFFB4A17EFFCA9100FFD09E00FFD5A700FFD7AC
-            00FFD6AA00FFD3A300FFCE9800FFAD801AFFBAB0A6FF3F3D3CED000000000000
-            000000000000000000688E867EFFB4A38AFFC18000FFC78B01FFCD9607FFD09C
-            0DFFD09C10FFCD9812FFC98F13FFA57825FFC5BDB4FF353434E3000000000000
-            00000000000000000034635D57FFC7C0B7FFB27C2AFFD1A04BFFD4A54DFFD5A7
-            4DFFD5A64DFFD3A34DFFCC963FFF9E8157FFD2CDC7FF090909AF000000000000
-            00000000000000000000131110CEC8C1BAFFB19C82FFC6975CFFE6CBA6FFE7CD
-            A8FFE7CDA8FFDDB98AFFA27640FFC7C0B7FF858381FF0000004B000000000000
-            0000000000000000000000000036464340F7D8D3CDFFB8AA99FFA88357FFB794
-            6AFFAE8A5EFFA18360FFCEC7C0FFB9B6B4FF070707AA00000000000000000000
-            000000000000000000000000000000000048343231EEB9B5B1FFE3E0DCFFDDD8
-            D3FFE1DDD8FFE2DFDCFF898785FF070707AA0000000800000000000000000000
-            00000000000000000000000000000000000000000017000000851E1D1DD03F3D
-            3CED353434E3090909AF0000004B000000000000000000000000}
-          OnClick = btn_CertClick
-        end
-        object btn_KeyCert: TSpeedButton
-          Left = 358
-          Top = 78
-          Width = 25
-          Height = 23
-          Cursor = crHandPoint
-          Glyph.Data = {
-            36040000424D3604000000000000360000002800000010000000100000000100
-            2000000000000004000000000000000000000000000000000000000000060605
-            05A7181613DF0000003D00000000000000000000000000000000000000000000
-            0000000000000000000000000000000000000000000000000000070707A7ACA8
-            A4FFA69A8DFF2C2722F30000003D000000000000000000000000000000000000
-            00000000000000000000000000000000000000000000000000001C1918E0C1B8
-            B0FFDCD7D1FFA69A8DFF2C2722F30000003D0000000000000000000000000000
-            00000000000000000000000000000000000000000000000000000000003D312D
-            28F3C1B8B0FFDCD7D1FFA69A8DFF2C2722F30000003300000012000000540000
-            0072000000680000003400000000000000000000000000000000000000000000
-            003D312D28F3C1B8B0FFDCD7D1FF998E83FF020201DB322D28F6685E53FF7E72
-            66FF796F63FF59524BFF131110CE000000360000000000000000000000000000
-            00000000003D312D28F3B2ABA3FFD0C9C3FF887B6DFFA5998BFFA99E87FFB3A9
-            6EFFAA9F73FFA39789FFA09387FF423E3AF70000004800000000000000000000
-            00000000000000000034020202DC8F8275FFAFA598FFC3B14CFFEDE143FFF9F3
-            5CFFF7EF53FFD5C435FFA7986CFFAB9F93FF32312FEE00000017000000000000
-            00000000000000000012342E29F7B3A89DFFBCA243FFE3C517FFEBD626FFEFDD
-            26FFEDDB26FFE8D026FFD2AF0BFFA3947AFF9F978FFF00000085000000000000
-            00000000000000000054726A61FFB5A998FFCD9D02FFD9B000FFDFBC00FFE2C2
-            00FFE1C000FFDCB700FFD6A900FFAA8A35FFBCB2A8FF1E1D1CCF000000000000
-            0000000000000000007391887EFFB4A17EFFCA9100FFD09E00FFD5A700FFD7AC
-            00FFD6AA00FFD3A300FFCE9800FFAD801AFFBAB0A6FF3F3D3CED000000000000
-            000000000000000000688E867EFFB4A38AFFC18000FFC78B01FFCD9607FFD09C
-            0DFFD09C10FFCD9812FFC98F13FFA57825FFC5BDB4FF353434E3000000000000
-            00000000000000000034635D57FFC7C0B7FFB27C2AFFD1A04BFFD4A54DFFD5A7
-            4DFFD5A64DFFD3A34DFFCC963FFF9E8157FFD2CDC7FF090909AF000000000000
-            00000000000000000000131110CEC8C1BAFFB19C82FFC6975CFFE6CBA6FFE7CD
-            A8FFE7CDA8FFDDB98AFFA27640FFC7C0B7FF858381FF0000004B000000000000
-            0000000000000000000000000036464340F7D8D3CDFFB8AA99FFA88357FFB794
-            6AFFAE8A5EFFA18360FFCEC7C0FFB9B6B4FF070707AA00000000000000000000
-            000000000000000000000000000000000048343231EEB9B5B1FFE3E0DCFFDDD8
-            D3FFE1DDD8FFE2DFDCFF898785FF070707AA0000000800000000000000000000
-            00000000000000000000000000000000000000000017000000851E1D1DD03F3D
-            3CED353434E3090909AF0000004B000000000000000000000000}
-          OnClick = btn_KeyCertClick
-        end
-        object edtCertificado: TLabeledEdit
-          Left = 15
-          Top = 79
-          Width = 150
-          Height = 21
-          EditLabel.Width = 100
-          EditLabel.Height = 13
-          EditLabel.Caption = 'Caminho Certificado:'
-          TabOrder = 0
-        end
-        object edtSenhaCertificado: TLabeledEdit
-          Left = 202
-          Top = 80
-          Width = 150
-          Height = 21
-          EditLabel.Width = 89
-          EditLabel.Height = 13
-          EditLabel.Caption = 'Senha Certificado:'
-          TabOrder = 1
-        end
-        object edtClientID: TLabeledEdit
-          Left = 291
-          Top = 39
-          Width = 265
-          Height = 21
-          EditLabel.Width = 41
-          EditLabel.Height = 13
-          EditLabel.Caption = 'Client ID'
-          TabOrder = 2
-        end
-        object edtClientSecreat: TLabeledEdit
-          Left = 569
-          Top = 39
-          Width = 412
-          Height = 21
-          EditLabel.Width = 61
-          EditLabel.Height = 13
-          EditLabel.Caption = 'Client Secret'
-          TabOrder = 3
-        end
-        object edtDeveloperKey: TLabeledEdit
-          Left = 15
-          Top = 39
-          Width = 265
-          Height = 21
-          EditLabel.Width = 125
-          EditLabel.Height = 13
-          EditLabel.Caption = 'Developer Application Key'
-          TabOrder = 4
-        end
-        object edtChavePix: TLabeledEdit
-          Left = 569
-          Top = 79
-          Width = 425
-          Height = 21
-          EditLabel.Width = 48
-          EditLabel.Height = 13
-          EditLabel.Caption = 'Chave Pix'
-          TabOrder = 5
-        end
-        object CbbTipoChavePix: TComboBox
-          Left = 389
-          Top = 79
-          Width = 167
-          Height = 21
-          TabOrder = 6
-        end
-        object edtNomeRecebedore: TLabeledEdit
-          Left = 569
-          Top = 121
-          Width = 412
-          Height = 21
-          EditLabel.Width = 111
-          EditLabel.Height = 13
-          EditLabel.Caption = 'Nome Titular da Conta:'
-          MaxLength = 25
-          TabOrder = 7
-        end
-        object edtCidadeRecebedor: TLabeledEdit
-          Left = 15
-          Top = 121
-          Width = 541
-          Height = 21
-          EditLabel.Width = 56
-          EditLabel.Height = 13
-          EditLabel.Caption = 'Cidade Loja'
-          TabOrder = 8
-        end
-      end
-      object gbConfigImpressora: TGroupBox
-        Left = 0
-        Top = 264
-        Width = 1004
-        Height = 115
-        Align = alBottom
-        Caption = 'Impressora'
-        TabOrder = 2
-        object Label25: TLabel
-          Left = 532
-          Top = 47
-          Width = 66
-          Height = 13
-          Caption = 'Linhas '#224' pular'
-          Color = clBtnFace
-          ParentColor = False
-        end
-        object Label26: TLabel
-          Left = 407
-          Top = 47
-          Width = 98
-          Height = 13
-          Caption = 'Espa'#231'os entre linhas'
-          Color = clBtnFace
-          ParentColor = False
-        end
-        object Label27: TLabel
-          Left = 720
-          Top = 47
-          Width = 38
-          Height = 13
-          Caption = 'Colunas'
-          Color = clBtnFace
-          ParentColor = False
-        end
-        object Label28: TLabel
-          Left = 9
-          Top = 47
-          Width = 34
-          Height = 13
-          Caption = 'Modelo'
-          Transparent = False
-        end
-        object Label7: TLabel
-          Left = 204
-          Top = 47
-          Width = 26
-          Height = 13
-          Caption = 'Porta'
-          Color = clBtnFace
-          ParentColor = False
-        end
-        object Label29: TLabel
-          Left = 620
-          Top = 47
-          Width = 71
-          Height = 13
-          Caption = 'P'#225'g. de c'#243'digo'
-          Transparent = False
-        end
-        object btSerial: TSpeedButton
-          Left = 847
-          Top = 64
-          Width = 25
-          Height = 23
-          Cursor = crHandPoint
-          Glyph.Data = {
-            36040000424D3604000000000000360000002800000010000000100000000100
-            2000000000000004000000000000000000000000000000000000000000000000
-            0000000000000000000000000000000000000000000000000000000000000000
-            0000000000000000000000000000000000000000000000000000000000000000
-            0000000000000000000000000000000000000000000000000000000000000000
-            00000000000000000000000000000000000000000000000000000000000B0000
-            0051000000580000005800000058000000580000005800000058000000580000
-            005800000058000000580000005800000058000000510000000B000000B90000
-            0066000000580000005800000058000000580000005800000058000000580000
-            00580000005800000058000000580000005800000066000000B9000000A80000
-            0000000000000000000000000000000000000000000000000000000000000000
-            00000000000000000000000000000000000000000000000000A8000000A80000
-            0000000000000000000F000000B7000000A8000000A8000000A8000000A80000
-            00A8000000A8000000B70000000F0000000000000000000000A8000000A80000
-            0000000000000000007E0000005A0000001C00000037000000370000001C0000
-            001C00000037000000460000007E0000000000000000000000A8000000A80000
-            003700000037000000AA000000020000001C0000000F0000000F0000001C0000
-            001C0000000F00000011000000AA0000003700000037000000A8000000A80000
-            003700000037000000AD000000000000001C0000000F0000000F0000001C0000
-            001C0000000F0000000F000000AD0000003700000037000000A8000000A80000
-            000000000000000000A70000001C0000001C00000037000000370000001C0000
-            001C0000003700000000000000A70000000000000000000000A8000000A80000
-            0000000000000000005F000000A9000000A8000000A8000000A8000000A80000
-            00A8000000A8000000A90000005F0000000000000000000000A8000000A80000
-            0000000000000000000000000000000000000000000000000000000000000000
-            00000000000000000000000000000000000000000000000000A8000000B90000
-            0066000000580000005800000058000000580000005800000058000000580000
-            00580000005800000058000000580000005800000066000000B90000000B0000
-            0051000000580000005800000058000000580000005800000058000000580000
-            005800000058000000580000005800000058000000510000000B000000000000
-            0000000000000000000000000000000000000000000000000000000000000000
-            0000000000000000000000000000000000000000000000000000000000000000
-            0000000000000000000000000000000000000000000000000000000000000000
-            0000000000000000000000000000000000000000000000000000}
-          OnClick = btSerialClick
-        end
-        object btProcuraImpressoras: TSpeedButton
-          Left = 816
-          Top = 64
-          Width = 25
-          Height = 23
-          Cursor = crHandPoint
-          Glyph.Data = {
-            36040000424D3604000000000000360000002800000010000000100000000100
-            2000000000000004000000000000000000000000000000000000000000060605
-            05A7181613DF0000003D00000000000000000000000000000000000000000000
-            0000000000000000000000000000000000000000000000000000070707A7ACA8
-            A4FFA69A8DFF2C2722F30000003D000000000000000000000000000000000000
-            00000000000000000000000000000000000000000000000000001C1918E0C1B8
-            B0FFDCD7D1FFA69A8DFF2C2722F30000003D0000000000000000000000000000
-            00000000000000000000000000000000000000000000000000000000003D312D
-            28F3C1B8B0FFDCD7D1FFA69A8DFF2C2722F30000003300000012000000540000
-            0072000000680000003400000000000000000000000000000000000000000000
-            003D312D28F3C1B8B0FFDCD7D1FF998E83FF020201DB322D28F6685E53FF7E72
-            66FF796F63FF59524BFF131110CE000000360000000000000000000000000000
-            00000000003D312D28F3B2ABA3FFD0C9C3FF887B6DFFA5998BFFA99E87FFB3A9
-            6EFFAA9F73FFA39789FFA09387FF423E3AF70000004800000000000000000000
-            00000000000000000034020202DC8F8275FFAFA598FFC3B14CFFEDE143FFF9F3
-            5CFFF7EF53FFD5C435FFA7986CFFAB9F93FF32312FEE00000017000000000000
-            00000000000000000012342E29F7B3A89DFFBCA243FFE3C517FFEBD626FFEFDD
-            26FFEDDB26FFE8D026FFD2AF0BFFA3947AFF9F978FFF00000085000000000000
-            00000000000000000054726A61FFB5A998FFCD9D02FFD9B000FFDFBC00FFE2C2
-            00FFE1C000FFDCB700FFD6A900FFAA8A35FFBCB2A8FF1E1D1CCF000000000000
-            0000000000000000007391887EFFB4A17EFFCA9100FFD09E00FFD5A700FFD7AC
-            00FFD6AA00FFD3A300FFCE9800FFAD801AFFBAB0A6FF3F3D3CED000000000000
-            000000000000000000688E867EFFB4A38AFFC18000FFC78B01FFCD9607FFD09C
-            0DFFD09C10FFCD9812FFC98F13FFA57825FFC5BDB4FF353434E3000000000000
-            00000000000000000034635D57FFC7C0B7FFB27C2AFFD1A04BFFD4A54DFFD5A7
-            4DFFD5A64DFFD3A34DFFCC963FFF9E8157FFD2CDC7FF090909AF000000000000
-            00000000000000000000131110CEC8C1BAFFB19C82FFC6975CFFE6CBA6FFE7CD
-            A8FFE7CDA8FFDDB98AFFA27640FFC7C0B7FF858381FF0000004B000000000000
-            0000000000000000000000000036464340F7D8D3CDFFB8AA99FFA88357FFB794
-            6AFFAE8A5EFFA18360FFCEC7C0FFB9B6B4FF070707AA00000000000000000000
-            000000000000000000000000000000000048343231EEB9B5B1FFE3E0DCFFDDD8
-            D3FFE1DDD8FFE2DFDCFF898785FF070707AA0000000800000000000000000000
-            00000000000000000000000000000000000000000017000000851E1D1DD03F3D
-            3CED353434E3090909AF0000004B000000000000000000000000}
-          OnClick = btProcuraImpressorasClick
-        end
-        object seLinhasPular: TSpinEdit
-          Left = 532
-          Top = 64
-          Width = 75
-          Height = 22
-          MaxValue = 255
-          MinValue = 0
-          TabOrder = 4
-          Value = 0
-        end
-        object seEspLinhas: TSpinEdit
-          Left = 407
-          Top = 64
-          Width = 108
-          Height = 22
-          MaxValue = 255
-          MinValue = 0
-          TabOrder = 3
-          Value = 0
-        end
-        object seColunas: TSpinEdit
-          Left = 720
-          Top = 64
-          Width = 75
-          Height = 22
-          MaxValue = 999
-          MinValue = 1
-          TabOrder = 5
-          Value = 48
-        end
-        object cbxModeloPosPrinter: TComboBox
-          Left = 9
-          Top = 64
-          Width = 180
-          Height = 21
-          Style = csDropDownList
-          TabOrder = 0
-        end
-        object cbxPorta: TComboBox
-          Left = 204
-          Top = 64
-          Width = 161
-          Height = 21
-          TabOrder = 1
-        end
-        object cbxPagCodigo: TComboBox
-          Left = 620
-          Top = 64
-          Width = 76
-          Height = 21
-          Hint = 'Pagina de c'#243'digo usada pela Impressora POS'
-          Style = csDropDownList
-          TabOrder = 2
-        end
-        object btTestarPosPrinter: TBitBtn
-          Left = 887
-          Top = 15
-          Width = 115
-          Height = 98
-          Cursor = crHandPoint
-          Align = alRight
-          Caption = 'Testar Impressora'
-          Layout = blGlyphTop
-          TabOrder = 6
-          OnClick = btTestarPosPrinterClick
-        end
-      end
-      object grbxPSP: TGroupBox
-        AlignWithMargins = True
-        Left = 3
-        Top = 161
-        Width = 998
-        Height = 100
-        Align = alClient
-        Caption = 'Configura'#231#245'es Psp'
-        TabOrder = 3
-        object Label4: TLabel
-          Left = 16
-          Top = 44
-          Width = 18
-          Height = 13
-          Caption = 'Psp'
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'MS Sans Serif'
-          Font.Style = []
-          ParentFont = False
-        end
-        object Label5: TLabel
-          Left = 316
-          Top = 44
-          Width = 68
-          Height = 13
-          Caption = 'Tipo Ambiente'
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'MS Sans Serif'
-          Font.Style = []
-          ParentFont = False
-        end
-        object CbbPSP: TComboBox
-          Left = 16
-          Top = 60
-          Width = 286
-          Height = 21
-          TabOrder = 0
-        end
-        object CbbTipoAmbiente: TComboBox
-          Left = 316
-          Top = 60
-          Width = 160
-          Height = 21
-          TabOrder = 1
         end
       end
     end
