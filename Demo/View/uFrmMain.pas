@@ -744,12 +744,12 @@ begin
   try
     ConfigIni := TIniFile.Create(PathConfigIni);
     try
-      edtCertificado.Text       :=  ConfigIni.ReadString('PIX', 'Certificado', 'D:\Projetos\DBSistema\Exe\DBPdvEx\Utilitarios\CertificadoDigital\Certificado_Atenas_2022.pfx');
-      edtSenhaCertificado.Text  :=  ConfigIni.ReadString('PIX', 'Senha Certificado', '586270');
-      edtClientID.Text          :=  ConfigIni.ReadString('PIX', 'Client ID', 'eyJpZCI6IjVkIiwiY29kaWdvUHVibGljYWRvciI6MCwiY29kaWdvU29mdHdhcmUiOjI5MTgyLCJzZXF1ZW5jaWFsSW5zdGFsYWNhbyI6MX0');
-      edtClientSecreat.Text     :=  ConfigIni.ReadString('PIX', 'Client Secreat', 'eyJpZCI6ImM4YzAwOTAtYjUyNS00N2RjLWE2ZGEtZGI1YmQ0OWRmYWQ3NDZiYjI2YTQtOCIsImNvZGlnb1B1YmxpY2Fkb3Ii'+
-                                                                                  'OjAsImNvZGlnb1NvZnR3YXJlIjoyOTE4Miwic2VxdWVuY2lhbEluc3RhbGFjYW8iOjEsInNlcXVlbmNpYWxDcmVkZW5jaWFsIjoxLCJhbWJpZW50ZSI6ImhvbW9sb2dhY2FvIiwiaWF0IjoxNjQ0MDY5ODYzODU2fQ');
-      edtDeveloperKey.Text      :=  ConfigIni.ReadString('PIX', 'Developer Application Key', 'd27b07790affab401368e17dc0050e56b9b1a5b8');
+      edtCertificado.Text       :=  ConfigIni.ReadString('PIX', 'Certificado', 'Dx');
+      edtSenhaCertificado.Text  :=  ConfigIni.ReadString('PIX', 'Senha Certificado', '');
+      edtClientID.Text          :=  ConfigIni.ReadString('PIX', 'Client ID', '');
+      edtClientSecreat.Text     :=  ConfigIni.ReadString('PIX', 'Client Secreat', ''+
+                                                                                  '');
+      edtDeveloperKey.Text      :=  ConfigIni.ReadString('PIX', 'Developer Application Key', '');
       edtChavePix.Text          :=  ConfigIni.ReadString('PIX', 'Chave PIX', 'atenassoftwares');
       CbbTipoChavePix.ItemIndex :=  ConfigIni.ReadInteger('PIX', 'Tipo Chave PIX', 0);
       cbbTipoQRCode.ItemIndex   :=  ConfigIni.ReadInteger('PIX', 'Tipo QRCode', 0);
