@@ -210,9 +210,10 @@ type
     procedure SpeedButton2Click(Sender: TObject);
   private
 
-    bRecebido  : Boolean;
     cQrCode,
     cFantasia  : String;
+
+    PathLogo: string;
 
 
     procedure SetResetConfigPnlBtn(Sender: TObject);
@@ -288,6 +289,7 @@ procedure TFrmMain.btnImprQrCodeClick(Sender: TObject);
 var
   mImp  : TStringList;
 begin
+  mImp  := TStringList.Create;
   try
     if (ACBrPosPrinter1.Porta <> '') then
       ACBrPosPrinter1.Ativar
@@ -303,7 +305,7 @@ begin
     ACBrPosPrinter1.configqrcode.ErrorLevel         := 0;
 
     //aplicando
-    mImp  := TStringList.Create;
+
     mImp.Clear;
     mImp.Add('</zera>');
     mImp.Add('</ce>');
@@ -563,6 +565,9 @@ end;
 
 procedure TFrmMain.SetConfigPixObrig(Sender: TObject);
 begin
+  if FileExists(PathLogo) then
+    imgQRCODE.Picture.LoadFromFile(PathLogo);
+
     TRscPix(Sender).TitularPix.NomeTitularConta                    :=  edtNomeRecebedore.Text;
     TRscPix(Sender).TitularPix.CidadeTitularConta                  :=  edtCidadeRecebedor.Text;
 
@@ -647,6 +652,12 @@ var
   S:  TTipoPSP;
   T:  TTipoAmbiente;
 begin
+
+  PathLogo  :=  ExtractFilePath(ParamStr(0)) + 'imglogo.png';
+
+  if not FileExists(PathLogo) then
+    imgQRCODE.Picture.SaveToFile(PathLogo);
+
 
   PathConfigIni :=  ExtractFilePath(ParamStr(0)) + 'Config.ini';
   CriarConfigIni;
@@ -844,7 +855,6 @@ begin
         begin
           if (RespCobGet.Status = 'CONCLUIDA') then
             begin
-              edtTXID.Text          :=  RespCobGet.pix[0].txid;
               edt_e2eid.Text        :=  RespCobGet.pix[0].endToEndId;
               edtValorPix.Text      :=  FloatToStr(RespCobGet.pix[0].valor);
               edtMsgPix.Text        :=  RespCobGet.solicitacaopagador;
@@ -862,20 +872,19 @@ begin
             end
           else
             begin
-
+              edtValorPix.Text      :=  ReplaceStr(RespCobGet.valor.original, '.', ',');
+              edtMsgPix.Text        :=  RespCobGet.solicitacaopagador;
             end;
 
 
           if RespCobGet.textoImagemQRcode <> '' then
             begin
               mmPayload.Text  :=  RespCobGet.textoImagemQRcode;
-              QRCodeWin(imgQRCODE, RespCobGet.textoImagemQRcode);
               cQrCode := RespCobGet.textoImagemQRcode;
             end
           else
             begin
               mmPayload.Text  :=  RespCobGet.location;
-              QRCodeWin(imgQRCODE, RespCobGet.location);
               cQrCode := RespCobGet.location;
             end;
         end;
@@ -889,8 +898,6 @@ end;
 
 procedure TFrmMain.RscPix1CobPatch(Sender: TObject;
   const RespCobPatch: TRespCobPatch; Erro: string);
-var
-  cValor : String ;
 begin
   DBGrid1.Visible :=  False;
   if (Erro = '') then
@@ -979,15 +986,15 @@ begin
                 begin
                   FDMemTable1.Append;
                   if RespPixGet.pix[i].pagador.cpf = EmptyStr then
-                    FDMemTable1cpfcnpjpagador.Value  :=  RespPixGet.pix[i].pagador.cnpj
+                    FDMemTable1cpfcnpjpagador.AsString  :=  RespPixGet.pix[i].pagador.cnpj
                   else
-                    FDMemTable1cpfcnpjpagador.Value  :=  RespPixGet.pix[i].pagador.cpf;
-                  FDMemTable1nomePagador.Value   :=  RespPixGet.pix[i].pagador.nome;
-                  FDMemTable1inforpagador.Value   :=  RespPixGet.pix[i].infoPagador;
-                  FDMemTable1endtoebdid.Value     :=  RespPixGet.pix[i].endToEndId;
-                  FDMemTable1txid.Value           :=  RespPixGet.pix[i].txid;
+                    FDMemTable1cpfcnpjpagador.AsString  :=  RespPixGet.pix[i].pagador.cpf;
+                  FDMemTable1nomePagador.AsString   :=  RespPixGet.pix[i].pagador.nome;
+                  FDMemTable1inforpagador.AsString   :=  RespPixGet.pix[i].infoPagador;
+                  FDMemTable1endtoebdid.AsString     :=  RespPixGet.pix[i].endToEndId;
+                  FDMemTable1txid.AsString           :=  RespPixGet.pix[i].txid;
                   FDMemTable1valor.AsCurrency     :=  RespPixGet.pix[i].valor;
-                  FDMemTable1horario.Value        :=  RespPixGet.pix[i].horario;
+                  FDMemTable1horario.AsString        :=  RespPixGet.pix[i].horario;
                   FDMemTable1.Post;
                 end;
               DBGrid1.Visible :=  True;
