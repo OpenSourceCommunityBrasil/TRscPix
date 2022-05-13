@@ -22,12 +22,19 @@
 Obs:
 
 *padrão de forma e está, alegadamente, com a API padrão do padrão e está, alegadamente, com o ambiente padrão
+
 % - O ambiente de padrão considere todos os acessos como uma única conta, comprometendo a privacidade
+
 / - API requer parâmetro proprietário x-api-key que desobedece ao regramento
+
 ! - Não há, desobedecendo manual de padrões de segurança e padrões de segurança
+
 ^ - Acesso à certificação de certificação de embalagem txid/txId
+
 @ - Acesso à documentação de certificação da API Pix apenas para registro, possivelmente para dificuldade em denúncias de não conformidade
+
 ~ - Chamada de webhook com padrões de cadastro com padrões e sintaxes do padrão
+
 
 ## O componente faz uso das bibliotecas do:
 
