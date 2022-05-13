@@ -25,18 +25,13 @@
 { license Apache-2.0                    }
 {                                       }
 {=======================================}
-
 unit uRscPix.Parametros;
-
 interface
-
 uses  System.Generics.collections, uRscPix.funcoes, uRscPix.Pagador,
       uRscPix.InformacoesAdicionais, uRscPix.Calendario,
       uRscPix.Devolucao, uRscPix.Recebedor, uRscPix.Valor, System.SysUtils
       ;
-
 type
-
   TPIXParams = class
       private
           FendToEndId  : String;
@@ -47,7 +42,6 @@ type
           FinfoPagador : string;
           FValorToString: String;
           FTXID: String;
-
           procedure SetValor(const Value: Currency);
       public
           property endToEndId   : String    read FendToEndId    write FendToEndId;
@@ -58,12 +52,9 @@ type
           property horario      : String    read Fhorario       write Fhorario;
           property pagador      : TTPagador read Fpagador       write Fpagador;
           property infoPagador  : string    read FinfoPagador   write FinfoPagador;
-
           function ValidaDaddos:boolean;
-
     destructor Destroy; override;
   end;
-
   TPix_GetListPixsRecebPeriodo = class
     private
       FData_Hora_Ini: TDateTime;
@@ -81,16 +72,40 @@ type
       property Data_Hora_Fim_ToStr  : String read FData_Hora_Fim_ToStr;
   end;
 
+  {
+    "paginacao": {
+      "paginaAtual": 0,
+      "itensPorPagina": 100,
+      "quantidadeDePaginas": 1,
+      "quantidadeTotalDeItens": 2
+  }
+  TPaginacaoPixs = class
+  private
+      FquantidadeTotalDeItens: integer;
+      FquantidadeDePaginas: integer;
+      FpaginaAtual: integer;
+      FitensPorPagina: integer;
+      procedure SetitensPorPagina(const Value: integer);
+      procedure SetpaginaAtual(const Value: integer);
+      procedure SetquantidadeDePaginas(const Value: integer);
+      procedure SetquantidadeTotalDeItens(const Value: integer);    
+    public
+      property paginaAtual: integer read FpaginaAtual write SetpaginaAtual;
+      property itensPorPagina: integer read FitensPorPagina write SetitensPorPagina;
+      property quantidadeDePaginas: integer read FquantidadeDePaginas write SetquantidadeDePaginas;
+      property quantidadeTotalDeItens: integer read FquantidadeTotalDeItens write SetquantidadeTotalDeItens;
+  end;
   TParametrosListaPixs = class
   private
     Ffim: string;
     Finicio: string;
+    Fpaginacao: TPaginacaoPixs;  
+    procedure Setpaginacao(const Value: TPaginacaoPixs);  
   public
     property inicio : string read Finicio write Finicio;
     property fim    : string read Ffim    write Ffim;
+    property paginacao: TPaginacaoPixs  read Fpaginacao write Setpaginacao;
   end;
-
-
 
   TPix_Parametros = class
   private
@@ -104,21 +119,17 @@ type
     Fvalor              : TTValor;
     Fsolicitacaopagador : String;
     Finfo_adicionais    : TArray<TInformacoesAdicionais>;
-
     Finformacaopagador  : String;
     FDevolucao          : tArray<TTDevolucao>;
-
     fdata_inicio_criacao: String;
     fdata_final_criacao : String;
     ftextoImagemQRcode  : String;
-
     FPIX                : tArray<TPIXParams>;
     fpagador            : TTPagador;
     FHorario            : string;
     Fparametros         : TParametrosListaPixs;
     FendToEndID         : String;
     FinfoPagador:        string;
-
   public
     {Cob}
     property status               : String                          read Fstatus              write Fstatus;
@@ -140,11 +151,8 @@ type
     property infoPagador          : string                          read FinfoPagador         write FinfoPagador;
     property Pagador              : TTPagador                       read fpagador             write fpagador;
     property parametros           : TParametrosListaPixs            read Fparametros          write Fparametros;
-
     destructor Destroy;override;
-
   end;
-
   TPix_Put = class
   private
     fpagador: TTPagador;
@@ -165,16 +173,13 @@ type
     property horario              : string                          read FHorario             write FHorario;
     property infoPagador          : string                          read FinfoPagador         write FinfoPagador;
     property pagador              : TTPagador                       read fpagador             write fpagador;
-
     {Devolução}
     property id                   : String                          read Fid                  write Fid;
     property status               : String                          read Fstatus              write Fstatus;
     property motivo               : String                          read Fmotivo              write Fmotivo;
     property rtrId                : String                          read FrtrId               write FrtrId;
-
     destructor Destroy;override;
   end;
-
   TPix_Get = class
   private
     fpagador: TTPagador;
@@ -195,76 +200,54 @@ type
     property valor                : Currency                        read Fvalor               write SetValor;
     property infoPagador          : string                          read FinfoPagador         write FinfoPagador;
     property Pagador              : TTPagador                       read fpagador             write fpagador;
-
     {Devolução}
     property id                   : String                          read Fid                  write Fid;
     property status               : String                          read Fstatus              write Fstatus;
     property motivo               : String                          read Fmotivo              write Fmotivo;
     property rtrId                : String                          read FrtrId               write FrtrId;
-
     property pix                  : TArray<TPIXParams>              read Fpix                 write Fpix;
     property parametros           : TParametrosListaPixs            read Fparametros          write Fparametros;
-
     destructor Destroy;override;
   end;
-
 { fazer quando de vontade
-
 	"horario": {
 		"liquidacao": "2022-03-12T16:44:11.00-03:00",
 		"solicitacao": "2022-03-12T16:44:10.00-03:00"
 }
-
 implementation
-
 { TPix_Entrada }
-
 destructor TPix_Parametros.Destroy;
 var Vinfo_adicionais : TInformacoesAdicionais;
     Vdevolucao : TTDevolucao;
     Vpix : TPIXParams;
-
 begin
-
 
   if  Assigned(FRecebedor) then
     FRecebedor.Free;
-
   if  Assigned(Fvalor) then
     Fvalor.DisposeOf;
-
   if  Assigned(Fpagador) then
     Fpagador.Free;
-
   if  Assigned(Fcalendario) then
     Fcalendario.DisposeOf;
-
   for Vinfo_adicionais in Finfo_adicionais do
     Vinfo_adicionais.Free;
-
   for Vdevolucao in FDevolucao do
     Vdevolucao.Free;
-
   for Vpix in Fpix do
     Vpix.Free;
-
   if Assigned(Fparametros) then
     Fparametros.Free;
-
   inherited;
 end;
 
-
-
 { TPIX }
-
 destructor TPIXParams.Destroy;
 begin
   if  Assigned(Fpagador) then
     Fpagador.Free;
   inherited;
 end;
-
 
 procedure TPIXParams.SetValor(const Value: Currency);
 begin
@@ -273,32 +256,26 @@ begin
       raise Exception.Create('Somente Valores Positivos são válidos!');
       Exit;
     end;
-
   FValor := Value;
-
   if FValor > 0 then
     begin
       FValorToString := FormatFloat('#0.00', FValor);
-
       if Pos(',', FValorToString) > 0 then
          FValorToString := StringReplace(FValorToString,',','.',[rfReplaceAll]);
     end
   else
     FValorToString  :=  '0';
 end;
-
 function TPIXParams.ValidaDaddos: boolean;
 var
   Erro  : String;
 begin
   Erro  :=  '';
   Result  :=  True;
-
   if Valor < 0 then
     begin
       Erro  :=  'O valor deve ser maior que Zero!';
     end;
-
   if endToEndId = '' then
     begin
       if Erro <> '' then
@@ -306,7 +283,6 @@ begin
       else
         Erro  :=  'O E2eid deve ser informado!';
     end;
-
   if TXIDDev = '' then
     begin
       if Erro <> '' then
@@ -314,7 +290,6 @@ begin
       else
         Erro  :=  'O TXIDDev deve ser informado!';
     end;
-
   if Erro <> '' then
     begin
       Result  :=  False;
@@ -322,33 +297,23 @@ begin
     end;
 end;
 
-
-
 { TPix_GetListPixsRecebPeriodo }
-
 procedure TPix_GetListPixsRecebPeriodo.SetData_Hora_Fim(const Value: TDateTime);
 begin
   FData_Hora_Fim := Value;
-
   FData_Hora_Fim_ToStr  :=  FormatDataPix(FData_Hora_Fim);
 end;
-
 procedure TPix_GetListPixsRecebPeriodo.SetData_Hora_Ini(const Value: TDateTime);
 begin
   FData_Hora_Ini := Value;
-
   FData_Hora_Ini_ToStr  :=  FormatDataPix(FData_Hora_Ini);
 end;
-
 { TPix_Get }
-
 destructor TPix_Get.Destroy;
 var Vinfo_adicionais : TInformacoesAdicionais;
     Vdevolucao : TTDevolucao;
     Vpix : TPIXParams;
-
 begin
-
 //
 //  if  Assigned(FRecebedor) then
 //    FRecebedor.Free;
@@ -367,32 +332,52 @@ begin
 //
 //  for Vdevolucao in FDevolucao do
 //    Vdevolucao.Free;
-
   for Vpix in Fpix do
     Vpix.Free;
-
   if Assigned(Fparametros) then
     Fparametros.Free;
-
   inherited;
 end;
-
 procedure TPix_Get.SetValor(const Value: Currency);
 begin
   Fvalor := Value;
 end;
-
 { TPix_Put }
-
 destructor TPix_Put.Destroy;
 begin
-
   inherited;
 end;
-
 procedure TPix_Put.SetValor(const Value: Currency);
 begin
+end;
+{ TPaginacaoPixs }
 
+procedure TPaginacaoPixs.SetitensPorPagina(const Value: integer);
+begin
+  FitensPorPagina := Value;
+end;
+
+procedure TPaginacaoPixs.SetpaginaAtual(const Value: integer);
+begin
+  FpaginaAtual := Value;
+end;
+
+procedure TPaginacaoPixs.SetquantidadeDePaginas(const Value: integer);
+begin
+  FquantidadeDePaginas := Value;
+end;
+
+
+procedure TPaginacaoPixs.SetquantidadeTotalDeItens(const Value: integer);
+begin
+  FquantidadeTotalDeItens := Value;
+end;
+
+{ TParametrosListaPixs }
+
+procedure TParametrosListaPixs.Setpaginacao(const Value: TPaginacaoPixs);
+begin
+  Fpaginacao := Value;
 end;
 
 end.

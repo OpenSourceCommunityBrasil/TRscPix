@@ -168,6 +168,14 @@ type
     edtTxIdDev: TEdit;
     Label20: TLabel;
     edtMsgPagador: TEdit;
+    edt_PagPixs: TEdit;
+    Label21: TLabel;
+    Label22: TLabel;
+    edt_QtdPagPixs: TEdit;
+    Label23: TLabel;
+    edt_ItensPagPixs: TEdit;
+    Label24: TLabel;
+    edt_TotalItensPagPixs: TEdit;
     procedure btn_GerarCabrancaClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btTestarPosPrinterClick(Sender: TObject);
@@ -208,6 +216,7 @@ type
       Erro: string);
     procedure btn_KeyCertClick(Sender: TObject);
     procedure SpeedButton2Click(Sender: TObject);
+    procedure edt_PagPixsKeyPress(Sender: TObject; var Key: Char);
   private
 
     cQrCode,
@@ -225,6 +234,8 @@ type
     procedure AtivarPosPrinter;
 
     procedure SetConfigPixObrig(Sender: TObject);
+
+    function SoNumOnKeyPress(var Key: Char): Char;
 
   public
     { Public declarations }
@@ -469,13 +480,9 @@ procedure TFrmMain.Button5Click(Sender: TObject);
 begin
   SetConfigPixObrig(RscPix1);
   RscPix1.ConsultarListPixsRecebPeriodo(StrToDateTime(DateToStr(dtp_Data_Inicial.Date) + TimeToStr(dtp_Hora_Inicial.Time)) ,
-                                        StrToDateTime(DateToStr(dtp_Data_Final.Date) + TimeToStr(dtp_Hora_Final.Time)), 0);
+                                        StrToDateTime(DateToStr(dtp_Data_Final.Date) + TimeToStr(dtp_Hora_Final.Time)), StrToIntDef(edt_PagPixs.Text, 0));
 
 end;
-
-
-
-
 
 procedure TFrmMain.Button6Click(Sender: TObject);
 begin
@@ -533,6 +540,18 @@ begin
 //  PnlBtn_Funcoes.Tag    :=  0;
 //  PnlBtn_Funcoes.Color  :=  clMenuHighlight
 
+end;
+
+function TFrmMain.SoNumOnKeyPress(var Key: Char): Char;
+begin
+  {$IFDEF UNICODE}
+  if CharInSet(Key, ['0'..'9', #8]) then
+  {$ELSE}
+  if Key in ['0'..'9'] then
+  {$ENDIF}
+    Result := Key
+  else
+    Result  :=  #0;
 end;
 
 procedure TFrmMain.SpeedButton1Click(Sender: TObject);
@@ -643,6 +662,11 @@ begin
   end;
 end;
 
+procedure TFrmMain.edt_PagPixsKeyPress(Sender: TObject; var Key: Char);
+begin
+  Key :=  SoNumOnKeyPress(Key);
+end;
+
 procedure TFrmMain.FormCreate(Sender: TObject);
 var
   O:  TACBrPosPrinterModelo;
@@ -656,7 +680,9 @@ begin
   PathLogo  :=  ExtractFilePath(ParamStr(0)) + 'imglogo.png';
 
   if not FileExists(PathLogo) then
-    imgQRCODE.Picture.SaveToFile(PathLogo);
+    imgQRCODE.Picture.SaveToFile(PathLogo)
+  else
+    imgQRCODE.Picture.LoadFromFile(PathLogo);
 
 
   PathConfigIni :=  ExtractFilePath(ParamStr(0)) + 'Config.ini';
@@ -965,6 +991,13 @@ begin
       else
         begin
           lblStatus.Caption := 'Situação: ' +  'Não retorna Status somente dados';
+
+          edt_PagPixs.Text            :=  IntToStr(RespPixGet.parametros.paginacao.paginaAtual);
+          edt_QtdPagPixs.Text         :=  IntToStr(RespPixGet.parametros.paginacao.quantidadeDePaginas);
+          edt_ItensPagPixs.Text       :=  IntToStr(RespPixGet.parametros.paginacao.itensPorPagina);
+          edt_TotalItensPagPixs.Text  :=  IntToStr(RespPixGet.parametros.paginacao.quantidadeTotalDeItens);
+
+
           if  Length(RespPixGet.pix) = 0 then
             begin
               edtTXID.Text          :=  RespPixGet.txid;

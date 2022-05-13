@@ -2969,7 +2969,7 @@ object FrmMain: TFrmMain
               Left = 0
               Top = 80
               Width = 300
-              Height = 108
+              Height = 166
               Align = alTop
               Caption = 'Consultar Pix Recebidos por Periodo'
               TabOrder = 0
@@ -2987,6 +2987,34 @@ object FrmMain: TFrmMain
                 Height = 13
                 Caption = 'At'#233
               end
+              object Label21: TLabel
+                Left = 12
+                Top = 77
+                Width = 50
+                Height = 13
+                Caption = 'P'#225'g. Atual'
+              end
+              object Label22: TLabel
+                Left = 135
+                Top = 77
+                Width = 63
+                Height = 13
+                Caption = 'Qtd de P'#225'gs.'
+              end
+              object Label23: TLabel
+                Left = 12
+                Top = 104
+                Width = 50
+                Height = 13
+                Caption = 'Itens P'#225'g.'
+              end
+              object Label24: TLabel
+                Left = 120
+                Top = 104
+                Width = 77
+                Height = 13
+                Caption = 'Total Itens P'#225'g.'
+              end
               object dtp_Data_Inicial: TDateTimePicker
                 Left = 35
                 Top = 20
@@ -2999,7 +3027,7 @@ object FrmMain: TFrmMain
               object Button5: TButton
                 AlignWithMargins = True
                 Left = 7
-                Top = 76
+                Top = 134
                 Width = 286
                 Height = 25
                 Margins.Left = 5
@@ -3040,10 +3068,46 @@ object FrmMain: TFrmMain
                 Kind = dtkTime
                 TabOrder = 4
               end
+              object edt_PagPixs: TEdit
+                Left = 68
+                Top = 74
+                Width = 33
+                Height = 21
+                TabOrder = 5
+                Text = '0'
+                OnKeyPress = edt_PagPixsKeyPress
+              end
+              object edt_QtdPagPixs: TEdit
+                Left = 203
+                Top = 74
+                Width = 33
+                Height = 21
+                TabOrder = 6
+                Text = '0'
+                OnKeyPress = edt_PagPixsKeyPress
+              end
+              object edt_ItensPagPixs: TEdit
+                Left = 68
+                Top = 101
+                Width = 33
+                Height = 21
+                TabOrder = 7
+                Text = '0'
+                OnKeyPress = edt_PagPixsKeyPress
+              end
+              object edt_TotalItensPagPixs: TEdit
+                Left = 203
+                Top = 101
+                Width = 33
+                Height = 21
+                TabOrder = 8
+                Text = '0'
+                OnKeyPress = edt_PagPixsKeyPress
+              end
             end
             object gb_Consulta_Pix_TXID: TGroupBox
               Left = 0
-              Top = 188
+              Top = 246
               Width = 300
               Height = 261
               Align = alTop
