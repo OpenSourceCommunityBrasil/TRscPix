@@ -3082,6 +3082,7 @@ object FrmMain: TFrmMain
                 Top = 74
                 Width = 33
                 Height = 21
+                Enabled = False
                 TabOrder = 6
                 Text = '0'
                 OnKeyPress = edt_PagPixsKeyPress
@@ -3091,6 +3092,7 @@ object FrmMain: TFrmMain
                 Top = 101
                 Width = 33
                 Height = 21
+                Enabled = False
                 TabOrder = 7
                 Text = '0'
                 OnKeyPress = edt_PagPixsKeyPress
@@ -3100,6 +3102,7 @@ object FrmMain: TFrmMain
                 Top = 101
                 Width = 33
                 Height = 21
+                Enabled = False
                 TabOrder = 8
                 Text = '0'
                 OnKeyPress = edt_PagPixsKeyPress

@@ -223,7 +223,8 @@ begin
       try
         ConfigRestClient(DWCR_CobConsult);
 
-         cURL := FPSP.URLAPI + '/cob/{txid}';
+         cURL := FPSP.URLAPI  + FPSP.EndPoints.CobGet;
+
          cURL := StringReplace(cURL, '{txid}', MyPixCob.TXID, [rfReplaceAll]);
          {verificar para outros bancos}
          if Developer.Application_key <> '' then
@@ -274,7 +275,7 @@ var
 begin
   if not ValidaChavePix then
      exit;
-  RespPixGet  :=  nil;
+
   try
     GetToToken;
   except on E: Exception do
@@ -284,12 +285,16 @@ begin
       Abort;
     end;
   end;
+
+  RespPixGet  :=  nil;
   DWRC_PixRec := TDWClientREST.Create(nil);
   Stream := TStringStream.Create('', TEncoding.UTF8) ;
   try
     ConfigRestClient(DWRC_PixRec);
-    cURL := FPSP.URLAPI + '/pix/{e2eid}' ;
-     cURL := StringReplace(cURL,'{e2eid}', sE2eid, [rfReplaceAll]) ;
+
+    cURL := FPSP.URLAPI + FPSP.EndPoints.PixGetCP;
+
+    cURL := StringReplace(cURL,'{e2eid}', sE2eid, [rfReplaceAll]) ;
     cURL := cURL + '?gw-dev-app-key=' + Developer.Application_key ;
     DWRC_PixRec.ContentType  := 'application/json' ;
     DWRC_PixRec.AuthenticationOptions.AuthorizationOption  := rdwAOBearer ;
@@ -314,10 +319,14 @@ begin
         end;
     end;
   finally
+    if RespPixGet <> nil then
+      RespPixGet.DisposeOf;
+
    Stream.Free ;
    DWRC_PixRec.Free;
   end;
 end;
+
 procedure TRscPix.ConsultarListPixsRecebPeriodo(dtData_Hora_Inicial, dtData_Hora_Final: TDateTime; iPagIndex: integer);
 var
   cURL    : String ;
@@ -356,7 +365,7 @@ begin
     Stream := TStringStream.Create('', TEncoding.UTF8) ;
     try
       ConfigRestClient(DWRC_PixConPer);
-      cURL := FPSP.URLAPI + '/'  +
+      cURL := FPSP.URLAPI + FPSP.EndPoints.PixGetCPR +
             '?inicio=' + MyPixListRebPer.Data_Hora_Ini_ToStr  +
             '&fim='    + MyPixListRebPer.Data_Hora_Fim_ToStr  +
             '&paginaAtual=' + IntToStr(MyPixListRebPer.Index_Pag) +
@@ -389,6 +398,8 @@ begin
     end;
   finally
     MyPixListRebPer.Free;
+    if RespPixGet <> nil then
+      RespPixGet.DisposeOf;
   end;
 end;
 procedure TRscPix.ConsultarDevolucaoPix(sE2eid, sTXIDDev: string);
@@ -427,7 +438,10 @@ begin
     Stream       := TStringStream.Create('', TEncoding.UTF8);
     try
       ConfigRestClient(DWRC_PixConsDev);
-       cURL := FPSP.URLAPI + '/pix/{e2eid}/devolucao/{id}';
+
+       cURL := FPSP.URLAPI  + FPSP.EndPoints.PixGetCD;
+
+
          cURL := StringReplace(cURL, '{e2eid}', MyPixSDev.endToEndId, [rfReplaceAll]);
          cURL := StringReplace(cURL, '{id}', MyPixSDev.TXIDDev, [rfReplaceAll]);
        if Developer.Application_key <> '' then
@@ -462,6 +476,8 @@ begin
     end;
   finally
     MyPixSDev.Free;
+    if RespPixGet <> nil then
+      RespPixGet.DisposeOf;
   end;
 end;
 constructor TRscPix.Create(AOwner: TComponent);
@@ -582,7 +598,8 @@ begin
 
                            cdata := JsonEnviar.ToString ;
 
-                           cURL := FPSP.URLApi + FPSP.EndPoint_Cob;
+                           cURL := FPSP.URLApi + FPSP.EndPoints.CobPut;
+
                            cURL := StringReplace(cURL, '{txid}', MyPixCob.TXID , [rfReplaceAll]);
                            cURL := cURL + '?gw-dev-app-key=' + Developer.Application_key ;
 
@@ -794,7 +811,6 @@ begin
   ConfigRestClient(DWCR_Token);
 
   RequestBody := TStringList.Create;
-  JsonResponse  :=  TJSONObject.Create;
   try
     case FPSP.TipoPsp of
       pspSicredi      : begin
@@ -947,14 +963,14 @@ procedure TRscPix.CancelarCobranca(PixStatus : string; cValor: Currency; sTXID: 
 var
   cURL         : string;
   cdata        : string;
-  JsonDevedor: TJsonObject;
+  JsonDevedor: TJsonObject; //
   RequestBody : TStringList;
   nResp : Integer;
   Stream: TStringStream;
-  JsonValor      : TJsonObject;
-  JsonCalendario : TJsonObject;
-  JsonEnviar     : TJSONObject;
-  JSonInfoA      : TJSOnArray;
+  JsonValor      : TJsonObject; //
+  JsonCalendario : TJsonObject; //
+  JsonEnviar     : TJSONObject;  //
+  JSonInfoA      : TJSOnArray;  //
   JSonInfo       : TJSOnObject;
   MyPixCob       : TPixCobRevisa;
   RespCobPatch   : TRespCobPatch;
@@ -962,6 +978,7 @@ var
 begin
   if not ValidaChavePix then
      exit;
+
     RespCobPatch  :=  nil;
     MyPixCob := TPixCobRevisa.Create;
     try
@@ -1043,7 +1060,8 @@ begin
 
          cdata := JsonEnviar.ToString;
 
-         cURL := FPSP.URLApi + '/cob/{txid}';
+         cURL := FPSP.URLApi +  FPSP.EndPoints.CobPatch;
+
          cURL := StringReplace(cURL, '{txid}', MyPixCob.TXID, [rfReplaceAll]);
 
          {verificar essa parte para outros bancos}
@@ -1086,17 +1104,13 @@ begin
 
       finally
 
-        if Assigned(JsonValor) then
-            JsonValor.Free;
+        RequestBody.Free;
 
-         if Assigned(JsonCalendario) then
-            JsonCalendario.Free;
+        if Assigned(JSonInfoA) then
+            JSonInfoA.Free;
 
-         if Assigned(JSonInfo) then
-            JSonInfo.Free;
-
-         if Assigned(JsonDevedor) then
-            JsonDevedor.Free;
+        if Assigned(JsonEnviar) then
+            JsonEnviar.Free;
 
           Stream.Free;
           DWCR_CobCancel.Free;
@@ -1287,7 +1301,8 @@ begin
       RequestBody.clear;
       RequestBody.Add(JasonValor.ToString);
 
-       cURL := FPSP.URLAPI + '/pix/{e2eid}/devolucao/{id}';
+       cURL := FPSP.URLAPI  + FPSP.EndPoints.PixPut;
+
        cURL := StringReplace(cURL, '{e2eid}', MyPixSDev.endToEndId, [rfReplaceAll]);
        cURL := StringReplace(cURL, '{id}', MyPixSDev.TXIDDev, [rfReplaceAll]);
 
@@ -1329,6 +1344,12 @@ begin
       RequestBody.Free;
       JasonValor.Free;
       Stream.Free;
+
+      if Assigned(ResultPixPut) then
+        ResultPixPut.DisposeOf;
+
+      if Assigned(DWRC_PixSolDev) then
+        DWRC_PixSolDev.DisposeOf;
     end;
 
   finally

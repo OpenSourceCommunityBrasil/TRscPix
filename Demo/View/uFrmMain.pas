@@ -19,35 +19,26 @@
 { license Apache-2.0                    }
 {                                       }
 {=======================================}
-
 unit uFrmMain;
-
 interface
-
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.StrUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,
   Vcl.Buttons, Vcl.Samples.Spin, System.TypInfo, ACBrPosPrinter,
   ACBrBase, configuraserial, IniFiles,  System.UITypes, System.DateUtils,
-
   IdSSLOpenSSL,
-
   uRscPix.Variaveis, uRscPix.Tipos,
   uRscPix.Validations, Data.DB, Vcl.Grids,
   Vcl.DBGrids, Vcl.Imaging.pngimage,
   uRscPix.Classes,
   Vcl.ComCtrls,
 
-
   RscPix, uRscPix.funcoes,
-
   FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
   FireDAC.DApt.Intf, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.Mask
 
-
   ;
-
 type
   TFrmMain = class(TForm)
     ACBrPosPrinter1: TACBrPosPrinter;
@@ -182,7 +173,6 @@ type
     procedure btProcuraImpressorasClick(Sender: TObject);
     procedure btSerialClick(Sender: TObject);
 
-
     procedure CriarConfigIni;
     procedure LerConfigIni;
     procedure GravarConfigIni;
@@ -194,7 +184,6 @@ type
     procedure Button4Click(Sender: TObject);
     procedure Button7Click(Sender: TObject);
     procedure btn_CertClick(Sender: TObject);
-
     { funções espeficaic}
     procedure PnlsBtnMouseLeave(Sender: TObject);
     procedure PnlsBtnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -218,12 +207,9 @@ type
     procedure SpeedButton2Click(Sender: TObject);
     procedure edt_PagPixsKeyPress(Sender: TObject; var Key: Char);
   private
-
     cQrCode,
     cFantasia  : String;
-
     PathLogo: string;
-
 
     procedure SetResetConfigPnlBtn(Sender: TObject);
     procedure SetConfigClick(Sender: TObject);
@@ -232,23 +218,16 @@ type
     procedure AdicionarLinhaImpressao(ALinha: AnsiString);
     procedure ConfigurarPosPrinter;
     procedure AtivarPosPrinter;
-
     procedure SetConfigPixObrig(Sender: TObject);
-
     function SoNumOnKeyPress(var Key: Char): Char;
-
   public
     { Public declarations }
   end;
-
 var
   FrmMain: TFrmMain;
   PathConfigIni : String;
-
 implementation
-
 {$R *.dfm}
-
 function Selecionar_Diretorio( Titulo : String ; var Dir : String ) : Boolean ;
 begin
 result := False ;
@@ -270,15 +249,11 @@ with TFileOpenDialog.Create(nil) do
 end;
 
 
-
-
-
 procedure TFrmMain.AdicionarLinhaImpressao(ALinha: AnsiString);
 begin
 if ACBrPosPrinter1.Ativo then
    ACBrPosPrinter1.Imprimir(ALinha);
 end;
-
 
 procedure TFrmMain.AtivarPosPrinter;
 begin
@@ -288,14 +263,12 @@ if (ACBrPosPrinter1.Porta <> '') then
     else
     raise Exception.Create('Porta não definida');
 end;
-
 procedure TFrmMain.BitBtn1Click(Sender: TObject);
 begin
   GravarConfigIni;
   LerConfigIni;
   MessageDlg('Configurações Gravadas Com Sucesso!', TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOK], 0);
 end;
-
 procedure TFrmMain.btnImprQrCodeClick(Sender: TObject);
 var
   mImp  : TStringList;
@@ -306,17 +279,13 @@ begin
       ACBrPosPrinter1.Ativar
     else
       raise Exception.Create('Porta não definida');
-
     ACBrPosPrinter1.CortaPapel    := True;
     ACBrPosPrinter1.TraduzirTags  := True;
-
     //Configurando o QrCOde
     ACBrPosPrinter1.configqrcode.Tipo               := 2;
     ACBrPosPrinter1.configqrcode.LarguraModulo      := 6;//4;
     ACBrPosPrinter1.configqrcode.ErrorLevel         := 0;
-
     //aplicando
-
     mImp.Clear;
     mImp.Add('</zera>');
     mImp.Add('</ce>');
@@ -331,13 +300,11 @@ begin
     ACBrPosPrinter1.Ativar;
     ACBrPosPrinter1.Buffer.Text := mImp.Text;
     ACBrPosPrinter1.Imprimir;
-
   finally
     ACBrPosPrinter1.Desativar;
     mImp.Free;
   end;
 end;
-
 procedure TFrmMain.btn_CertClick(Sender: TObject);
 begin
   Open_Dialog.DefaultExt := '*.pem' ;
@@ -347,12 +314,10 @@ begin
       edtCertificado.Text := Open_Dialog.FileName ;
      end;
 end;
-
 procedure TFrmMain.btProcuraImpressorasClick(Sender: TObject);
 begin
   ProcurarImpressora;
 end;
-
 procedure TFrmMain.btSerialClick(Sender: TObject);
 var
   frConfiguraSerial: TfrConfiguraSerial;
@@ -362,7 +327,6 @@ begin
     frConfiguraSerial.Device.Porta        := ACBrPosPrinter1.Device.Porta ;
     frConfiguraSerial.cmbPortaSerial.Text := cbxPorta.Text ;
     frConfiguraSerial.Device.ParamsString := ACBrPosPrinter1.Device.ParamsString ;
-
     if frConfiguraSerial.ShowModal = mrOk then
     begin
       cbxPorta.Text := frConfiguraSerial.cmbPortaSerial.Text ;
@@ -372,14 +336,12 @@ begin
     FreeAndNil( frConfiguraSerial ) ;
   end ;
 end;
-
 procedure TFrmMain.btTestarPosPrinterClick(Sender: TObject);
 var
   SL: TStringList;
 begin
   try
     AtivarPosPrinter;
-
     SL := TStringList.Create;
     try
       SL.Add('</zera>');
@@ -399,7 +361,6 @@ begin
       SL.Add('TESTE DE ACENTOS. ÁÉÍÓÚáéíóú');
       SL.Add('');
       SL.Add('</corte_total>');
-
       AdicionarLinhaImpressao(AnsiString(SL.Text));
     finally
        SL.Free;
@@ -411,13 +372,11 @@ begin
     end;
   end
 end;
-
 procedure TFrmMain.btn_GerarCabrancaClick(Sender: TObject);
 begin
   SetConfigPixObrig(RscPix1);
   RscPix1.CriarCobranca(StrToFloatDef(edtValorPix.Text, 0), edtTXID.Text, edtMsgPix.Text);
 end;
-
 
 procedure TFrmMain.btn_KeyCertClick(Sender: TObject);
 begin
@@ -428,25 +387,21 @@ begin
       edtSenhaCertificado.Text := Open_Dialog.FileName ;
      end;
 end;
-
 procedure TFrmMain.btn_SimulaPgtoClick(Sender: TObject);
 begin
   SetConfigPixObrig(RscPix1);
   RscPix1.SimularPagamentoPix(mmPayload.Text);
 end;
-
 procedure TFrmMain.Button2Click(Sender: TObject);
 begin
     SetConfigPixObrig(RscPix1);
     RscPix1.ConsultarCobranca(edtTXID.Text);
 end;
-
 procedure TFrmMain.Button3Click(Sender: TObject);
 begin
     SetConfigPixObrig(RscPix1);
     RscPix1.CancelarCobranca('REMOVIDA_PELO_USUARIO_RECEBEDOR', StrToFloatDef(edtValorPix.Text, 0), edtTXID.Text, edtMsgPix.Text);
 end;
-
 procedure TFrmMain.Button4Click(Sender: TObject);
 begin
   if Trim(edt_E2eID.Text) = ''  then
@@ -467,13 +422,9 @@ begin
       edtValorPix.SetFocus ;
       Exit;
     end;
-
   SetConfigPixObrig(RscPix1);
   RscPix1.SolicitarDevolucaoPix(edt_e2eid.Text, edtTxIdDev.Text, StrToFloat(edtValorPix.Text));
 end;
-
-
-
 
 
 procedure TFrmMain.Button5Click(Sender: TObject);
@@ -481,9 +432,7 @@ begin
   SetConfigPixObrig(RscPix1);
   RscPix1.ConsultarListPixsRecebPeriodo(StrToDateTime(DateToStr(dtp_Data_Inicial.Date) + TimeToStr(dtp_Hora_Inicial.Time)) ,
                                         StrToDateTime(DateToStr(dtp_Data_Final.Date) + TimeToStr(dtp_Hora_Final.Time)), StrToIntDef(edt_PagPixs.Text, 0));
-
 end;
-
 procedure TFrmMain.Button6Click(Sender: TObject);
 begin
   if Trim(edt_E2eID.Text) = ''  then
@@ -492,11 +441,9 @@ begin
       edt_E2eID.SetFocus ;
       Exit;
     end;
-
   SetConfigPixObrig(RscPix1);
   RscPix1.ConsultarPixRecebido(edt_e2eid.Text);
 end;
-
 procedure TFrmMain.Button7Click(Sender: TObject);
 begin
   if Trim(edt_E2eID.Text) = ''  then
@@ -511,11 +458,9 @@ begin
       edtTxIdDev.SetFocus ;
       Exit;
     end;
-
   SetConfigPixObrig(RscPix1);
   RscPix1.ConsultarDevolucaoPix(edt_e2eid.Text, edtTxIdDev.Text);
 end;
-
 procedure TFrmMain.SetResetConfigPnlBtn(Sender: TObject);
 var
   P:  integer;
@@ -532,16 +477,12 @@ begin
         end;
     end;
 
-
-
 //  PnlBtn_Configs.Tag    :=  0;
 //  PnlBtn_Configs.Color  :=  clMenuHighlight;
 //
 //  PnlBtn_Funcoes.Tag    :=  0;
 //  PnlBtn_Funcoes.Color  :=  clMenuHighlight
-
 end;
-
 function TFrmMain.SoNumOnKeyPress(var Key: Char): Char;
 begin
   {$IFDEF UNICODE}
@@ -564,7 +505,6 @@ begin
                   + IntToStr(Random(9999))
                   + 'EZL1991';
 end;
-
 procedure TFrmMain.SpeedButton2Click(Sender: TObject);
 begin
   edtTxIdDev.Text  :=  'DEV'
@@ -575,42 +515,33 @@ begin
                   + IntToStr(Random(9999))
                   + 'EZL1991';
 end;
-
 Procedure TFrmMain.SetConfigClick(Sender: TObject);
 begin
   TPanel(Sender).Color := clNavy;
   TPanel(Sender).Tag := 1;
 end;
-
 procedure TFrmMain.SetConfigPixObrig(Sender: TObject);
 begin
   if FileExists(PathLogo) then
     imgQRCODE.Picture.LoadFromFile(PathLogo);
-
     TRscPix(Sender).TitularPix.NomeTitularConta                    :=  edtNomeRecebedore.Text;
     TRscPix(Sender).TitularPix.CidadeTitularConta                  :=  edtCidadeRecebedor.Text;
-
     TRscPix(Sender).Seguranca.CertFile                      :=  edtCertificado.Text;
     TRscPix(Sender).Seguranca.CertKeyFile                   :=  edtSenhaCertificado.Text;
     TRscPix(Sender).Seguranca.UseSSL                        :=  True;
     TRscPix(Sender).Seguranca.SSLVersions                   :=  [sslvTLSv1, sslvTLSv1_1, sslvTLSv1_2, sslvSSLv23];
     TRscPix(Sender).Seguranca.VerifyCert                    :=  True;
     TRscPix(Sender).Seguranca.SSLMethod                     :=  sslvSSLv3;
-
     TRscPix(Sender).Developer.Application_key               :=  edtDeveloperKey.Text;
     TRscPix(Sender).Developer.Client_ID                     :=  edtClientID.Text;
     TRscPix(Sender).Developer.Client_Secret                 :=  edtClientSecreat.Text;
-
     TRscPix(Sender).PSP.TipoPsp                             :=  TTipoPSP(CbbPSP.ItemIndex);
     TRscPix(Sender).PSP.TipoPspAmbiente                     :=  TTipoAmbiente(CbbTipoAmbiente.ItemIndex);
-
     TRscPix(Sender).TitularPix.TipoChavePix                        :=  TTipoChavePIX(CbbTipoChavePix.ItemIndex);
     TRscPix(Sender).TitularPix.ChavePIX                            :=  edtChavePix.Text;
     TRscPix(Sender).TitularPix.TipoQRCode                          :=  TTipoQrCode(cbbTipoQRCode.ItemIndex);
     TRscPix(Sender).TitularPix.DuracaoMinutos                      :=  edtDuracaoMinutos.Value;
-
 end;
-
 procedure TFrmMain.ConfigurarPosPrinter;
 begin
   ACBrPosPrinter1.Desativar;
@@ -621,7 +552,6 @@ begin
   ACBrPosPrinter1.LinhasEntreCupons := seLinhasPular.Value;
   ACBrPosPrinter1.EspacoEntreLinhas := seEspLinhas.Value;
 end;
-
 procedure TFrmMain.CriarConfigIni;
 var
   ConfigIni : TIniFile;
@@ -643,14 +573,12 @@ begin
           ConfigIni.WriteString('PIX', 'Nome Recebedor', '');
           ConfigIni.WriteString('PIX', 'PSP', '');
           ConfigIni.WriteString('PIX', 'Tipo Ambiente', '');
-
           ConfigIni.WriteString('IMPRESSORA', 'Modelo Impressora', '');
           ConfigIni.WriteString('IMPRESSORA', 'Porta Impressoara', '');
           ConfigIni.WriteString('IMPRESSORA', 'Cod Pag Impressora', '');
           ConfigIni.WriteString('IMPRESSORA', 'Espaço Entre Linhas', '');
           ConfigIni.WriteString('IMPRESSORA', 'Linhas a Pular', '');
           ConfigIni.WriteString('IMPRESSORA', 'Qtd Colunas', '');
-
         finally
           ConfigIni.Free;
         end;
@@ -661,7 +589,6 @@ begin
     end;
   end;
 end;
-
 procedure TFrmMain.edt_PagPixsKeyPress(Sender: TObject; var Key: Char);
 begin
   Key :=  SoNumOnKeyPress(Key);
@@ -676,68 +603,52 @@ var
   S:  TTipoPSP;
   T:  TTipoAmbiente;
 begin
-
   PathLogo  :=  ExtractFilePath(ParamStr(0)) + 'imglogo.png';
-
   if not FileExists(PathLogo) then
     imgQRCODE.Picture.SaveToFile(PathLogo)
   else
     imgQRCODE.Picture.LoadFromFile(PathLogo);
 
-
   PathConfigIni :=  ExtractFilePath(ParamStr(0)) + 'Config.ini';
   CriarConfigIni;
-
   cbxModeloPosPrinter.Items.Clear ;
   For O := Low(TACBrPosPrinterModelo) to High(TACBrPosPrinterModelo) do
      cbxModeloPosPrinter.Items.Add( GetEnumName(TypeInfo(TACBrPosPrinterModelo), integer(O) ) ) ;
-
   cbxPagCodigo.Items.Clear ;
   For P := Low(TACBrPosPaginaCodigo) to High(TACBrPosPaginaCodigo) do
      cbxPagCodigo.Items.Add( GetEnumName(TypeInfo(TACBrPosPaginaCodigo), integer(P) ) ) ;
-
   cbbTipoQRCode.Clear;
   For Q := Low(TTipoQrCode) to High(TTipoQrCode) do
      cbbTipoQRCode.Items.Add( GetEnumName(TypeInfo(TTipoQrCode), integer(Q)));
   if cbbTipoQRCode.Items.Count > 0 then
     cbbTipoQRCode.ItemIndex :=  0;
-
   CbbTipoChavePix.Clear;
   For R := Low(TTipoChavePIX) to High(TTipoChavePIX) do
      CbbTipoChavePix.Items.Add( GetEnumName(TypeInfo(TTipoChavePIX), integer(R)));
   if CbbTipoChavePix.Items.Count > 0 then
     CbbTipoChavePix.ItemIndex :=  0;
-
   CbbPSP.Clear;
   For S := Low(TTipoPSP) to High(TTipoPSP) do
      CbbPSP.Items.Add( GetEnumName(TypeInfo(TTipoPSP), integer(S)));
   if CbbPSP.Items.Count > 0 then
     CbbPSP.ItemIndex :=  0;
-
   CbbTipoAmbiente.Clear;
   For T := Low(TTipoAmbiente) to High(TTipoAmbiente) do
      CbbTipoAmbiente.Items.Add( GetEnumName(TypeInfo(TTipoAmbiente), integer(T)));
   if CbbTipoAmbiente.Items.Count > 0 then
     CbbTipoAmbiente.ItemIndex :=  0;
-
   ProcurarImpressora ;
-
   LerConfigIni ;
-
   PnlBtn_ConfigsClick(PnlBtn_Configs);
-
   DBGrid1.Left  :=  306;
   DBGrid1.Top   :=  47;
   DBGrid1.Height:=  230;
   DBGrid1.Width :=  390;
-
   dtp_Data_Inicial.Date :=  Now;
   dtp_Data_Final.Date   :=  Now;
   dtp_Hora_Inicial.Time :=  Now;
   dtp_Hora_Final.Time   :=  IncHour(Now, 1);
-
 end;
-
 procedure TFrmMain.GravarConfigIni;
 var
   ConfigIni : TIniFile;
@@ -757,7 +668,6 @@ begin
       ConfigIni.WriteString('PIX', 'Nome Recebedor', edtNomeRecebedore.Text);
       ConfigIni.WriteInteger('PIX', 'PSP', CbbPSP.ItemIndex);
       ConfigIni.WriteInteger('PIX', 'Tipo Ambiente', CbbTipoAmbiente.ItemIndex);
-
       ConfigIni.WriteInteger('IMPRESSORA', 'Modelo Impressora', cbxModeloPosPrinter.ItemIndex);
       ConfigIni.WriteInteger('IMPRESSORA', 'Porta Impressoara', cbxPorta.ItemIndex);
       ConfigIni.WriteInteger('IMPRESSORA', 'Cod Pag Impressora', cbxPagCodigo.ItemIndex);
@@ -773,7 +683,6 @@ begin
     end;
   end;
 end;
-
 procedure TFrmMain.LerConfigIni;
 var
   ConfigIni : TIniFile;
@@ -794,7 +703,6 @@ begin
       edtNomeRecebedore.Text    :=  ConfigIni.ReadString('PIX', 'Nome Recebedor', 'Marcelo Ferreira');
       CbbPSP.ItemIndex          :=  ConfigIni.ReadInteger('PIX', 'PSP', 0);
       CbbTipoAmbiente.ItemIndex :=  ConfigIni.ReadInteger('PIX', 'Tipo Ambiente', 0);
-
       cbxModeloPosPrinter.ItemIndex :=  ConfigIni.ReadInteger('IMPRESSORA', 'Modelo Impressora', 1);
       cbxPorta.ItemIndex            :=  ConfigIni.ReadInteger('IMPRESSORA', 'Porta Impressoara', 1);
       cbxPagCodigo.ItemIndex        :=  ConfigIni.ReadInteger('IMPRESSORA', 'Cod Pag Impressora', 0);
@@ -811,7 +719,6 @@ begin
   end;
 end;
 
-
 procedure TFrmMain.PnlBtn_ConfigsClick(Sender: TObject);
 begin
   DBGrid1.Visible :=  False;
@@ -819,7 +726,6 @@ begin
   SetResetConfigPnlBtn(pnl_menu);
   SetConfigClick(Sender);
 end;
-
 procedure TFrmMain.PnlBtn_FuncoesClick(Sender: TObject);
 begin
   DBGrid1.Visible :=  False;
@@ -827,7 +733,6 @@ begin
   SetResetConfigPnlBtn(pnl_menu);
   SetConfigClick(Sender);
 end;
-
 procedure TFrmMain.PnlsBtnMouseLeave(Sender: TObject);
 begin
   if TPanel(Sender).Tag = 0 then
@@ -835,13 +740,11 @@ begin
   else
     TPanel(Sender).Color  :=  clNavy;
 end;
-
 procedure TFrmMain.PnlsBtnMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
   TPanel(Sender).Color  :=  clHotLight;
 end;
-
 procedure TFrmMain.ProcurarImpressora;
 begin
   cbxPorta.Items.Clear;
@@ -850,9 +753,7 @@ begin
   ACBrPosPrinter1.Device.AcharPortasUSB( cbxPorta.Items );
   {$EndIf}
   ACBrPosPrinter1.Device.AcharPortasRAW( cbxPorta.Items );
-
   cbxPorta.Items.Add('TCP:192.168.0.31:9100') ;
-
   {$IfNDef MSWINDOWS}
    cbxPorta.Items.Add('/dev/ttyS0') ;
    cbxPorta.Items.Add('/dev/ttyUSB0') ;
@@ -864,9 +765,6 @@ begin
 end;
 
 
-
-
-
 procedure TFrmMain.RscPix1CobGet(Sender: TObject; const RespCobGet: TRespCobGet;
   Erro: string);
 var
@@ -876,7 +774,6 @@ begin
   if (Erro = '') then
     begin
       lblStatus.Caption := 'Situação: ' +  RespCobGet.Status;
-
       if (RespCobGet.Status <> 'NAO_CRIADO') then
         begin
           if (RespCobGet.Status = 'CONCLUIDA') then
@@ -885,14 +782,11 @@ begin
               edtValorPix.Text      :=  FloatToStr(RespCobGet.pix[0].valor);
               edtMsgPix.Text        :=  RespCobGet.solicitacaopagador;
               edt_NomePagador.Text  :=  RespCobGet.pix[0].pagador.nome;
-
               if RespCobGet.pix[0].Pagador.cpf <> '' then
                 edt_DocPagador.Text   :=  RespCobGet.pix[0].Pagador.cpf
               else
                 edt_DocPagador.Text   :=  RespCobGet.pix[0].Pagador.cnpj;
-
                 edtMsgPagador.Text    :=  RespCobGet.pix[0].infoPagador;
-
               cValor := FloatToStr(RespCobGet.pix[0].valor);
               Label15.Caption := 'Valor Pago: R$ '+FormatFLoat('#0.00',StrToCurr(cValor));
             end
@@ -901,7 +795,6 @@ begin
               edtValorPix.Text      :=  ReplaceStr(RespCobGet.valor.original, '.', ',');
               edtMsgPix.Text        :=  RespCobGet.solicitacaopagador;
             end;
-
 
           if RespCobGet.textoImagemQRcode <> '' then
             begin
@@ -921,7 +814,6 @@ begin
       MessageDlg('Erro ao Consultar Cobrança' + #13 + Erro, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
     end;
 end;
-
 procedure TFrmMain.RscPix1CobPatch(Sender: TObject;
   const RespCobPatch: TRespCobPatch; Erro: string);
 begin
@@ -936,7 +828,6 @@ begin
       MessageDlg('Erro ao Revisar Cobrança' + #13 + Erro, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
     end;
 end;
-
 procedure TFrmMain.RscPix1CobPut(Sender: TObject; const RespCobPut: TRespCobPut;
   Erro: string);
 var
@@ -946,12 +837,10 @@ begin
   if (Erro = '') then
     begin
       lblStatus.Caption := 'Situação: ' +  RespCobPut.Status;
-
       if (RespCobPut.Status <> 'NAO_CRIADO') then
         begin
           cValor := StringReplace(RespCobPut.valor.original, '.', ',', [rfReplaceAll]);
           Label15.Caption := 'Valor Retornado: R$ '+FormatFLoat('#0.00',StrToCurr(cValor));
-
           if RespCobPut.textoImagemQRcode <> '' then
             begin
               mmPayload.Text  :=  RespCobPut.textoImagemQRcode;
@@ -972,7 +861,6 @@ begin
       MessageDlg('Erro ao Criar Cobrança' + #13 + Erro, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
     end;
 end;
-
 procedure TFrmMain.RscPix1PixGet(Sender: TObject; const RespPixGet: TRespPixGet;
   Erro: string);
 var
@@ -992,27 +880,24 @@ begin
         begin
           lblStatus.Caption := 'Situação: ' +  'Não retorna Status somente dados';
 
-          edt_PagPixs.Text            :=  IntToStr(RespPixGet.parametros.paginacao.paginaAtual);
-          edt_QtdPagPixs.Text         :=  IntToStr(RespPixGet.parametros.paginacao.quantidadeDePaginas);
-          edt_ItensPagPixs.Text       :=  IntToStr(RespPixGet.parametros.paginacao.itensPorPagina);
-          edt_TotalItensPagPixs.Text  :=  IntToStr(RespPixGet.parametros.paginacao.quantidadeTotalDeItens);
-
-
           if  Length(RespPixGet.pix) = 0 then
             begin
               edtTXID.Text          :=  RespPixGet.txid;
               edtValorPix.Text      :=  FloatToStr(RespPixGet.valor);
               edt_NomePagador.Text  :=  RespPixGet.Pagador.nome;
               edtMsgPagador.Text     :=  RespPixGet.infoPagador;
-
               if RespPixGet.Pagador.cpf <> '' then
                 edt_DocPagador.Text   :=  RespPixGet.Pagador.cpf
               else
                 edt_DocPagador.Text   :=  RespPixGet.Pagador.cnpj;
-
             end
           else
             begin
+              edt_PagPixs.Text            :=  IntToStr(RespPixGet.parametros.paginacao.paginaAtual);
+              edt_QtdPagPixs.Text         :=  IntToStr(RespPixGet.parametros.paginacao.quantidadeDePaginas);
+              edt_ItensPagPixs.Text       :=  IntToStr(RespPixGet.parametros.paginacao.itensPorPagina);
+              edt_TotalItensPagPixs.Text  :=  IntToStr(RespPixGet.parametros.paginacao.quantidadeTotalDeItens);
+
               FDMemTable1.Close;
               FDMemTable1.Open;
               for i := Low(RespPixGet.pix) to High(RespPixGet.pix) do
@@ -1040,7 +925,6 @@ begin
       MessageDlg('Erro ao Revisar Cobrança' + #13 + Erro, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
     end;
 end;
-
 procedure TFrmMain.RscPix1PixPut(Sender: TObject; const RespPixPut: TRespPixPut;
   Erro: string);
 begin
@@ -1066,7 +950,6 @@ begin
         end;
     end;
 end;
-
 procedure TFrmMain.RscPix1Token(Sender: TObject; const Token: TToken;
   Erro: string);
 begin
@@ -1077,5 +960,4 @@ begin
       MessageDlg('Erro ao Obter Token!' +  #13 +Erro, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
     end;
 end;
-
 end.

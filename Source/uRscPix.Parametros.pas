@@ -72,13 +72,7 @@ type
       property Data_Hora_Fim_ToStr  : String read FData_Hora_Fim_ToStr;
   end;
 
-  {
-    "paginacao": {
-      "paginaAtual": 0,
-      "itensPorPagina": 100,
-      "quantidadeDePaginas": 1,
-      "quantidadeTotalDeItens": 2
-  }
+
   TPaginacaoPixs = class
   private
       FquantidadeTotalDeItens: integer;
@@ -95,16 +89,21 @@ type
       property quantidadeDePaginas: integer read FquantidadeDePaginas write SetquantidadeDePaginas;
       property quantidadeTotalDeItens: integer read FquantidadeTotalDeItens write SetquantidadeTotalDeItens;
   end;
+
+
   TParametrosListaPixs = class
   private
     Ffim: string;
     Finicio: string;
-    Fpaginacao: TPaginacaoPixs;  
+    Fpaginacao: TPaginacaoPixs;
     procedure Setpaginacao(const Value: TPaginacaoPixs);  
   public
     property inicio : string read Finicio write Finicio;
     property fim    : string read Ffim    write Ffim;
     property paginacao: TPaginacaoPixs  read Fpaginacao write Setpaginacao;
+
+    Constructor Create;
+    destructor Destroy;override;
   end;
 
   TPix_Parametros = class
@@ -151,8 +150,12 @@ type
     property infoPagador          : string                          read FinfoPagador         write FinfoPagador;
     property Pagador              : TTPagador                       read fpagador             write fpagador;
     property parametros           : TParametrosListaPixs            read Fparametros          write Fparametros;
+
+    Constructor Create;
     destructor Destroy;override;
   end;
+
+
   TPix_Put = class
   private
     fpagador: TTPagador;
@@ -180,6 +183,8 @@ type
     property rtrId                : String                          read FrtrId               write FrtrId;
     destructor Destroy;override;
   end;
+
+
   TPix_Get = class
   private
     fpagador: TTPagador;
@@ -207,15 +212,21 @@ type
     property rtrId                : String                          read FrtrId               write FrtrId;
     property pix                  : TArray<TPIXParams>              read Fpix                 write Fpix;
     property parametros           : TParametrosListaPixs            read Fparametros          write Fparametros;
+
     destructor Destroy;override;
+    Constructor Create;
   end;
-{ fazer quando de vontade
-	"horario": {
-		"liquidacao": "2022-03-12T16:44:11.00-03:00",
-		"solicitacao": "2022-03-12T16:44:10.00-03:00"
-}
+
+
 implementation
+
 { TPix_Entrada }
+
+constructor TPix_Parametros.Create;
+begin
+  Fparametros :=  TParametrosListaPixs.Create;
+end;
+
 destructor TPix_Parametros.Destroy;
 var Vinfo_adicionais : TInformacoesAdicionais;
     Vdevolucao : TTDevolucao;
@@ -224,24 +235,32 @@ begin
 
   if  Assigned(FRecebedor) then
     FRecebedor.Free;
+
   if  Assigned(Fvalor) then
     Fvalor.DisposeOf;
+
   if  Assigned(Fpagador) then
     Fpagador.Free;
+
   if  Assigned(Fcalendario) then
     Fcalendario.DisposeOf;
+
   for Vinfo_adicionais in Finfo_adicionais do
     Vinfo_adicionais.Free;
+
   for Vdevolucao in FDevolucao do
     Vdevolucao.Free;
+
   for Vpix in Fpix do
     Vpix.Free;
-  if Assigned(Fparametros) then
-    Fparametros.Free;
+
+  Fparametros.DisposeOf;
+
   inherited;
 end;
 
 { TPIX }
+
 destructor TPIXParams.Destroy;
 begin
   if  Assigned(Fpagador) then
@@ -308,15 +327,23 @@ begin
   FData_Hora_Ini := Value;
   FData_Hora_Ini_ToStr  :=  FormatDataPix(FData_Hora_Ini);
 end;
+
+
 { TPix_Get }
+
+constructor TPix_Get.Create;
+begin
+  fpagador  :=  TTPagador.Create;
+end;
+
 destructor TPix_Get.Destroy;
 var Vinfo_adicionais : TInformacoesAdicionais;
     Vdevolucao : TTDevolucao;
     Vpix : TPIXParams;
 begin
-//
-//  if  Assigned(FRecebedor) then
-//    FRecebedor.Free;
+
+  if  Assigned(fpagador) then
+    fpagador.Free;
 //
 //  if  Assigned(Fvalor) then
 //    Fvalor.DisposeOf;
@@ -374,6 +401,17 @@ begin
 end;
 
 { TParametrosListaPixs }
+
+constructor TParametrosListaPixs.Create;
+begin
+  Fpaginacao  :=  TPaginacaoPixs.Create;
+end;
+
+destructor TParametrosListaPixs.Destroy;
+begin
+  Fpaginacao.DisposeOf;
+  inherited;
+end;
 
 procedure TParametrosListaPixs.Setpaginacao(const Value: TPaginacaoPixs);
 begin
