@@ -36,7 +36,7 @@ interface
 
 
   function ErroGeralToString(Erro: Integer): String;
-  function ErroCobPostPutPatchToString(Erro: Integer): String;
+   function ErroCobPostPutPatchToString(Erro: Integer): String;
   function ErroCobGetPatchToString(Erro: Integer): String;
 
   function ErroPixGetToString(Erro: Integer): String;
@@ -58,7 +58,7 @@ begin
     503: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  ServicoIndisponivel;
     504: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  IndisponibilidadePorTempoEsgotado;
   else
-    Result  :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  'Erro Não Definido!';
+    Result  :=  '';
   end;
 end;
 
@@ -76,7 +76,7 @@ begin
     503: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  ServicoIndisponivel;
     504: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  IndisponibilidadePorTempoEsgotado;
   else
-    Result  :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  'Erro Não Definido!';
+    Result  :=  '';
   end;
 end;
 
@@ -94,7 +94,7 @@ begin
     503: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  ServicoIndisponivel;
     504: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  IndisponibilidadePorTempoEsgotado;
   else
-    Result  :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  'Erro Não Definido!';
+    Result  :=  '';
   end;
 end;
 
@@ -112,7 +112,7 @@ begin
     503: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  ServicoIndisponivel;
     504: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  IndisponibilidadePorTempoEsgotado;
   else
-    Result  :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  'Erro Não Definido!';
+    Result  :=  '';
   end;
 end;
 
@@ -130,7 +130,7 @@ begin
     503: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  ServicoIndisponivel;
     504: Result :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  IndisponibilidadePorTempoEsgotado;
   else
-    Result  :=  'Cód. Erro: '  + IntToStr(Erro) +  #13 +  'Erro Não Definido!';
+    Result  :=  '';
   end;
 end;
 

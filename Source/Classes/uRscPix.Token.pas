@@ -53,7 +53,7 @@ implementation
 
 procedure TTToken.SetAcessToken(const Value: string);
 begin
-  FAcessToken := Value;
+  FAcessToken := Value;  
 end;
 
 procedure TTToken.SetExpires_in(const Value: Integer);

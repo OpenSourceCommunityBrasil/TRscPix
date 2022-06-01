@@ -78,9 +78,9 @@ begin
       Exit;
     end;
 
-  if (Length(Value) < 26) or (Length(Value) > 35) then
+  if (Length(Value) < 26) or (Length(Value) > 38) then
     begin
-      raise Exception.Create('O TXID deve ter entre 26 á 35 caracteres!');
+      raise Exception.Create('O TXID deve ter entre 26 á 38 caracteres!');
       Exit;
     end;
     

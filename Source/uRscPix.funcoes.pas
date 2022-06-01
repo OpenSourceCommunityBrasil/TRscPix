@@ -25,34 +25,25 @@
 { license Apache-2.0                    }
 {                                       }
 {=======================================}
-
 unit uRscPix.funcoes;
-
 interface
-
   uses
     System.SysUtils
     ,System.Math
     ,System.UITypes
     ,System.NetEncoding
     ,System.Classes
-
     ,IdHashMessageDigest
-
     ,Vcl.ExtCtrls
     ,Vcl.Graphics
 
-
     ,DelphiZXingQRCode, System.DateUtils
-
+    ,Winapi.Windows
+//    ,uniImage
     ;
 
 
-
-
   function TirarAcentoE(Texto: string): widestring;
-
-//  function ExtraiNumero(Texto: String): String;
 
   function StrZero(Numero: string; Quant: integer): String;
 
@@ -62,7 +53,9 @@ interface
 
   function MD5(const texto:string):string;
 
-  procedure QRCodeWin(imgQRCode: TImage; texto: string);
+  procedure QRCodeWin(imgQRCode: TImage; texto: string); overload;
+
+//  procedure QRCodeWin(imgQRCode: TUniImage; texto: string); overload;
 
   function ExRight(Value, str: string): string;
 
@@ -70,35 +63,39 @@ interface
 
   function GetStrNumber(const S: string): string;
 
-  function FormatDataPix(const ADate: TDateTime; AInputIsUTC: Boolean = true) : string ;
+  function FormatDataPix(const ADate: TDateTime; AInputIsUTC: Boolean = False) : string ;
+
 
 implementation
 
-
-
-function FormatDataPix(const ADate: TDateTime; AInputIsUTC: Boolean = true) : string ;
+function FormatDataPix(const ADate: TDateTime; AInputIsUTC: Boolean) : string ;
 const
-  SDateFormat   : string = 'yyyy''-''mm''-''dd''T''hh'':''nn'':''ss''.''00''-03:00'''; { Do not localize }
-  SOffsetFormat : string = '%s%s%.02d%.02d'; { Do not localize }
-  Neg           : array[Boolean] of string = ('+', '-'); { Do not localize }
+  SDateFormat   : string = 'yyyy''-''mm''-''dd''T''hh'':''nn'':''ss''.''zzz';
+  SOffsetFormat : string = '%s%s%.02d:%.02d';
+  Neg           : array[Boolean] of string = ('+', '-');
 var
   Bias: Integer;
   TimeZone: TTimeZone ;
 begin
   Result := FormatDateTime(SDateFormat, ADate);
-  if not AInputIsUTC then
-     begin
-       TimeZone := TTimeZone.Local ;
-       Bias := Trunc(TimeZone.GetUTCOffset(ADate).Negate.TotalMinutes) ;
-       if Bias <> 0 then
-          begin
-            SetLength(Result, Result.Length - 1);
-            Result := Format(SOffsetFormat, [Result, Neg[Bias > 0], Abs(Bias) div MinsPerHour,
-            Abs(Bias) mod MinsPerHour]);
-          end
-     end;
-end;
 
+  if AInputIsUTC then
+    begin
+      TimeZone := TTimeZone.Local ;
+      Bias := Trunc(TimeZone.GetUTCOffset(ADate).Negate.TotalMinutes) ;
+      if Bias <> 0 then
+        begin
+          SetLength(Result, Result.Length - 1);
+          Result := Format(SOffsetFormat, [Result, Neg[Bias > 0], (Abs(Bias) div MinsPerHour), (Abs(Bias) mod MinsPerHour)]);
+        end;
+    end
+  else
+    begin
+      Result  :=  Result  + 'Z';
+    end;
+
+
+end;
 
 function GetStrNumber(const S: string): string;
 var
@@ -106,7 +103,6 @@ var
 begin
   vText := PChar(S);
   Result := '';
-
   while (vText^ <> #0) do
   begin
     {$IFDEF UNICODE}
@@ -115,7 +111,6 @@ begin
     if vText^ in ['0'..'9'] then
     {$ENDIF}
       Result := Result + vText^;
-
     Inc(vText);
   end;
 end;
@@ -147,7 +142,6 @@ begin
   end;
 end;
 
-
 function ExRight(Value, str: string): string;
 begin
   if Pos(str, Value) = 0 then
@@ -159,6 +153,35 @@ begin
       Result  :=  Copy(Value, Pos(str, Value) + 1,  Length(Value));
     end;
 end;
+
+//procedure QRCodeWin(imgQRCode: TUniImage; texto: string);
+//var
+//  QRCode: TDelphiZXingQRCode;
+//  Row, Column: Integer;
+//begin
+//  QRCode := TDelphiZXingQRCode.Create;
+//  try
+//    QRCode.Data := texto;
+//    QRCode.Encoding := TQRCodeEncoding.qrUTF8BOM;
+//    QRCode.QuietZone := 4;
+//    imgQRCode.Picture.Bitmap.SetSize(QRCode.Rows, QRCode.Columns);
+//    for Row := 0 to QRCode.Rows - 1 do
+//    begin
+//      for Column := 0 to QRCode.Columns - 1 do
+//      begin
+//        if (QRCode.IsBlack[Row, Column]) then
+//        begin
+//          imgQRCode.Picture.Bitmap.Canvas.Pixels[Column, Row] := clBlack;
+//        end else
+//        begin
+//          imgQRCode.Picture.Bitmap.Canvas.Pixels[Column, Row] := clWhite;
+//        end;
+//      end;
+//    end;
+//  finally
+//    QRCode.Free;
+//  end;
+//end;
 
 procedure QRCodeWin(imgQRCode: TImage; texto: string);
 var
@@ -189,7 +212,6 @@ begin
   end;
 end;
 
-
 function MD5(const texto:string):string;
 var
   idmd5 : TIdHashMessageDigest5;
@@ -212,7 +234,6 @@ end;
 
 function CRC16CCITT(texto: string): WORD;
 const polynomial = $1021;
-
 var crc: WORD;
     i, j: Integer;
     b: Byte;
@@ -246,19 +267,6 @@ begin
   StrZero := Retorno;
 end;
 
-//function ExtraiNumero(Texto: String): String;
-//var
-//  X : SmallInt;
-//  Ret : String;
-//begin
-//  for X := 1 to Length(Texto) do
-//  begin
-//    if Pos(Copy(Texto,X,1),'0123456789') > 0 then
-//      Ret := Ret + Copy(Texto,X,1);
-//  end;
-//  Result := Ret;
-//end;
-
 function TirarAcentoE(Texto: string): widestring;
 const
   ComAcentuacao = ' &‡·‚„‰ËÈÍÎÏÌÓÔÚÛÙıˆ˘˙˚¸Á¿¡¡¬√ƒ»… ÀÃÕŒœ“”‘’÷Ÿ⁄€‹««`¥™∞∫™«⁄,<>'+'''';
@@ -269,7 +277,6 @@ begin
   for i :=  1 to Length(Texto) do
     if Pos(Texto[i],  ComAcentuacao) <> 0 then
       Texto[i]  :=  SemAcentuacao[Pos(Texto[i],ComAcentuacao)];
-
   Result  :=  Trim(Texto);
 end;
 

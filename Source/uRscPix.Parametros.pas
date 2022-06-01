@@ -27,9 +27,18 @@
 {=======================================}
 unit uRscPix.Parametros;
 interface
-uses  System.Generics.collections, uRscPix.funcoes, uRscPix.Pagador,
-      uRscPix.InformacoesAdicionais, uRscPix.Calendario,
-      uRscPix.Devolucao, uRscPix.Recebedor, uRscPix.Valor, System.SysUtils
+uses  System.Generics.collections
+
+  ,uRscPix.funcoes, uRscPix.Pagador
+  ,uRscPix.InformacoesAdicionais
+  ,uRscPix.Calendario
+  ,uRscPix.Devolucao
+  ,uRscPix.Recebedor
+  ,uRscPix.Valor
+  ,uRscPix.Loc
+  ,uRscPix.Tipos
+
+      , System.SysUtils
       ;
 type
   TPIXParams = class
@@ -62,6 +71,7 @@ type
       FData_Hora_Fim: TDateTime;
       FData_Hora_Fim_ToStr: String;
       FData_Hora_Ini_ToStr: String;
+      FPSP: TTipoPSP;
       procedure SetData_Hora_Fim(const Value: TDateTime);
       procedure SetData_Hora_Ini(const Value: TDateTime);
     public
@@ -70,6 +80,7 @@ type
       property Index_Pag      : integer   read FIndex_Pag     write FIndex_Pag;
       property Data_Hora_Ini_ToStr  : String read FData_Hora_Ini_ToStr;
       property Data_Hora_Fim_ToStr  : String read FData_Hora_Fim_ToStr;
+      property PSP                  : TTipoPSP  read FPSP write FPSP;
   end;
 
 
@@ -128,7 +139,10 @@ type
     FHorario            : string;
     Fparametros         : TParametrosListaPixs;
     FendToEndID         : String;
-    FinfoPagador:        string;
+    FinfoPagador        : string;
+    Fdevedor            : TTPagador;
+    Floc: TTLoc;
+    FpixCopiaECola: string;
   public
     {Cob}
     property status               : String                          read Fstatus              write Fstatus;
@@ -149,7 +163,10 @@ type
     property Horario              : string                          read FHorario             write FHorario;
     property infoPagador          : string                          read FinfoPagador         write FinfoPagador;
     property Pagador              : TTPagador                       read fpagador             write fpagador;
+    property devedor              : TTPagador                       read Fdevedor             write Fdevedor;
     property parametros           : TParametrosListaPixs            read Fparametros          write Fparametros;
+    property loc                  : TTLoc                           read Floc                 write Floc;
+    property pixCopiaECola        : string                          read FpixCopiaECola       write FpixCopiaECola;
 
     Constructor Create;
     destructor Destroy;override;
@@ -198,6 +215,7 @@ type
     Fmotivo: String;
     Fid: String;
     FrtrId: String;
+    Fdevedor: TTPagador;
     procedure SetValor(const Value: Currency);
   public
     property endToEndId           : String                          read FendToEndID          write FendToEndID;
@@ -205,6 +223,7 @@ type
     property valor                : Currency                        read Fvalor               write SetValor;
     property infoPagador          : string                          read FinfoPagador         write FinfoPagador;
     property Pagador              : TTPagador                       read fpagador             write fpagador;
+    property devedor              : TTPagador                       read Fdevedor             write Fdevedor;
     {Devolução}
     property id                   : String                          read Fid                  write Fid;
     property status               : String                          read Fstatus              write Fstatus;
@@ -233,6 +252,12 @@ var Vinfo_adicionais : TInformacoesAdicionais;
     Vpix : TPIXParams;
 begin
 
+  if Floc <> nil then
+    Floc.Free;
+
+  if Fdevedor <> nil then
+    Fdevedor.Free;
+
   if  Assigned(FRecebedor) then
     FRecebedor.Free;
 
@@ -258,6 +283,7 @@ begin
 
   inherited;
 end;
+
 
 { TPIX }
 
@@ -320,12 +346,42 @@ end;
 procedure TPix_GetListPixsRecebPeriodo.SetData_Hora_Fim(const Value: TDateTime);
 begin
   FData_Hora_Fim := Value;
-  FData_Hora_Fim_ToStr  :=  FormatDataPix(FData_Hora_Fim);
+
+  case FPSP of
+    pspSicredi, pspBancoDoBrasil, pspSantander, pspSicoob, pspGerencianet:
+      begin
+        FData_Hora_Fim_ToStr  :=  FormatDataPix(FData_Hora_Fim, True);
+      end;
+
+    pspBradesco:
+      begin
+        FData_Hora_Fim_ToStr  :=  FormatDataPix(FData_Hora_Fim);
+      end;
+
+  else
+    FData_Hora_Fim_ToStr  :=  FormatDataPix(FData_Hora_Fim);
+  end;
+
+
 end;
 procedure TPix_GetListPixsRecebPeriodo.SetData_Hora_Ini(const Value: TDateTime);
 begin
   FData_Hora_Ini := Value;
-  FData_Hora_Ini_ToStr  :=  FormatDataPix(FData_Hora_Ini);
+
+  case FPSP of
+    pspSicredi, pspBancoDoBrasil, pspSantander, pspSicoob, pspGerencianet:
+      begin
+        FData_Hora_Ini_ToStr  :=  FormatDataPix(FData_Hora_Ini, True);
+      end;
+
+    pspBradesco:
+      begin
+        FData_Hora_Ini_ToStr  :=  FormatDataPix(FData_Hora_Ini);
+      end;
+
+  else
+    FData_Hora_Ini_ToStr  :=  FormatDataPix(FData_Hora_Ini);
+  end;
 end;
 
 
@@ -342,7 +398,7 @@ var Vinfo_adicionais : TInformacoesAdicionais;
     Vpix : TPIXParams;
 begin
 
-  if  Assigned(fpagador) then
+  if  fpagador <> nil then
     fpagador.Free;
 //
 //  if  Assigned(Fvalor) then

@@ -37,7 +37,7 @@ interface
     uRscPix.PSP, uRscPix.Pix.Cobranca, uRscPix.Token,
     uRscPix.Calendario, uRscPix.Recebedor, uRscPix.Localizacao,
     uRscPix.Valor, uRscPix.InformacoesAdicionais, uRscPix.Devolucao,
-    uRscPix.Pagador, uRscPix.Parametros;
+    uRscPix.Pagador, uRscPix.Parametros, uRscPix.Loc;
 
 
 type
@@ -110,6 +110,15 @@ type
   TRespPixPut = class(TPix_Put)
   end;
 
+  TRespLocPost = class(TTLocPost)
+  end;
+
+  TRespLocGet = class(TTLocGet)
+  end;
+
+  TRespLocDelete = class(TTLocDelete)
+  end;
+
 
 
 
@@ -123,6 +132,12 @@ type
 
   TNotificaPixPut       = procedure(Sender : TObject; Const RespPixPut: TRespPixPut = nil; Erro: String = '')  of object;
   TNotificaPixGet       = procedure(Sender : TObject; Const RespPixGet: TRespPixGet = nil; Erro: String = '')  of object;
+
+  TNotificaLocPost      = procedure(Sender : TObject; Const RespLocPost: TRespLocPost = nil; Erro: String = '')  of object;
+  TNotificaLocGet       = procedure(Sender : TObject; Const RespLocGet: TRespLocGet = nil; Erro: String = '')  of object;
+  TNotificaLocDelete    = procedure(Sender : TObject; Const RespLocDelete: TRespLocDelete = nil; Erro: String = '')  of object;
+
+
 
 
 implementation

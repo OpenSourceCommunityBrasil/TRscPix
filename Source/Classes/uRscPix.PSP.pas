@@ -40,6 +40,11 @@ type
     FPixGetCD: string;
     FPixGetCPR: string;
     FCobPatch: string;
+    FLocPostCLP: string;
+    FLocGetGQL: string;
+    FLocDeleteDTL: string;
+    FLocGetRLP: string;
+    FLocGetCLC: string;
     procedure SetCobGet(const Value: string);
     procedure SetCobPatch(const Value: string);
     procedure SetCobPut(const Value: string);
@@ -47,19 +52,30 @@ type
     procedure SetPixGetCP(const Value: string);
     procedure SetPixGetCPR(const Value: string);
     procedure SetPixPut(const Value: string);
+    procedure SetLocDeleteDTL(const Value: string);
+    procedure SetLocGetCLC(const Value: string);
+    procedure SetLocGetGQL(const Value: string);
+    procedure SetLocGetRLP(const Value: string);
+    procedure SetLocPostCLP(const Value: string);
     { private declarations }
   protected
     { protected declarations }
   public
     { public declarations }
-    property CobPut: string read FCobPut write SetCobPut;
-    property CobPatch: string read FCobPatch write SetCobPatch;
-    property CobGet: string read FCobGet write SetCobGet;
+    property CobPut         : string read FCobPut       write SetCobPut;
+    property CobPatch       : string read FCobPatch     write SetCobPatch;
+    property CobGet         : string read FCobGet       write SetCobGet;
 
-    property PixGetCPR: string read FPixGetCPR write SetPixGetCPR;
-    property PixGetCP: string read FPixGetCP write SetPixGetCP;
-    property PixGetCD: string read FPixGetCD write SetPixGetCD;
-    property PixPut: string read FPixPut write SetPixPut;
+    property PixGetCPR      : string read FPixGetCPR    write SetPixGetCPR;
+    property PixGetCP       : string read FPixGetCP     write SetPixGetCP;
+    property PixGetCD       : string read FPixGetCD     write SetPixGetCD;
+    property PixPut         : string read FPixPut       write SetPixPut;
+
+    property LocGetCLC      : string read FLocGetCLC    write SetLocGetCLC;
+    property LocGetRLP      : string read FLocGetRLP    write SetLocGetRLP;
+    property LocGetGQL      : string read FLocGetGQL    write SetLocGetGQL;
+    property LocDeleteDTL   : string read FLocDeleteDTL write SetLocDeleteDTL;
+    property LocPostCLP     : string read FLocPostCLP   write SetLocPostCLP;
 
   published
     { published declarations }
@@ -181,8 +197,8 @@ begin
                         {============================================}
       pspBradesco     : begin
                           FURLToken           := 'https://qrpix-h.bradesco.com.br/oauth/token';
-                          FURLAPI             := 'https://qrpix-h.bradesco.com.br/v2/';
-                          FUrlHostCert        := 'https://qrpix-h.bradesco.com.br/';
+                          FURLAPI             := 'https://qrpix-h.bradesco.com.br/v2';
+                          FUrlHostCert        := 'https://qrpix-h.bradesco.com.br';
 
                           FEndPoints.CobPut   :=  '/cob/{txid}';
                           FEndPoints.CobPatch :=  '/cob/{txid}';
@@ -193,8 +209,36 @@ begin
                           FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
                           FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
 
+                          FEndPoints.LocGetCLC      :=  '/loc';
+                          FEndPoints.LocGetRLP      :=  '/loc/{locId}';
+                          FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
+                          FEndPoints.LocDeleteDTL   :=  '/loc/{locId}/{txid}';
+                          FEndPoints.LocPostCLP     :=  '/loc';
+
                         end;
                         {============================================}
+      pspGerencianet  : begin
+                          FURLToken           := 'https://api-pix-h.gerencianet.com.br/oauth/token';
+                          FURLAPI             := 'https://api-pix-h.gerencianet.com.br/v2';
+                          FUrlHostCert        := 'https://api-pix-h.gerencianet.com.br';
+
+                          FEndPoints.CobPut   :=  '/cob/{txid}';
+                          FEndPoints.CobPatch :=  '/cob/{txid}';
+                          FEndPoints.CobGet   :=  '/cob/{txid}';
+
+                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
+                          FEndPoints.FPixGetCPR :=  '/pix';
+                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
+                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
+
+                          FEndPoints.LocGetCLC      :=  '/loc';
+                          FEndPoints.LocGetRLP      :=  '/loc/{locId}';
+                          FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
+                          FEndPoints.LocDeleteDTL   :=  '/loc/{locId}/{txid}';
+                          FEndPoints.LocPostCLP     :=  '/loc';
+                        end;
+                        {============================================}
+
     end;
   end
   else if TipoPspAmbiente = taHomologacao then
@@ -267,8 +311,8 @@ begin
                         {============================================}
       pspBradesco     : begin
                           FURLToken           := 'https://qrpix-h.bradesco.com.br/oauth/token';
-                          FURLAPI             := 'https://qrpix-h.bradesco.com.br/v2/';
-                          FUrlHostCert        := 'https://qrpix-h.bradesco.com.br/';
+                          FURLAPI             := 'https://qrpix-h.bradesco.com.br/v2';
+                          FUrlHostCert        := 'https://qrpix-h.bradesco.com.br';
 
                           FEndPoints.CobPut   :=  '/cob/{txid}';
                           FEndPoints.CobPatch :=  '/cob/{txid}';
@@ -279,6 +323,33 @@ begin
                           FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
                           FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
 
+                          FEndPoints.LocGetCLC      :=  '/loc';
+                          FEndPoints.LocGetRLP      :=  '/loc/{locId}';
+                          FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
+                          FEndPoints.LocDeleteDTL   :=  '/loc/{locId}/{txid}';
+                          FEndPoints.LocPostCLP     :=  '/loc';
+
+                        end;
+                        {============================================}
+      pspGerencianet  : begin
+                          FURLToken           := 'https://api-pix-h.gerencianet.com.br/oauth/token';
+                          FURLAPI             := 'https://api-pix-h.gerencianet.com.br/v2';
+                          FUrlHostCert        := 'https://api-pix-h.gerencianet.com.br';
+
+                          FEndPoints.CobPut   :=  '/cob/{txid}';
+                          FEndPoints.CobPatch :=  '/cob/{txid}';
+                          FEndPoints.CobGet   :=  '/cob/{txid}';
+
+                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
+                          FEndPoints.FPixGetCPR :=  '/pix';
+                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
+                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
+
+                          FEndPoints.LocGetCLC      :=  '/loc';
+                          FEndPoints.LocGetRLP      :=  '/loc/{locId}';
+                          FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
+                          FEndPoints.LocDeleteDTL   :=  '/loc/{locId}/{txid}';
+                          FEndPoints.LocPostCLP     :=  '/loc';
                         end;
                         {============================================}
     end;
@@ -322,7 +393,7 @@ begin
       pspSantander    : begin
                           FURLToken           := 'https://trust-pix.santander.com.br/oauth/token';
                           FURLAPI             := 'https://trust-pix.santander.com.br/api/v1';
-                          FUrlHostCert        := 'https://trust-pix-h.santander.com.br';
+                          FUrlHostCert        := 'https://trust-pix.santander.com.br';
 
                           FEndPoints.CobPut   :=  '/cob/{txid}';
                           FEndPoints.CobPatch :=  '/cob/{txid}';
@@ -353,8 +424,8 @@ begin
                         {============================================}
       pspBradesco     : begin
                           FURLToken           := 'https://qrpix.bradesco.com.br/oauth/token';
-                          FURLAPI             := 'https://qrpix.bradesco.com.br/v2/';
-                          FUrlHostCert        := 'https://qrpix.bradesco.com.br/';
+                          FURLAPI             := 'https://qrpix.bradesco.com.br/v2';
+                          FUrlHostCert        := 'https://qrpix.bradesco.com.br';
 
                           FEndPoints.CobPut   :=  '/cob/{txid}';
                           FEndPoints.CobPatch :=  '/cob/{txid}';
@@ -365,6 +436,33 @@ begin
                           FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
                           FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
 
+                          FEndPoints.LocGetCLC      :=  '/loc';
+                          FEndPoints.LocGetRLP      :=  '/loc/{locId}';
+                          FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
+                          FEndPoints.LocDeleteDTL   :=  '/loc/{locId}/{txid}';
+                          FEndPoints.LocPostCLP     :=  '/loc';
+
+                        end;
+                        {============================================}
+      pspGerencianet  : begin
+                          FURLToken           := 'https://api-pix.gerencianet.com.br/oauth/token';
+                          FURLAPI             := 'https://api-pix.gerencianet.com.br/v2';
+                          FUrlHostCert        := 'https://api-pix.gerencianet.com.br';
+
+                          FEndPoints.CobPut   :=  '/cob/{txid}';
+                          FEndPoints.CobPatch :=  '/cob/{txid}';
+                          FEndPoints.CobGet   :=  '/cob/{txid}';
+
+                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
+                          FEndPoints.FPixGetCPR :=  '/pix';
+                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
+                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
+
+                          FEndPoints.LocGetCLC      :=  '/loc';
+                          FEndPoints.LocGetRLP      :=  '/loc/{locId}';
+                          FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
+                          FEndPoints.LocDeleteDTL   :=  '/loc/{locId}/{txid}';
+                          FEndPoints.LocPostCLP     :=  '/loc';
                         end;
                         {============================================}
     end;
@@ -414,6 +512,31 @@ end;
 procedure TEndPoint.SetCobPut(const Value: string);
 begin
   FCobPut := Value;
+end;
+
+procedure TEndPoint.SetLocDeleteDTL(const Value: string);
+begin
+  FLocDeleteDTL := Value;
+end;
+
+procedure TEndPoint.SetLocGetCLC(const Value: string);
+begin
+  FLocGetCLC := Value;
+end;
+
+procedure TEndPoint.SetLocGetGQL(const Value: string);
+begin
+  FLocGetGQL := Value;
+end;
+
+procedure TEndPoint.SetLocGetRLP(const Value: string);
+begin
+  FLocGetRLP := Value;
+end;
+
+procedure TEndPoint.SetLocPostCLP(const Value: string);
+begin
+  FLocPostCLP := Value;
 end;
 
 procedure TEndPoint.SetPixGetCD(const Value: string);
