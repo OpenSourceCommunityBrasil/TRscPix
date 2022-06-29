@@ -1,0 +1,60 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{3DAC9AFF-FA56-4D7B-93CB-4CB70682F2AD}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="Projeto\RscPix.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\Demos\VCL\Projeto\DemoTRscPixVCL.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\Demos\Unigui\DemoTrscPixUnigui\DemoTRscPixUnigui.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="RscPix">
+        <MSBuild Projects="Projeto\RscPix.dproj"/>
+    </Target>
+    <Target Name="RscPix:Clean">
+        <MSBuild Projects="Projeto\RscPix.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="RscPix:Make">
+        <MSBuild Projects="Projeto\RscPix.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="DemoTRscPixVCL">
+        <MSBuild Projects="..\Demos\VCL\Projeto\DemoTRscPixVCL.dproj"/>
+    </Target>
+    <Target Name="DemoTRscPixVCL:Clean">
+        <MSBuild Projects="..\Demos\VCL\Projeto\DemoTRscPixVCL.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DemoTRscPixVCL:Make">
+        <MSBuild Projects="..\Demos\VCL\Projeto\DemoTRscPixVCL.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="DemoTRscPixUnigui">
+        <MSBuild Projects="..\Demos\Unigui\DemoTrscPixUnigui\DemoTRscPixUnigui.dproj"/>
+    </Target>
+    <Target Name="DemoTRscPixUnigui:Clean">
+        <MSBuild Projects="..\Demos\Unigui\DemoTrscPixUnigui\DemoTRscPixUnigui.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DemoTRscPixUnigui:Make">
+        <MSBuild Projects="..\Demos\Unigui\DemoTrscPixUnigui\DemoTRscPixUnigui.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="RscPix;DemoTRscPixVCL;DemoTRscPixUnigui"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="RscPix:Clean;DemoTRscPixVCL:Clean;DemoTRscPixUnigui:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="RscPix:Make;DemoTRscPixVCL:Make;DemoTRscPixUnigui:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
