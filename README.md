@@ -12,9 +12,9 @@
 | BRADESCO | mailto: [suporte.api@bradesco.com.br](mailto:suporte.api@bradesco.com.br)  |OK|
 | SANTANDER| https://developer.santander.com.br/api/documentacao/pix |OK|
 | GERENCIANET|  https://dev.gerencianet.com.br/docs/api-pix  |OK|
-| SICOOB|  https://developers.sicoob.com.br/#!/apis , [https:/ /developers.sicoob.com.br/#!/documentacao](https://developers.sicoob.com.br/#!/documentacao)  |EM DEV|
-| SICRED| Sem previsão |--|
-| PAGSEGURO |  https://documenter.getpostman.com/view/10863174 /TVetc6HV#3322de97-b3cc-453a-81a7-b3c2e34c8016  |EM DEV|
+| SICOOB|  https://developers.sicoob.com.br/#!/apis , [https:/ /developers.sicoob.com.br/#!/documentacao](https://developers.sicoob.com.br/#!/documentacao)  |OK|
+| SICRED| Implementado |OK|
+| PAGSEGURO |  https://documenter.getpostman.com/view/10863174 /TVetc6HV#3322de97-b3cc-453a-81a7-b3c2e34c8016  |OK|
 | ITAU| mailto: [developerportal@itau-unibanco.com.br](mailto:developerportal@itau-unibanco.com.br) |EM DEV|
 
 
