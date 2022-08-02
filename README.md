@@ -3,6 +3,9 @@
 
 # TRscPix Componente para desenvolvimento de aplicações que usam a api PIX
 
+# pix-api
+* [GitHub - Bacen](https://github.com/bacen/pix-api)
+
 ## O componente Abstrai a comunicação com os PSP's
 
 ## PSP's Suportados:
