@@ -25,7 +25,7 @@
 
 * [Rest-Dataware](https://github.com/svn2github/rest-dataware)
 
-* [ZXing](https://github.com/zxing/zxing)
+* [ZXing - VCL](https://github.com/foxitsoftware/DelphiZXingQRCode)
 
 ## Grupos de Delphi para discusão e compartilhamneto de informações sobre Delphi, Pascal e afins.
 
