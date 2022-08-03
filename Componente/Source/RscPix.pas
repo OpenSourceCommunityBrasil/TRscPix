@@ -841,7 +841,7 @@ begin
                    GetValue(ID_COUNTRY_CODE,'BR') +
                    GetValue(ID_MERCHANT_NAME,FTitularPix.NomeTitularConta) +
                    GetValue(ID_MERCHANT_CITY, FTitularPix.CidadeTitularConta) +
-                   GetAdditionalDataField(TXID);
+                   GetAdditionalDataFieldTemplate;
       end;
 
     tqEstatico:
