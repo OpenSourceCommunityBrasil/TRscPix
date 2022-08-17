@@ -27,6 +27,9 @@
 
 * [ZXing - VCL](https://github.com/foxitsoftware/DelphiZXingQRCode)
 
+## Instalação
+[![Como Instalar](https://img.youtube.com/vi/1mzO-G5Ldcs/maxresdefault.jpg)](https://youtu.be/1mzO-G5Ldcs)
+
 ## Grupos de Delphi para discusão e compartilhamneto de informações sobre Delphi, Pascal e afins.
 
 * [Grupo no Telegram do Componente - TRscPix](https://t.me/TRscPix)
