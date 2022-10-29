@@ -54,8 +54,8 @@
 
 ### Roniery Santos Cardoso  
 
-#### Contatos:  092984391279 - ronierys2@hotmail.com
+#### Contatos:  092 41412737 - roniery@rscsistemas.com.br
 	
 #### Se o Componente lhe ajudar fique a vontade para fazer uma doação para nós, assim continuamos nosso trabalho e sempre estaremos buscando novas formas de contribuir com nossa comunidade.
 
-### Chave Pix para Contribuíção: E-MAIL: ronierys2@hotmail.com
+### Chave Pix para Contribuíção: E-MAIL: roniery@rscsistemas.com.br
