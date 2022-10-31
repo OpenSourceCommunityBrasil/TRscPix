@@ -27,7 +27,7 @@
 
 ## O componente faz uso das bibliotecas do:
 
-* [Rest-Dataware](https://github.com/svn2github/rest-dataware)
+* [Rest-Dataware](https://github.com/OpenSourceCommunityBrasil/REST-DataWare)
 
 * [ZXing - VCL](https://github.com/foxitsoftware/DelphiZXingQRCode)
 
