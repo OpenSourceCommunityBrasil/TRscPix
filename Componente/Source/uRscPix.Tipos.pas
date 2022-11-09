@@ -32,7 +32,7 @@ interface
 
 type
 
-  TTipoPSP      = (pspSicredi, pspBancoDoBrasil, pspBradesco,pspSantander,pspSicoob, pspGerencianet, pspPagSeguro);
+  TTipoPSP      = (pspSicredi, pspBancoDoBrasil, pspBradesco,pspSantander,pspSicoob, pspGerencianet, pspPagSeguro, pspItau);
   TTipoChavePIX = (tcCPF, tcCNPJ, tcTelefone, tcEmail, tcAleatoria);
   TTipoQrCode   = (tqDinamico, tqEstatico);
   TTipoAmbiente = (taSandBox,taHomologacao,taProducao);

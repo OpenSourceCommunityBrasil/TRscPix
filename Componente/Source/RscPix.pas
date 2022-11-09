@@ -26,7 +26,9 @@
 {                                       }
 {=======================================}
 unit RscPix;
+
 interface
+
 uses
   System.SysUtils,
   System.Classes,
@@ -35,21 +37,32 @@ uses
   System.DateUtils,
   System.threading,
   System.JSON, //
+
+  Vcl.Dialogs,
+
   REST.Json,
+
   Winapi.Windows,
+
   IdHashMessageDigest,
-  uDWResponseTranslator,
-  ServerUtils,
-  IdSSLOpenSSL
-  ,uRscPix.Tipos
-  ,uRscPix.Constantes
-  ,uRscPix.Classes
-  ,uRscPix.Variaveis
-  ,uRscPix.Parametros
-  ,uRscPix.funcoes
-  ,uRscPix.Validations
-  ,uRscPix.ErrosToString,
-  Vcl.Dialogs
+  IdSSLOpenSSL,
+
+  {Client RDW}
+  uRESTDWComponentBase,
+  uRESTDWBasicClass,
+  uRESTDWIdBase,
+  uRESTDWDataUtils,
+
+  {TRscPix}
+  uRscPix.Tipos,
+  uRscPix.Constantes,
+  uRscPix.Classes,
+  uRscPix.Variaveis,
+  uRscPix.Parametros,
+  uRscPix.funcoes,
+  uRscPix.Validations,
+  uRscPix.ErrosToString
+
   ;
 type
   TRscPix = class(TComponent)
@@ -115,6 +128,7 @@ type
     {========================================}
     {========================================}
     Function ValidaChavePix:  Boolean;
+    Function ValidaTitularPix:  Boolean;
     {========================================}
     procedure ConfigRestClient(Rest : TObject);
     {====}
@@ -124,6 +138,8 @@ type
     property Token                  : TToken read FToken write SetToken;
   protected
     { Protected declarations }
+    procedure InternalCriarQrCodeEstatico(cValor: Currency; sTXID: string; sMensagem: string);
+    procedure InternalCriarCobranca(cValor: Currency; sTXID: string; sMensagem: string);
   public
     { Public declarations }
   Constructor Create(AOwner   : TComponent);  Override;
@@ -133,6 +149,7 @@ type
   {========================================}
   {COB - PUT}
   procedure CriarCobranca(cValor: Currency; sTXID: string; sMensagem: string = '');
+
   {COB - PATH}
   procedure CancelarCobranca(sTXID: string);
   {COB - GET}
@@ -175,32 +192,34 @@ type
 
   end;
 procedure Register;
+
 implementation
+
 procedure Register;
 begin
   RegisterComponents('Rsc', [TRscPix]);
 end;
+
 { TPix }
 procedure TRscPix.ConfigRestClient(Rest: TObject);
 begin
-  if TDWClientREST(Rest) <> nil then
+  if TRESTDWIdClientREST(Rest) <> nil then
     begin
-      TDWClientREST(Rest).ConnectTimeOut  := 90000;
-      TDWClientREST(Rest).RequestTimeOut  := 90000;
-      TDWClientREST(Rest).UseSSL          :=  FSeguranca.UseSSL;
-      TDWClientREST(Rest).VerifyCert      :=  FSeguranca.VerifyCert;
-      TDWClientREST(Rest).SSLVersions     :=  FSeguranca.SSLVersions;
-      TDWClientREST(Rest).SSLMethod       :=  FSeguranca.SSLMethod;
-      TDWClientREST(Rest).CertMode        :=  sslmClient;
-      TDWClientREST(Rest).CertFile        :=  Seguranca.CertFile;
-      TDWClientREST(Rest).KeyFile         :=  FSeguranca.CertKeyFile;
-      TDWClientREST(Rest).HostCert        :=  FPSP.UrlHostCert;
-      TDWClientREST(Rest).PortCert        :=  443;//PADRAO
-      TDWClientREST(Rest).Accept           := '*/*';
-      TDWClientREST(Rest).AcceptEncoding   := 'gzip, deflate, br';
-      TDWClientREST(Rest).ContentEncoding  := '';
-
-      TDWClientREST(Rest).ContentType  := 'application/json;charset=UTF-8';
+      TRESTDWIdClientREST(Rest).ConnectTimeOut  := 90000;
+      TRESTDWIdClientREST(Rest).RequestTimeOut  := 90000;
+      TRESTDWIdClientREST(Rest).UseSSL          :=  FSeguranca.UseSSL;
+      TRESTDWIdClientREST(Rest).VerifyCert      :=  FSeguranca.VerifyCert;
+      TRESTDWIdClientREST(Rest).SSLVersions     :=  FSeguranca.SSLVersions;
+//      TRESTDWIdClientREST(Rest).SSLMethod       :=  FSeguranca.SSLMethod;
+      TRESTDWIdClientREST(Rest).CertMode        :=  sslmClient;
+      TRESTDWIdClientREST(Rest).CertFile        :=  Seguranca.CertFile;
+      TRESTDWIdClientREST(Rest).KeyFile         :=  FSeguranca.CertKeyFile;
+      TRESTDWIdClientREST(Rest).HostCert        :=  FPSP.UrlHostCert;
+      TRESTDWIdClientREST(Rest).PortCert        :=  443;//PADRAO
+      TRESTDWIdClientREST(Rest).Accept           := '*/*';
+      TRESTDWIdClientREST(Rest).AcceptEncoding   := 'gzip, deflate, br';
+      TRESTDWIdClientREST(Rest).ContentEncoding  := '';
+      TRESTDWIdClientREST(Rest).ContentType  := 'application/json;charset=UTF-8';
     end
   else
     begin
@@ -215,7 +234,7 @@ var
   Stream      : TStringStream ;
   MyPixCob    : TPixCobranca;
   RespCobGet  :TRespCobGet;
-  DWCR_CobConsult  :  TDWClientREST;
+  DWCR_CobConsult  :  TRESTDWIdClientREST;
 begin
   if not ValidaChavePix then
      exit;
@@ -239,7 +258,7 @@ begin
         end;
       end;
       Stream := TStringStream.Create('', TEncoding.UTF8);
-      DWCR_CobConsult  :=  TDWClientREST.Create(nil);
+      DWCR_CobConsult  :=  TRESTDWIdClientREST.Create(nil);
       try
         ConfigRestClient(DWCR_CobConsult);
          cURL := FPSP.URLAPI  + FPSP.EndPoints.CobGet;
@@ -252,7 +271,7 @@ begin
 
 
          DWCR_CobConsult.AuthenticationOptions.AuthorizationOption  := rdwAOBearer ;
-         TRDWAuthOptionBearerClient(DWCR_CobConsult.AuthenticationOptions.OptionParams).Token := Token.AcessToken ;
+         TRestDWAuthOptionBearerClient(DWCR_CobConsult.AuthenticationOptions.OptionParams).Token := Token.AcessToken ;
 
         case FPSP.TipoPsp of
           pspSicredi: ;
@@ -273,7 +292,7 @@ begin
           case nResp of
             200:
               begin
-               Retorno     := UTF8ToWideString(Stream.DataString);
+               Retorno     := UTF8ToWideString(RawByteString(Stream.DataString));
                RespCobGet  := TJson.JsonToObject<TRespCobGet>(Retorno);
                if RespCobGet.textoImagemQRcode = '' then
                   RespCobGet.textoImagemQRcode := GeraPayload(RespCobGet.valor.original, RespCobGet.txid, RespCobGet.location) ;
@@ -289,7 +308,7 @@ begin
                 end
               else
                 begin
-                  errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(Stream.DataString);
+                  errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(RawByteString(Stream.DataString));
                   raise Exception.Create(erroStr);
                 end;
             end;
@@ -317,7 +336,7 @@ var
   nResp         : Integer ;
   Stream        : TStringStream ;
   RespPixGet  : TRespPixGet;
-  DWRC_PixRec: TDWClientREST;
+  DWRC_PixRec: TRESTDWIdClientREST;
 begin
   if not ValidaChavePix then
      exit;
@@ -331,7 +350,7 @@ begin
     end;
   end;
   RespPixGet  :=  nil;
-  DWRC_PixRec := TDWClientREST.Create(nil);
+  DWRC_PixRec := TRESTDWIdClientREST.Create(nil);
   Stream := TStringStream.Create('', TEncoding.UTF8) ;
   try
     ConfigRestClient(DWRC_PixRec);
@@ -344,7 +363,7 @@ begin
     cURL := cURL + '?gw-dev-app-key=' + Developer.Application_key;
 
     DWRC_PixRec.AuthenticationOptions.AuthorizationOption  := rdwAOBearer ;
-    TRDWAuthOptionBearerClient(DWRC_PixRec.AuthenticationOptions.OptionParams).Token := Token.AcessToken ;
+    TRestDWAuthOptionBearerClient(DWRC_PixRec.AuthenticationOptions.OptionParams).Token := Token.AcessToken ;
 
       case FPSP.TipoPsp of
         pspSicredi: ;
@@ -365,7 +384,7 @@ begin
       case nResp of
         200:
           begin
-           Retorno     := UTF8ToWideString(Stream.DataString);
+           Retorno     := UTF8ToWideString(RawByteString(Stream.DataString));
            RespPixGet  := TJson.JsonToObject<TRespPixGet>(Retorno);
            InOnPixGet(Self, RespPixGet, '');
           end;
@@ -378,7 +397,7 @@ begin
             end
           else
             begin
-              errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(Stream.DataString);
+              errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(RawByteString(Stream.DataString));
               raise Exception.Create(erroStr);
             end;
         end;
@@ -404,7 +423,7 @@ var
   Stream  : TStringStream ;
   MyPixListRebPer     : TPix_ListPixsRecebPeriodo;
   RespPixGet  : TRespPixGet;
-  DWRC_PixConPer  : TDWClientREST;
+  DWRC_PixConPer  : TRESTDWIdClientREST;
 begin
   if not ValidaChavePix then
      exit;
@@ -432,7 +451,7 @@ begin
         Abort;
       end;
     end;
-    DWRC_PixConPer  := TDWClientREST.Create(nil);
+    DWRC_PixConPer  := TRESTDWIdClientREST.Create(nil);
     Stream := TStringStream.Create('', TEncoding.UTF8) ;
     try
       ConfigRestClient(DWRC_PixConPer);
@@ -449,7 +468,7 @@ begin
 
 
       DWRC_PixConPer.AuthenticationOptions.AuthorizationOption  := rdwAOBearer ;
-      TRDWAuthOptionBearerClient(DWRC_PixConPer.AuthenticationOptions.OptionParams).Token :=  Token.AcessToken ;
+      TRestDWAuthOptionBearerClient(DWRC_PixConPer.AuthenticationOptions.OptionParams).Token :=  Token.AcessToken ;
 
       case FPSP.TipoPsp of
         pspSicredi: ;
@@ -470,7 +489,7 @@ begin
         case nResp of
           200:
             begin
-             Retorno     := UTF8ToWideString(Stream.DataString);
+             Retorno     := UTF8ToWideString(RawByteString(Stream.DataString));
              RespPixGet  := TJson.JsonToObject<TRespPixGet>(Retorno);
              InOnPixGet(Self, RespPixGet, '');
             end;
@@ -483,7 +502,7 @@ begin
               end
             else
               begin
-                errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(Stream.DataString);
+                errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(RawByteString(Stream.DataString));
                 raise Exception.Create(erroStr);
               end;
           end;
@@ -512,7 +531,7 @@ var
   Stream        : TStringStream;
   MyPixSDev     : TPIXSolicitaDevolocao;
   RespPixGet  : TRespPixGet;
-  DWRC_PixConsDev  : TDWClientREST;
+  DWRC_PixConsDev  : TRESTDWIdClientREST;
 begin
   if not ValidaChavePix then
      exit;
@@ -537,7 +556,7 @@ begin
         Abort;
       end;
     end;
-    DWRC_PixConsDev  := TDWClientREST.Create(nil);
+    DWRC_PixConsDev  := TRESTDWIdClientREST.Create(nil);
     Stream       := TStringStream.Create('', TEncoding.UTF8);
     try
       ConfigRestClient(DWRC_PixConsDev);
@@ -551,7 +570,7 @@ begin
           cURL := cURL + '?gw-dev-app-key=' + Developer.Application_key;
 
        DWRC_PixConsDev.AuthenticationOptions.AuthorizationOption  := rdwAOBearer;
-       TRDWAuthOptionBearerClient(DWRC_PixConsDev.AuthenticationOptions.OptionParams).Token := Token.AcessToken;
+       TRestDWAuthOptionBearerClient(DWRC_PixConsDev.AuthenticationOptions.OptionParams).Token := Token.AcessToken;
 
       case FPSP.TipoPsp of
         pspSicredi: ;
@@ -572,7 +591,7 @@ begin
         case nResp of
           200:
             begin
-             Retorno     := UTF8ToWideString(Stream.DataString);
+             Retorno     := UTF8ToWideString(RawByteString(Stream.DataString));
              RespPixGet  := TJson.JsonToObject<TRespPixGet>(Retorno);
              InOnPixGet(Self, RespPixGet, '');
             end;
@@ -585,7 +604,7 @@ begin
                 end
               else
                 begin
-                  errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(Stream.DataString);
+                  errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(RawByteString(Stream.DataString));
                   raise Exception.Create(erroStr);
                 end;
             end;
@@ -622,193 +641,17 @@ begin
 end;
 
 procedure TRscPix.CriarCobranca (cValor: Currency; sTXID, sMensagem: string);
-var
-  erroStr        : string;
-  cURL           : String ;
-  cdata          : String ;
-  Json           : String ;
-//  JsonDevedor    : TJsonObject ;
-  RequestBody    : TStringList ;
-  nResp          : Integer ;
-  Stream         : TStringStream ;
-  JsonValor      : TJsonObject ;
-  JsonCalendario : TJsonObject ;
-  JsonEnviar     : TJSONObject ;
-//  JSonInfoA      : TJSOnArray ;
-//  JSonInfo       : TJSOnObject ;
-  MyPixCob       : TPixCobranca;
-  ResultCobPut   : TRespCobPut;
-  DWCR_CobCriar  :  TDWClientREST;
 begin
-  ResultCobPut  :=  nil;
-  if not ValidaChavePix then
-    begin
-      InOnCobPut(Self, nil, 'Chave Invalida');
-      exit;
-    end;
-
-    MyPixCob := TPixCobranca.Create;
-    try
-      try
-        MyPixCob.Mensagem :=  sMensagem;
-        MyPixCob.Valor    :=  cValor;
-        MyPixCob.TXID     :=  sTXID;
-      except on E: Exception do
-        begin
-          Exit;
-        end;
+  case FTitularPix.TipoQRCode of
+    tqDinamico:
+      begin
+        InternalCriarCobranca(cValor, sTXID, sMensagem);
       end;
-
-       case FTitularPix.TipoQRCode of
-       tqDinamico   : begin
-                        try
-                          GetToToken;
-                        except on E: Exception do
-                          begin
-                            Exit;
-                          end;
-                        end;
-                        DWCR_CobCriar  :=  TDWClientREST.Create(nil);
-                        Stream       := TStringStream.Create('', TEncoding.UTF8);
-                        RequestBody  := TStringList.Create ;
-                        try
-
-                           ConfigRestClient(DWCR_CobCriar);
-                           //Criando o Objeto Valor
-                           JsonValor := TJSONObject.Create;
-                           JsonValor.AddPair('original', MyPixCob.ValorToString);
-                           //Criando o Objeto Calendario
-                           JsonCalendario := TJSONObject.Create;
-                           JsonCalendario.AddPair('expiracao', TJSONNumber.Create(TitularPix.DuracaoMinutos * 60)); // aqui é em segundo 3600 segundos = 1 h
-
-                           //Dados do Devedor
-//                           if ((Devedor_Documento <> '') and (Devedor_Nome <> '')) then
-//                              begin
-//                                JsonDevedor := TJSONObject.Create;
-//                                 case Devedor_Documento_Tipo of
-//                                   pFisica   : JsonDevedor.AddPair('cpf', GetStrNumber(Devedor_Documento));
-//                                   pJuridica : JsonDevedor.AddPair('cnpj', GetStrNumber(Devedor_Documento));
-//                                 end;
-//                                JsonDevedor.AddPair('nome', copy(TirarAcentoE(Devedor_Nome),1,200)); //<200
-//                              end;
-                           //Info Adicionais - Não tenho necessidade de mais de uma informação, por isso vou deixar uma somente
-//                           if ((info_adicionais_Nome <> '') and (info_adicionais_Valor <> '')) then
-//                              begin
-//                                JSonInfoA := TJSOnArray.Create;//Criando a Lista de Objetos
-//                                JSonInfo  := TJSOnObject.Create;//Criando o Objeto
-//                                JSonInfo.AddPair('nome',TirarAcentoE(info_adicionais_Nome));
-//                                JSonInfo.AddPair('valor',TirarAcentoE(info_adicionais_Valor));
-//                                JSonInfoA.AddElement(JSonInfo);//Adicionando o Objeto na Lista de Objetos
-//                              end;
-                           //Montrando o Json a Enviar
-                           JsonEnviar := TJSOnObject.Create;//Criando o Objeto
-                           JsonEnviar.AddPair('calendario', JsonCalendario);
-//                           if Assigned(JsonDevedor) then
-//                              JsonEnviar.AddPair('devedor', JsonDevedor);
-                           JsonEnviar.AddPair('valor', JsonValor);
-                           JsonEnviar.AddPair('chave', TitularPix.ChavePix);
-                           JsonEnviar.AddPair('solicitacaoPagador', TirarAcentoE(MyPixCob.Mensagem));
-//                           if Assigned(JSonInfoA) then
-//                              JsonEnviar.AddPair('info_adicionais', JSonInfoA) ;
-                           cdata := JsonEnviar.ToString ;
-                           cURL := FPSP.URLApi + FPSP.EndPoints.CobPut;
-                           cURL := StringReplace(cURL, '{txid}', MyPixCob.TXID , [rfReplaceAll]);
-
-
-                         if Developer.Application_key <> '' then
-                            cURL := cURL + '?gw-dev-app-key=' + Developer.Application_key;
-
-                          DWCR_CobCriar.AuthenticationOptions.AuthorizationOption  := rdwAOBearer ;
-                          TRDWAuthOptionBearerClient(DWCR_CobCriar.AuthenticationOptions.OptionParams).Token := Token.AcessToken ;
-
-                          case FPSP.TipoPsp of
-                            pspSicredi: ;
-                            pspBancoDoBrasil: ;
-                            pspBradesco: ;
-                            pspSantander: ;
-                            pspSicoob:
-                              begin
-                                DWCR_CobCriar.ContentType  := 'application/json';
-                                DWCR_CobCriar.AcceptEncoding   := ' ';
-                              end;
-                            pspGerencianet: ;
-                            pspPagSeguro: ;
-                          end;
-
-                           //body
-                           RequestBody.Add(JsonEnviar.ToString) ;//JSON
-                          try
-                             nResp := DWCR_CobCriar.Put(cURL,RequestBody,Stream,false) ;
-                            case nResp of
-                              200:
-                                begin
-                                 Retorno       := UTF8ToWideString(Stream.DataString);
-                                 ResultCobPut  := TJson.JsonToObject<TRespCobPut>(Retorno);
-                                 if ResultCobPut.textoImagemQRcode = '' then
-                                    ResultCobPut.textoImagemQRcode := GeraPayload(ResultCobPut.valor.original, ResultCobPut.txid, ResultCobPut.location) ;
-                                 InOnCobPut(Self, ResultCobPut, '');
-                                end;
-                              201:
-                                begin
-                                 Retorno       := UTF8ToWideString(Stream.DataString);
-                                 ResultCobPut  := TJson.JsonToObject<TRespCobPut>(Retorno);
-                                 if ResultCobPut.textoImagemQRcode = '' then
-                                    ResultCobPut.textoImagemQRcode := GeraPayload(ResultCobPut.valor.original, ResultCobPut.txid, ResultCobPut.location) ;
-                                 InOnCobPut(Self, ResultCobPut, '');
-                                end;
-                            else
-                              begin
-                                erroStr :=  ErroCobPostPutPatchToString(nResp);
-                                if erroStr <> '' then
-                                  begin
-                                    raise Exception.Create(erroStr);
-                                  end
-                                else
-                                  begin
-                                    errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(Stream.DataString);
-                                    raise Exception.Create(erroStr);
-                                  end;
-                              end;
-                            end;
-                          Except
-                           on E:exception do
-                              begin
-                                InOnCobPut(Self, nil, e.Message);
-                              end;
-                          end;
-                         finally
-                          DWCR_CobCriar.Free;
-                           Stream.Free ;
-                           RequestBody.DisposeOf; ;
-//                           if Assigned(JSonInfoA) then
-//                              JSonInfoA.DisposeOf;
-                           if Assigned(JsonEnviar) then
-                              JsonEnviar.DisposeOf;
-                         end;
-                      end;
-       tqEstatico   : begin
-                         try
-                           Stream                           :=  TStringStream.Create(JsonQRCodeStatico, TEncoding.UTF8) ;
-                           Retorno                          :=  UTF8ToWideString(Stream.DataString);
-                           ResultCobPut                     :=  TJson.JsonToObject<TRespCobPut>(Retorno);
-                           ResultCobPut.solicitacaopagador  :=  MyPixCob.Mensagem;
-                           ResultCobPut.txid                :=  MyPixCob.TXID;
-                           ResultCobPut.chave               :=  TitularPix.ChavePix ;
-                           ResultCobPut.valor.original      :=  MyPixCob.ValorToString;
-                           if ResultCobPut.textoImagemQRcode = '' then
-                              ResultCobPut.textoImagemQRcode := GeraPayload(MyPixCob.ValorToString, MyPixCob.TXID ) ;
-                           InOnCobPut(Self, ResultCobPut, '');
-                         finally
-                           Stream.Free ;
-                         end;
-                      end;
-       end;
-
-    finally
-      MyPixCob.DisposeOf;
-      if Assigned(ResultCobPut) then
-        ResultCobPut.DisposeOf;
-    end;
+    tqEstatico:
+      begin
+        InternalCriarQrCodeEstatico(cValor, sTXID, sMensagem);
+      end;
+  end;
 end;
 
 destructor TRscPix.Destroy;
@@ -825,7 +668,8 @@ end;
 
 function TRscPix.GeraPayload(sValor: string = '0'; TXID: string = ''; Location: string = ''): String;
 var
-  Payload, cRecebedor : String;
+  Payload
+  {, cRecebedor} : String;
 begin
   case FTitularPix.TipoQRCode of
     tqDinamico:
@@ -870,7 +714,7 @@ var
   nResp         : Integer;
   Stream        : TStringStream;
   ResultLocGet  : TRespLocGet;
-  DWCR_GerarQrCodeLoc : TDWClientREST;
+  DWCR_GerarQrCodeLoc : TRESTDWIdClientREST;
 begin
   if not ValidaChavePix then
      exit;
@@ -878,7 +722,7 @@ begin
     GetToToken;
 
     Stream       := TStringStream.Create('', TEncoding.UTF8);
-    DWCR_GerarQrCodeLoc  := TDWClientREST.Create(nil);
+    DWCR_GerarQrCodeLoc  := TRESTDWIdClientREST.Create(nil);
     try
       ConfigRestClient(DWCR_GerarQrCodeLoc);
 
@@ -892,7 +736,7 @@ begin
            cURL := cURL + '?gw-dev-app-key=' + FDeveloper.Application_key;
 
        DWCR_GerarQrCodeLoc.AuthenticationOptions.AuthorizationOption  := rdwAOBearer;
-       TRDWAuthOptionBearerClient(DWCR_GerarQrCodeLoc.AuthenticationOptions.OptionParams).Token := Token.AcessToken;
+       TRestDWAuthOptionBearerClient(DWCR_GerarQrCodeLoc.AuthenticationOptions.OptionParams).Token := Token.AcessToken;
 
       case FPSP.TipoPsp of
         pspSicredi: ;
@@ -913,13 +757,13 @@ begin
         case nResp of
           200:
             begin
-             Retorno     := UTF8ToWideString(Stream.DataString);
+             Retorno     := UTF8ToWideString(RawByteString(Stream.DataString));
              ResultLocGet  := TJson.JsonToObject<TRespLocGet>(Retorno);
              InOnLocGet(Self, ResultLocGet, '');
             end;
           201:
             begin
-             Retorno     := UTF8ToWideString(Stream.DataString);
+             Retorno     := UTF8ToWideString(RawByteString(Stream.DataString));
              ResultLocGet  := TJson.JsonToObject<TRespLocGet>(Retorno);
              InOnLocGet(Self, ResultLocGet, '');
             end;
@@ -932,7 +776,7 @@ begin
 //              end
 //            else
 //              begin
-                errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(Stream.DataString);
+                errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(RawByteString(Stream.DataString));
                 raise Exception.Create(erroStr);
 //              end;
           end;
@@ -1035,31 +879,31 @@ end;
 
 function TRscPix.GetToToken: Boolean;
 var
-  JsonResponse : TJSONObject ;
-  Stream       : TStringStream ;
-  nResp        : Integer ;
-  RequestBody  : TStringList ;
-  DWCR_Token    : TDWClientREST;
+  JsonResponse  : TJSONObject ;
+  StrmBody      : TStringStream ;
+  nResp         : Integer ;
+  StrlHeader    : TStringList ;
+  DWCR_Token    : TRESTDWIdClientREST;
 begin
 
   Result  :=  False;
 
-  DWCR_Token  :=  TDWClientREST.Create(nil);
+  DWCR_Token  :=  TRESTDWIdClientREST.Create(nil);
   ConfigRestClient(DWCR_Token);
-  RequestBody := TStringList.Create;
+  StrlHeader := TStringList.Create;
   try
     case FPSP.TipoPsp of
       pspSicredi      : begin
-                            RequestBody.Add('grant_type=client_credentials');
-                            RequestBody.Add('scope=cob.read cob.write pix.read pix.write');
+                            StrlHeader.Add('grant_type=client_credentials');
+                            StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
                         end;
 
       pspBancoDoBrasil: begin //OK
-                            RequestBody.Add('grant_type=client_credentials');
-                            RequestBody.Add('scope=cob.read cob.write pix.read pix.write');
+                            StrlHeader.Add('grant_type=client_credentials');
+                            StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
                             DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwOAuth;
-                            TRDWAuthOAuth(DWCR_Token.AuthenticationOptions.OptionParams).ClientID      := FDeveloper.Client_ID;
-                            TRDWAuthOAuth(DWCR_Token.AuthenticationOptions.OptionParams).ClientSecret  := FDeveloper.Client_Secret;
+                            TRestDWAuthOAuth(DWCR_Token.AuthenticationOptions.OptionParams).ClientID      := FDeveloper.Client_ID;
+                            TRestDWAuthOAuth(DWCR_Token.AuthenticationOptions.OptionParams).ClientSecret  := FDeveloper.Client_Secret;
                         end;
 
       pspSantander    : begin  //sANDbOX - OK
@@ -1069,59 +913,58 @@ begin
                             DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwAONone;
                             FPSP.URLToken := FPSP.URLToken+'{param}';
                             FPSP.URLToken := StringReplace(FPSP.URLToken, '{param}', '?grant_type=client_credentials', [rfReplaceAll]);
-                            RequestBody.Add('client_id='+FDeveloper.Client_ID);
-                            RequestBody.Add('client_secret='+FDeveloper.Client_Secret);
+                            StrlHeader.Add('client_id='+FDeveloper.Client_ID);
+                            StrlHeader.Add('client_secret='+FDeveloper.Client_Secret);
                         end;
 
       pspSicoob       : begin
                             DWCR_Token.HostCert :=  'https://auth.sicoob.com.br';
                             DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwOAuth;
-                            RequestBody.Add('grant_type=client_credentials');
-                            RequestBody.Add('client_id='+FDeveloper.Client_ID);
-                            RequestBody.Add('client_secret='+FDeveloper.Client_Secret);
-                            RequestBody.Add('scope=cob.read cob.write pix.read pix.write');
+                            StrlHeader.Add('grant_type=client_credentials');
+                            StrlHeader.Add('client_id='+FDeveloper.Client_ID);
+                            StrlHeader.Add('client_secret='+FDeveloper.Client_Secret);
+                            StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
                         end;
 
       pspBradesco     : begin
                             DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwAOBasic;
-                            RequestBody.Add('grant_type=client_credentials');
+                            StrlHeader.Add('grant_type=client_credentials');
 
-                            TRDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Username  := FDeveloper.Client_ID;
-                            TRDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Password  := FDeveloper.Client_Secret;
+                            TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Username  := FDeveloper.Client_ID;
+                            TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Password  := FDeveloper.Client_Secret;
 
-                            RequestBody.Add('scope=cob.read cob.write pix.read pix.write');
+                            StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
                         end;
 
       pspGerencianet  : begin
                             DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwAOBasic;
-                            RequestBody.Add('grant_type=client_credentials');
+                            StrlHeader.Add('grant_type=client_credentials');
 
-                            TRDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Username  := FDeveloper.Client_ID;
-                            TRDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Password  := FDeveloper.Client_Secret;
+                            TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Username  := FDeveloper.Client_ID;
+                            TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Password  := FDeveloper.Client_Secret;
                         end;
 
       pspPagSeguro    : begin
                             DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwAOBasic;
-                            RequestBody.Add('grant_type=client_credentials');
+                            StrlHeader.Add('grant_type=client_credentials');
 
-                            TRDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Username  := FDeveloper.Client_ID;
-                            TRDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Password  := FDeveloper.Client_Secret;
+                            TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Username  := FDeveloper.Client_ID;
+                            TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Password  := FDeveloper.Client_Secret;
 
-                            RequestBody.Add('scope=cob.read cob.write pix.read pix.write');
+                            StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
                         end;
     end;
 
 
-    DWCR_Token.ContentType      := 'application/x-www-form-urlencoded';
-
-    Stream := TStringStream.Create('', TEncoding.UTF8);
+    DWCR_Token.ContentType      :=  'application/x-www-form-urlencoded';
+    StrmBody := TStringStream.Create('', TEncoding.UTF8);
     try
-      nResp := DWCR_Token.Post(FPSP.URLToken,requestBody,Stream,false,False);
+      nResp := DWCR_Token.Post(FPSP.URLToken, StrlHeader, StrmBody);
       case nResp of
         200:
           begin
             Result  :=  True;
-            JsonResponse        := TJSONObject.ParseJsonValue(UTF8ToWideString(Stream.DataString)) as TJSONObject;
+            JsonResponse        := TJSONObject.ParseJsonValue(UTF8ToWideString(RawByteString(StrmBody.DataString))) as TJSONObject;
             Token.AcessToken    := JsonResponse.GetValue<string>('access_token');
             Token.TokenType     := JsonResponse.GetValue<string>('token_type');
             Token.Expires_in    := JsonResponse.GetValue<Integer>('expires_in');
@@ -1138,10 +981,10 @@ begin
     end;
   finally
     DWCR_Token.Free;
-    Stream.Free;
+    StrmBody.Free;
     if Assigned(JsonResponse) then
-      JsonResponse.DisposeOf;
-    RequestBody.Free
+      JsonResponse.Free;
+    StrlHeader.Free
   end;
 end;
 function TRscPix.GetUniquePayment(INITIATION_METHOD:  string = '12'): string;
@@ -1217,6 +1060,200 @@ begin
   if Assigned(FOnToken) then
      FOnToken(Sender, Token, Erro);
 end;
+procedure TRscPix.InternalCriarCobranca(cValor: Currency; sTXID,
+  sMensagem: string);
+var
+  erroStr        : string;
+  cURL           : String ;
+  cdata          : String ;
+//  Json           : String ;
+//  JsonDevedor    : TJsonObject ;
+  RequestBody    : TStringList ;
+  nResp          : Integer ;
+  Stream         : TStringStream ;
+  ResultCobPut   : TRespCobPut;
+  JsonValor      : TJsonObject ;
+  JsonCalendario : TJsonObject ;
+  JsonEnviar     : TJSONObject ;
+//  JSonInfoA      : TJSOnArray ;
+//  JSonInfo       : TJSOnObject ;
+  MyPixCob       : TPixCobranca;
+
+  DWCR_CobCriar  :  TRESTDWIdClientREST;
+begin
+  ResultCobPut  :=  nil;
+  MyPixCob := TPixCobranca.Create;
+  DWCR_CobCriar  :=  TRESTDWIdClientREST.Create(nil);
+  Stream       := TStringStream.Create('', TEncoding.UTF8);
+  RequestBody  := TStringList.Create ;
+  try
+    try
+      ValidaChavePix;
+
+      MyPixCob.Mensagem :=  sMensagem;
+      MyPixCob.Valor    :=  cValor;
+      MyPixCob.TXID     :=  sTXID;
+
+      if not GetToToken then
+        Exit;
+
+       ConfigRestClient(DWCR_CobCriar);
+       //Criando o Objeto Valor
+       JsonValor := TJSONObject.Create;
+       JsonValor.AddPair('original', MyPixCob.ValorToString);
+       //Criando o Objeto Calendario
+       JsonCalendario := TJSONObject.Create;
+       JsonCalendario.AddPair('expiracao', TJSONNumber.Create(TitularPix.DuracaoMinutos * 60)); // aqui é em segundo 3600 segundos = 1 h
+
+       //Dados do Devedor
+//                           if ((Devedor_Documento <> '') and (Devedor_Nome <> '')) then
+//                              begin
+//                                JsonDevedor := TJSONObject.Create;
+//                                 case Devedor_Documento_Tipo of
+//                                   pFisica   : JsonDevedor.AddPair('cpf', GetStrNumber(Devedor_Documento));
+//                                   pJuridica : JsonDevedor.AddPair('cnpj', GetStrNumber(Devedor_Documento));
+//                                 end;
+//                                JsonDevedor.AddPair('nome', copy(TirarAcentoE(Devedor_Nome),1,200)); //<200
+//                              end;
+       //Info Adicionais - Não tenho necessidade de mais de uma informação, por isso vou deixar uma somente
+//                           if ((info_adicionais_Nome <> '') and (info_adicionais_Valor <> '')) then
+//                              begin
+//                                JSonInfoA := TJSOnArray.Create;//Criando a Lista de Objetos
+//                                JSonInfo  := TJSOnObject.Create;//Criando o Objeto
+//                                JSonInfo.AddPair('nome',TirarAcentoE(info_adicionais_Nome));
+//                                JSonInfo.AddPair('valor',TirarAcentoE(info_adicionais_Valor));
+//                                JSonInfoA.AddElement(JSonInfo);//Adicionando o Objeto na Lista de Objetos
+//                              end;
+       //Montrando o Json a Enviar
+       JsonEnviar := TJSOnObject.Create;//Criando o Objeto
+       JsonEnviar.AddPair('calendario', JsonCalendario);
+//                           if Assigned(JsonDevedor) then
+//                              JsonEnviar.AddPair('devedor', JsonDevedor);
+       JsonEnviar.AddPair('valor', JsonValor);
+       JsonEnviar.AddPair('chave', TitularPix.ChavePix);
+       JsonEnviar.AddPair('solicitacaoPagador', TirarAcentoE(MyPixCob.Mensagem));
+//                           if Assigned(JSonInfoA) then
+//                              JsonEnviar.AddPair('info_adicionais', JSonInfoA) ;
+       cdata := JsonEnviar.ToString ;
+       cURL := FPSP.URLApi + FPSP.EndPoints.CobPut;
+       cURL := StringReplace(cURL, '{txid}', MyPixCob.TXID , [rfReplaceAll]);
+
+
+     if Developer.Application_key <> '' then
+        cURL := cURL + '?gw-dev-app-key=' + Developer.Application_key;
+
+      DWCR_CobCriar.AuthenticationOptions.AuthorizationOption  := rdwAOBearer ;
+      TRestDWAuthOptionBearerClient(DWCR_CobCriar.AuthenticationOptions.OptionParams).Token := Token.AcessToken ;
+
+      case FPSP.TipoPsp of
+        pspSicredi: ;
+        pspBancoDoBrasil: ;
+        pspBradesco: ;
+        pspSantander: ;
+        pspSicoob:
+          begin
+            DWCR_CobCriar.ContentType  := 'application/json';
+            DWCR_CobCriar.AcceptEncoding   := ' ';
+          end;
+        pspGerencianet: ;
+        pspPagSeguro: ;
+      end;
+
+      RequestBody.Add(JsonEnviar.ToString) ;//JSON
+
+         nResp := DWCR_CobCriar.Put(cURL,RequestBody,Stream,false) ;
+        case nResp of
+          200:
+            begin
+             Retorno       := UTF8ToWideString(RawByteString(Stream.DataString));
+             ResultCobPut  := TJson.JsonToObject<TRespCobPut>(Retorno);
+             if ResultCobPut.textoImagemQRcode = '' then
+                ResultCobPut.textoImagemQRcode := GeraPayload(ResultCobPut.valor.original, ResultCobPut.txid, ResultCobPut.location) ;
+             InOnCobPut(Self, ResultCobPut, '');
+            end;
+          201:
+            begin
+             Retorno       := UTF8ToWideString(RawByteString(Stream.DataString));
+             ResultCobPut  := TJson.JsonToObject<TRespCobPut>(Retorno);
+             if ResultCobPut.textoImagemQRcode = '' then
+                ResultCobPut.textoImagemQRcode := GeraPayload(ResultCobPut.valor.original, ResultCobPut.txid, ResultCobPut.location) ;
+             InOnCobPut(Self, ResultCobPut, '');
+            end;
+        else
+          begin
+            erroStr :=  ErroCobPostPutPatchToString(nResp);
+            if erroStr <> '' then
+              begin
+                raise Exception.Create(erroStr);
+              end
+            else
+              begin
+                errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(RawByteString(Stream.DataString));
+                raise Exception.Create(erroStr);
+              end;
+          end;
+        end;
+    except on E: Exception do
+      begin
+        InOnCobPut(Self, nil, e.Message);
+      end;
+    end;
+
+  finally
+      DWCR_CobCriar.Free;
+       Stream.Free ;
+       RequestBody.DisposeOf; ;
+//                           if Assigned(JSonInfoA) then
+//                              JSonInfoA.DisposeOf;
+       if Assigned(JsonEnviar) then
+          JsonEnviar.DisposeOf;
+    MyPixCob.DisposeOf;
+    if Assigned(ResultCobPut) then
+      ResultCobPut.DisposeOf;
+  end;
+end;
+
+procedure TRscPix.InternalCriarQrCodeEstatico(cValor: Currency; sTXID,
+  sMensagem: string);
+var
+  Stream         : TStringStream ;
+  ResultCobPut   : TRespCobPut;
+  MyPixCob       : TPixCobranca;
+begin
+  ResultCobPut  :=  nil;
+  MyPixCob      := TPixCobranca.Create;
+  Stream        :=  TStringStream.Create(JsonQRCodeStatico, TEncoding.UTF8) ;
+  try
+    try
+      ValidaChavePix;
+
+      MyPixCob.Mensagem :=  sMensagem;
+      MyPixCob.Valor    :=  cValor;
+      MyPixCob.TXID     :=  sTXID;
+
+      Retorno                          :=  UTF8ToWideString(RawByteString(Stream.DataString));
+      ResultCobPut                     :=  TJson.JsonToObject<TRespCobPut>(Retorno);
+      ResultCobPut.solicitacaopagador  :=  MyPixCob.Mensagem;
+      ResultCobPut.txid                :=  MyPixCob.TXID;
+      ResultCobPut.chave               :=  TitularPix.ChavePix ;
+      ResultCobPut.valor.original      :=  MyPixCob.ValorToString;
+
+      if ResultCobPut.textoImagemQRcode = '' then
+        ResultCobPut.textoImagemQRcode := GeraPayload(MyPixCob.ValorToString, MyPixCob.TXID ) ;
+
+      InOnCobPut(Self, ResultCobPut, '');
+    except on E: Exception do
+      begin
+        InOnCobPut(Self, nil, e.Message);
+      end;
+    end;
+  finally
+    Stream.Free ;
+    ResultCobPut.Free;
+    MyPixCob.Free;
+  end;
+end;
+
 procedure TRscPix.CancelarCobranca(sTXID: string);
 var
   errostr       : string;
@@ -1228,7 +1265,7 @@ var
   JsonEnviar     : TJSONObject;  //
   MyPixCob       : TPixCobRevisa;
   RespCobPatch   : TRespCobPatch;
-  DWCR_CobCancel: TDWClientREST;
+  DWCR_CobCancel: TRESTDWIdClientREST;
 begin
   if not ValidaChavePix then
      exit;
@@ -1254,7 +1291,7 @@ begin
 
       Stream       := TStringStream.Create('', TEncoding.UTF8);
       RequestBody  := TStringList.Create;
-      DWCR_CobCancel  := TDWClientREST.Create(nil);
+      DWCR_CobCancel  := TRESTDWIdClientREST.Create(nil);
       try
         ConfigRestClient(DWCR_CobCancel);
 
@@ -1273,7 +1310,7 @@ begin
 
 
          DWCR_CobCancel.AuthenticationOptions.AuthorizationOption  := rdwAOBearer;
-         TRDWAuthOptionBearerClient(DWCR_CobCancel.AuthenticationOptions.OptionParams).Token := Token.AcessToken;
+         TRestDWAuthOptionBearerClient(DWCR_CobCancel.AuthenticationOptions.OptionParams).Token := Token.AcessToken;
 
           case FPSP.TipoPsp of
             pspSicredi: ;
@@ -1311,7 +1348,7 @@ begin
                 end
               else
                 begin
-                  errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(Stream.DataString);
+                  errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(RawByteString(Stream.DataString));
                   raise Exception.Create(erroStr);
                 end;
             end;
@@ -1391,7 +1428,7 @@ begin
 end;
 procedure TRscPix.SimularPagamentoPix(Payload: String);
 var
-  DWClint : TDWClientREST;
+  DWClint : TRESTDWIdClientREST;
   sUrl    : String;
   RequestBody  : TStringList ;
   nResp : integer;
@@ -1406,14 +1443,14 @@ begin
   RespCobGet  :=  nil;
   Stream := TStringStream.Create('', TEncoding.UTF8);
   RequestBody := TStringList.Create;
-  DWClint := TDWClientREST.Create(nil);
+  DWClint := TRESTDWIdClientREST.Create(nil);
   try
     sUrl  :=  'https://api.hm.bb.com.br/testes-portal-desenvolvedor/v1'
               + '/boletos-pix/pagar?'
               + 'gw-app-key=95cad3f03fd9013a9d15005056825665';
     DWClint.ContentType      := 'application/json';
     DWClint.UseSSL       :=  True;
-    DWClint.SSLMethod    :=  sslvSSLv23;
+//    DWClint.SSLMethod    :=  sslvSSLv23;
     DWClint.SSLVersions  :=  [sslvSSLv23];
     RequestBody.Add('{"pix": "{'  + Payload + '}"}');
 
@@ -1422,7 +1459,7 @@ begin
       case nResp of
         200:
           begin
-           Retorno     := UTF8ToWideString(Stream.DataString);
+           Retorno     := UTF8ToWideString(RawByteString(Stream.DataString));
            RespCobGet  := TJson.JsonToObject<TRespCobGet>(Retorno);
            if RespCobGet.textoImagemQRcode = '' then
               RespCobGet.textoImagemQRcode := GeraPayload ;
@@ -1451,7 +1488,7 @@ var
   RequestBody   : TStringList;
   MyPixSDev     : TPIXSolicitaDevolocao;
   ResultPixPut  : TRespPixPut;
-  DWRC_PixSolDev: TDWClientREST;
+  DWRC_PixSolDev: TRESTDWIdClientREST;
 begin
   if not ValidaChavePix then
      exit;
@@ -1481,7 +1518,7 @@ begin
     JasonValor  :=  TJSONObject.Create;
     RequestBody := TStringList.Create;
     Stream       := TStringStream.Create('', TEncoding.UTF8);
-    DWRC_PixSolDev  := TDWClientREST.Create(nil);
+    DWRC_PixSolDev  := TRESTDWIdClientREST.Create(nil);
     try
       ConfigRestClient(DWRC_PixSolDev);
       JasonValor.AddPair('valor',  MyPixSDev.ValorToString);
@@ -1497,7 +1534,7 @@ begin
            cURL := cURL + '?gw-dev-app-key=' + FDeveloper.Application_key;
 
        DWRC_PixSolDev.AuthenticationOptions.AuthorizationOption  := rdwAOBearer;
-       TRDWAuthOptionBearerClient(DWRC_PixSolDev.AuthenticationOptions.OptionParams).Token := Token.AcessToken;
+       TRestDWAuthOptionBearerClient(DWRC_PixSolDev.AuthenticationOptions.OptionParams).Token := Token.AcessToken;
 
         case FPSP.TipoPsp of
           pspSicredi: ;
@@ -1518,13 +1555,13 @@ begin
         case nResp of
           200:
             begin
-             Retorno     := UTF8ToWideString(Stream.DataString);
+             Retorno     := UTF8ToWideString(RawByteString(Stream.DataString));
              ResultPixPut  := TJson.JsonToObject<TRespPixPut>(Retorno);
              InOnPixPut(Self, ResultPixPut, '');
             end;
           201:
             begin
-             Retorno     := UTF8ToWideString(Stream.DataString);
+             Retorno     := UTF8ToWideString(RawByteString(Stream.DataString));
              ResultPixPut  := TJson.JsonToObject<TRespPixPut>(Retorno);
              InOnPixPut(Self, ResultPixPut, '');
             end;
@@ -1537,7 +1574,7 @@ begin
               end
             else
               begin
-                errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(Stream.DataString);
+                errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(RawByteString(Stream.DataString));
                 raise Exception.Create(erroStr);
               end;
           end;
@@ -1618,4 +1655,9 @@ begin
       end;
   end;
 end;
+function TRscPix.ValidaTitularPix: Boolean;
+begin
+
+end;
+
 end.

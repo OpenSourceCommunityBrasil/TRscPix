@@ -75,7 +75,7 @@ end;
 
 function isCNPJ(CNPJ: string): boolean;
 var
-  dig13, dig14: string;
+  dig13, dig14: ShortString;
   sm, i, r, peso: integer;
 begin
   CNPJ  :=  GetStrNumber(CNPJ);
@@ -128,7 +128,7 @@ begin
       str((11 - r): 1, dig14);
 
     { Verifica se os digitos calculados conferem com os digitos informados. }
-    if ((dig13 = CNPJ[13]) and (dig14 = CNPJ[14])) then
+    if ((dig13 = ShortString(CNPJ[13])) and (dig14 = ShortString(CNPJ[14]))) then
       isCNPJ := True
     else
       isCNPJ := False;
@@ -143,7 +143,7 @@ end;
 
 function isCPF(CPF: string): boolean;
 var
-  dig10, dig11: string;
+  dig10, dig11: ShortString;
   S, i, r, peso: integer;
 begin
   CPF  :=  GetStrNumber(CPF);
@@ -189,7 +189,7 @@ begin
       str(r: 1, dig11);
 
     { Verifica se os digitos calculados conferem com os digitos informados. }
-    if ((dig10 = CPF[10]) and (dig11 = CPF[11])) then
+    if ((dig10 = ShortString(CPF[10])) and (dig11 = ShortString(CPF[11]))) then
       isCPF := True
     else
       isCPF := False;

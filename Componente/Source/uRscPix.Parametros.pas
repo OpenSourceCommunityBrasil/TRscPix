@@ -29,7 +29,8 @@ unit uRscPix.Parametros;
 interface
 uses  System.Generics.collections
 
-  ,uRscPix.funcoes, uRscPix.Pagador
+  ,uRscPix.funcoes
+  ,uRscPix.Pagador
   ,uRscPix.InformacoesAdicionais
   ,uRscPix.Calendario
   ,uRscPix.Devolucao
@@ -37,8 +38,7 @@ uses  System.Generics.collections
   ,uRscPix.Valor
   ,uRscPix.Loc
   ,uRscPix.Tipos
-
-      , System.SysUtils
+  ,System.SysUtils
       ;
 type
   TPIXParams = class
@@ -311,6 +311,7 @@ begin
   else
     FValorToString  :=  '0';
 end;
+
 function TPIXParams.ValidaDaddos: boolean;
 var
   Erro  : String;
@@ -421,9 +422,10 @@ begin
 end;
 
 destructor TPix_Get.Destroy;
-var Vinfo_adicionais : TInformacoesAdicionais;
-    Vdevolucao : TTDevolucao;
-    Vpix : TPIXParams;
+var
+//  Vinfo_adicionais : TInformacoesAdicionais;
+//  Vdevolucao : TTDevolucao;
+  Vpix : TPIXParams;
 begin
 
   if  fpagador <> nil then

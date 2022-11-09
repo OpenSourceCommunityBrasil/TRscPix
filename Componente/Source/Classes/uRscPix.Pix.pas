@@ -32,7 +32,9 @@ interface
   uses
     System.Classes,
     System.SysUtils,
-    uRscPix.Tipos, uRscPix.Validations, uRscPix.funcoes;
+    uRscPix.Tipos,
+    uRscPix.Validations,
+    uRscPix.funcoes;
 
 type
 
@@ -71,21 +73,33 @@ end;
 
 procedure TDadosTitularPix.SetCidadeTitularConta(const Value: string);
 begin
-  if length(Value) > 15 then
-    raise Exception.Create('O Nome da Cidade Não Pode Ultrapassar 15 Caracteres')
-  else
-    if length(Value) < 3 then
-      raise Exception.Create('Nome Para Cidade Informado é muito Curto')
-    else
-      FCidadeTitularConta := Value;
+  case FTipoQRCode of
+    tqDinamico: ;
+    tqEstatico:
+      begin
+        if length(Value) < 10 then
+          raise Exception.Create('Nome Informado Para o Titular é Muito Curto, Informe o Nome Completo do Títular da Conta')
+        else
+          FNomeTitularConta := Value;
+      end;
+  end;
 end;
 
 procedure TDadosTitularPix.SetNomeTitularConta(const Value: string);
 begin
-  if length(Value) < 10 then
-    raise Exception.Create('Nome Informado Para o Titular é Muito Curto, Informe o Nome Completo do Títular da Conta')
-  else
-    FNomeTitularConta := Value;
+  case FTipoQRCode of
+    tqDinamico: ;
+    tqEstatico:
+      begin
+        if length(Value) > 15 then
+          raise Exception.Create('O Nome da Cidade Não Pode Ultrapassar 15 Caracteres')
+        else
+          if length(Value) < 3 then
+            raise Exception.Create('Nome Para Cidade Informado é muito Curto')
+          else
+            FCidadeTitularConta := Value;
+      end;
+  end;
 end;
 
 procedure TDadosTitularPix.SetTipoChavePix(const Value: TTipoChavePIX);

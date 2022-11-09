@@ -1,6 +1,5 @@
 package RscPix;
 {$R *.res}
-{$R *.dres}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
 {$ALIGN 8}
 {$ASSERTIONS ON}
@@ -30,9 +29,9 @@ package RscPix;
 requires
   rtl,
   vcl,
-  soaprtl,
   dbrtl,
-  RestDatawareCORE,
+  RESTDWCore,
+  RESTDWSocketIndy,
   RESTComponents;
 
 contains

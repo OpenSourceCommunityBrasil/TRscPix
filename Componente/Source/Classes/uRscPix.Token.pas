@@ -38,8 +38,10 @@ type
     procedure SetAcessToken(const Value: string);
     procedure SetExpires_in(const Value: Integer);
     procedure SetTokenType(const Value: string);
+  public
+    { public declarations }
 
-  published
+//  published
 
     property Expires_in            : Integer read FExpires_in write SetExpires_in;
     property AcessToken            : string read FAcessToken write SetAcessToken;

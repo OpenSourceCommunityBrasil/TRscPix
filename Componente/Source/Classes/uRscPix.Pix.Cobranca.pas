@@ -64,7 +64,6 @@ begin
   if (Length(Value) > 140) then
     begin
       raise Exception.Create('O Texto da Mensagem deve ter até 140 caracteres!');
-      Exit;
     end;
     
   FMensagem := Value;
@@ -75,13 +74,11 @@ begin
   if Value = '' then
     begin
       raise Exception.Create('O TXID deve ser informado!');
-      Exit;
     end;
 
   if (Length(Value) < 26) or (Length(Value) > 38) then
     begin
       raise Exception.Create('O TXID deve ter entre 26 á 38 caracteres!');
-      Exit;
     end;
     
   FTXID := Value;
@@ -92,7 +89,6 @@ begin
   if Value < 0 then
     begin
       raise Exception.Create('Somente Valores Positivos são válidos!');
-      Exit;
     end;
 
   FValor := Value;

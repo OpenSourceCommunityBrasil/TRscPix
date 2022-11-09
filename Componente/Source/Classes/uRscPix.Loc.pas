@@ -20,7 +20,7 @@ type
   public
     { public declarations }
 
-  published
+//  published
     { published declarations }
     property id       : integer read Fid        write Setid;
     property location : string  read Flocation  write Setlocation;
@@ -44,7 +44,7 @@ type
   public
     { public declarations }
 
-  published
+//  published
     { published declarations }
     property  txid          : string read Ftxid         write Settxid;
     property  qrcode        : string read Fqrcode       write Setqrcode;
@@ -64,7 +64,7 @@ type
   public
     { public declarations }
 
-  published
+//  published
     { published declarations }
   end;
 
@@ -76,7 +76,7 @@ type
   public
     { public declarations }
 
-  published
+//  published
     { published declarations }
   end;
 
