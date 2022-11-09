@@ -61,4 +61,4 @@
 	
 #### Se o Componente lhe ajudar fique a vontade para fazer uma doação para nós, assim continuamos nosso trabalho e sempre estaremos buscando novas formas de contribuir com nossa comunidade.
 
-### Chave Pix para Contribuíção: E-MAIL: roniery@rscsistemas.com.br
+<a href="https://opencollective.com/opensourcecommunitybrasil/projects/trscpix/donate?amount=20"><img src="https://trscpix.rscsistemas.com.br/assets/images/doacao.png" alt="Doação Componente TRscPix" /></a>
