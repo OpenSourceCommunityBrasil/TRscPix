@@ -219,7 +219,9 @@ begin
       TRESTDWIdClientREST(Rest).Accept           := '*/*';
       TRESTDWIdClientREST(Rest).AcceptEncoding   := 'gzip, deflate, br';
       TRESTDWIdClientREST(Rest).ContentEncoding  := '';
-      TRESTDWIdClientREST(Rest).ContentType  := 'application/json;charset=UTF-8';
+      TRESTDWIdClientREST(Rest).HandleRedirects   :=  True;
+      TRESTDWIdClientREST(Rest).UserAgent         := 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; GTB5; Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; Maxthon; InfoPath.1; .NET CLR 3.5.30729; .NET CLR 3.0.30618)';
+      TRESTDWIdClientREST(Rest).ContentType       := 'application/json; application/x-www-form-urlencoded; charset=UTF-8;';
     end
   else
     begin
@@ -290,7 +292,7 @@ begin
         try
            nResp := DWCR_CobConsult.Get(cURL,Nil,Stream,false);
           case nResp of
-            200:
+            200, 201:
               begin
                Retorno     := UTF8ToWideString(RawByteString(Stream.DataString));
                RespCobGet  := TJson.JsonToObject<TRespCobGet>(Retorno);
@@ -382,7 +384,7 @@ begin
     try
       nResp := DWRC_PixRec.Get(cURL,nil,Stream,false);
       case nResp of
-        200:
+        200, 201:
           begin
            Retorno     := UTF8ToWideString(RawByteString(Stream.DataString));
            RespPixGet  := TJson.JsonToObject<TRespPixGet>(Retorno);
@@ -487,7 +489,7 @@ begin
       try
         nResp := DWRC_PixConPer.Get(cURL,nil,Stream,false) ;
         case nResp of
-          200:
+          200, 201:
             begin
              Retorno     := UTF8ToWideString(RawByteString(Stream.DataString));
              RespPixGet  := TJson.JsonToObject<TRespPixGet>(Retorno);
@@ -589,7 +591,7 @@ begin
       try
         nResp := DWRC_PixConsDev.Get(cURL,nil,Stream,false);
         case nResp of
-          200:
+          200, 201:
             begin
              Retorno     := UTF8ToWideString(RawByteString(Stream.DataString));
              RespPixGet  := TJson.JsonToObject<TRespPixGet>(Retorno);
@@ -755,13 +757,7 @@ begin
       try
         nResp := DWCR_GerarQrCodeLoc.Get(cURL,nil,Stream,false);
         case nResp of
-          200:
-            begin
-             Retorno     := UTF8ToWideString(RawByteString(Stream.DataString));
-             ResultLocGet  := TJson.JsonToObject<TRespLocGet>(Retorno);
-             InOnLocGet(Self, ResultLocGet, '');
-            end;
-          201:
+          200, 201:
             begin
              Retorno     := UTF8ToWideString(RawByteString(Stream.DataString));
              ResultLocGet  := TJson.JsonToObject<TRespLocGet>(Retorno);
@@ -891,6 +887,7 @@ begin
   DWCR_Token  :=  TRESTDWIdClientREST.Create(nil);
   ConfigRestClient(DWCR_Token);
   StrlHeader := TStringList.Create;
+  DWCR_Token.ContentType      :=  'application/x-www-form-urlencoded';
   try
     case FPSP.TipoPsp of
       pspSicredi      : begin
@@ -937,9 +934,22 @@ begin
                         end;
 
       pspGerencianet  : begin
-                            DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwAOBasic;
+//                            DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwOAuth;
                             StrlHeader.Add('grant_type=client_credentials');
+//                            StrlHeader.Add('client_id='+FDeveloper.Client_ID);
+//                            StrlHeader.Add('client_secret='+FDeveloper.Client_Secret);
+//                            StrlHeader.Add('Content-Type=application/json; application/x-www-form-urlencoded;');
 
+                            DWCR_Token.ContentType      :=  'application/json';
+
+
+
+//                            StrlHeader.Add('grant_type=client_credentials');
+                            DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwAOBasic;
+//                            DWCR_Token.Accept           := '*/*';
+//                            DWCR_Token.AcceptEncoding   := 'gzip, deflate, br';
+////                            DWCR_Token.ContentEncoding  := '';
+//
                             TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Username  := FDeveloper.Client_ID;
                             TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Password  := FDeveloper.Client_Secret;
                         end;
@@ -956,12 +966,12 @@ begin
     end;
 
 
-    DWCR_Token.ContentType      :=  'application/x-www-form-urlencoded';
+
     StrmBody := TStringStream.Create('', TEncoding.UTF8);
     try
       nResp := DWCR_Token.Post(FPSP.URLToken, StrlHeader, StrmBody);
       case nResp of
-        200:
+        200,201:
           begin
             Result  :=  True;
             JsonResponse        := TJSONObject.ParseJsonValue(UTF8ToWideString(RawByteString(StrmBody.DataString))) as TJSONObject;
@@ -971,7 +981,7 @@ begin
             InOnToken(Self, Token);
           end;
       else
-        raise Exception.Create(ErroGeralToString(nResp));
+        InOnToken(Self, nil, ErroGeralToString(nResp));
       end;
     Except
      on E:exception do
@@ -1163,15 +1173,7 @@ begin
 
          nResp := DWCR_CobCriar.Put(cURL,RequestBody,Stream,false) ;
         case nResp of
-          200:
-            begin
-             Retorno       := UTF8ToWideString(RawByteString(Stream.DataString));
-             ResultCobPut  := TJson.JsonToObject<TRespCobPut>(Retorno);
-             if ResultCobPut.textoImagemQRcode = '' then
-                ResultCobPut.textoImagemQRcode := GeraPayload(ResultCobPut.valor.original, ResultCobPut.txid, ResultCobPut.location) ;
-             InOnCobPut(Self, ResultCobPut, '');
-            end;
-          201:
+          200, 201:
             begin
              Retorno       := UTF8ToWideString(RawByteString(Stream.DataString));
              ResultCobPut  := TJson.JsonToObject<TRespCobPut>(Retorno);
@@ -1553,13 +1555,7 @@ begin
       try
         nResp := DWRC_PixSolDev.Put(cURL,RequestBody,Stream,false);
         case nResp of
-          200:
-            begin
-             Retorno     := UTF8ToWideString(RawByteString(Stream.DataString));
-             ResultPixPut  := TJson.JsonToObject<TRespPixPut>(Retorno);
-             InOnPixPut(Self, ResultPixPut, '');
-            end;
-          201:
+          200, 201:
             begin
              Retorno     := UTF8ToWideString(RawByteString(Stream.DataString));
              ResultPixPut  := TJson.JsonToObject<TRespPixPut>(Retorno);
