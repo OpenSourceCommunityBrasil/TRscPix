@@ -2,7 +2,7 @@
 
 <a href="https://discord.gg/z8Wj7kQX"><img alt="join Discord" src="https://img.shields.io/discord/918891794597544056?color=blue&label=Discord&logo=discord&style=social"></a> <a href="https://t.me/TRscPix"><img src="https://img.shields.io/badge/Telegram-join-blue?style=social&logo=telegram"> </a>
 
-![GitHub](https://img.shields.io/github/license/OpenSourceCommunityBrasil/TRscPix) 
+[![License](https://img.shields.io/github/license/OpenSourceCommunityBrasil/TRscPix?label=License&style=plastic)](https://github.com/OpenSourceCommunityBrasil/TRscPix/blob/main/LICENSE)
 ![GitHub repo size](https://img.shields.io/github/repo-size/OpenSourceCommunityBrasil/TRscPix)
 
 # TRscPix Componente para desenvolvimento de aplicações que usam a api PIX
