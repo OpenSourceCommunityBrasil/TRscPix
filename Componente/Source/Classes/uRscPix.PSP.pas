@@ -133,6 +133,7 @@ type
       FUrlHostCert: string;
       FUrlApi: string;
       FEndPoints: TEndPoint;
+    FScopePix: string;
       procedure SetTipoPsp(const Value: TTipoPSP);
       procedure SetTipoPspAmbiente(const Value: TTipoAmbiente);
       procedure SetUrlApi(const Value: string);
@@ -140,11 +141,13 @@ type
       procedure SetUrlToken(const Value: string);
       procedure SetConfigUrls;
       procedure SetEndPoints(const Value: TEndPoint);
+    procedure SetScopePix(const Value: string);
     public
       property UrlToken         : string  read FUrlToken        write SetUrlToken;
       property UrlApi           : string  read FUrlApi          write SetUrlApi;
       property UrlHostCert      : string  read FUrlHostCert     write SetUrlHostCert;
-      property EndPoints        : TEndPoint read FEndPoints write SetEndPoints;
+      property EndPoints        : TEndPoint read FEndPoints     write SetEndPoints;
+      property ScopePix         : string read FScopePix         write SetScopePix;
 
 
       Constructor Create;
@@ -171,488 +174,521 @@ end;
 
 procedure TTPSP.SetConfigUrls;
 begin
-  if TipoPspAmbiente = taSandBox then
-  begin
-    case TipoPsp of
-                        {============================================}
-      pspSicredi      : begin
-                          URLToken              := 'https://api-pix-h.sicredi.com.br/oauth/token';
-                          FURLAPI               := 'https://api-pix-h.sicredi.com.br/api/v2';
-                          FUrlHostCert          := 'https://api-pix-h.sicredi.com.br';
-
-                          FEndPoints.CobPut     :=  '/cob/{txid}';
-                          FEndPoints.CobPatch   :=  '/cob/{txid}';
-                          FEndPoints.CobGet     :=  '/cob/{txid}';
-
-                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.FPixGetCPR :=  '/pix';
-                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
-                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
-
-                        end;
-                        {============================================}
-      pspBancoDoBrasil: begin
-                          FURLToken           := 'https://oauth.sandbox.bb.com.br/oauth/token';
-                          FURLAPI             := 'https://api.sandbox.bb.com.br/pix/v1';
-                          FUrlHostCert        := '';
-
-                          FEndPoints.CobPut   :=  '/cobqrcode/{txid}';
-                          FEndPoints.CobPatch :=  '/cob/{txid}';
-                          FEndPoints.CobGet   :=  '/cob/{txid}';
-
-                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.FPixGetCPR :=  '/pix';
-                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
-                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
-
-                        end;
-                        {============================================}
-      pspSantander:     begin
-                          FURLToken           := 'https://pix.santander.com.br/sandbox/oauth/token';
-                          FURLAPI             := 'https://pix.santander.com.br/api/v1/sandbox';
-                          FUrlHostCert        := 'https://trust-pix-h.santander.com.br';
-
-                          FEndPoints.CobPut   :=  '/cob/{txid}';
-                          FEndPoints.CobPatch :=  '/cob/{txid}';
-                          FEndPoints.CobGet   :=  '/cob/{txid}';
-
-                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.FPixGetCPR :=  '/pix';
-                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
-                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
-
-                        end;
-                        {============================================}
-      pspSicoob:        begin
-                          FURLToken           := 'https://api-homol.sicoob.com.br/cooperado/pix/token';
-                          FURLAPI             := 'https://api-homol.sicoob.com.br/cooperado/pix/api/v2';
-                          FUrlHostCert        := 'https://api-homol.sicoob.com.br';
-
-                          FEndPoints.CobPut   :=  '/cob/{txid}';
-                          FEndPoints.CobPatch :=  '/cob/{txid}';
-                          FEndPoints.CobGet   :=  '/cob/{txid}';
-
-                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.FPixGetCPR :=  '/pix';
-                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
-                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
-
-                        end;
-                        {============================================}
-      pspBradesco     : begin
-                          FURLToken           := 'https://qrpix-h.bradesco.com.br/oauth/token';
-                          FURLAPI             := 'https://qrpix-h.bradesco.com.br/v2';
-                          FUrlHostCert        := 'https://qrpix-h.bradesco.com.br';
-
-                          FEndPoints.CobPut         :=  '/cob/{txid}';
-                          FEndPoints.CobEmvPut      :=  '/cob-emv/{txid}';
-                          FEndPoints.CobPostS       :=  '/cob';
-                          FEndPoints.CobEmvPostS    :=  '/cob-emv';
-                          FEndPoints.CobPatch       :=  '/cob/{txid}';
-                          FEndPoints.CobGet         :=  '/cob/{txid}';
-                          FEndPoints.CobGetS        :=  '/cob';
-
-                          FEndPoints.CobvPut        :=  '/cobv/{txid}';
-                          FEndPoints.CobvEmvPut     :=  '/cobv-emv/{txid}';
-                          FEndPoints.CobvPatch      :=  '/cobv/{txid}';
-                          FEndPoints.CobvGet        :=  '/cobv/{txid}';
-
-                          FEndPoints.LocPost        :=  '/loc';
-                          FEndPoints.LocGet         :=  '/loc';
-                          FEndPoints.LocIdGet       :=  '/loc/{locId}'; //{id}
-                          FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode'; //{id}
-                          FEndPoints.LocDelete      :=  '/loc/{locId}/{txid}'; //{id}
-
-                          FEndPoints.PixPut         :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.PixGetCD       :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.PixGetCP       :=  '/pix/{e2eid}';
-                          FEndPoints.PixGetCPR      :=  '/pix';
-
-                          FEndPoints.WebhookPut    :=  '/webhook/{chave}';
-                          FEndPoints.WebhookPost   :=  '{$request.body#/webhookUrl}/pix';
-                          FEndPoints.WebhookGet    :=  '/webhook/{chave}';
-                          FEndPoints.WebhookDelete :=  '/webhook/{chave}';
-                          FEndPoints.WebhookGetCWC :=  '/webhook';
-                        end;
-                        {============================================}
-      pspGerencianet  : begin
-                          FURLToken           := 'https://api-pix-h.gerencianet.com.br/oauth/token';
-                          FURLAPI             := 'https://api-pix-h.gerencianet.com.br/v2';
-                          FUrlHostCert        := 'https://api-pix-h.gerencianet.com.br';
-
-                          FEndPoints.CobPut   :=  '/cob/{txid}';
-                          FEndPoints.CobPatch :=  '/cob/{txid}';
-                          FEndPoints.CobGet   :=  '/cob/{txid}';
-
-                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.FPixGetCPR :=  '/pix';
-                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
-                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
-
-                          FEndPoints.LocGet      :=  '/loc';
-                          FEndPoints.LocIdGet      :=  '/loc/{locId}';
-                          FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
-                          FEndPoints.LocDelete   :=  '/loc/{locId}/{txid}';
-                          FEndPoints.LocPost     :=  '/loc';
-                        end;
-                        {============================================}
-      pspPagSeguro    : begin
-                          FURLToken           := 'https://secure.sandbox.api.pagseguro.com/pix/oauth2';
-                          FURLAPI             := 'https://secure.sandbox.api.pagseguro.com/instant-payments';
-                          FUrlHostCert        := 'https://secure.sandbox.api.pagseguro.com';
-
-                          FEndPoints.CobPut   :=  '/cob/{txid}';
-                          FEndPoints.CobPatch :=  '/cob/{txid}';
-                          FEndPoints.CobGet   :=  '/cob/{txid}';
-
-                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.FPixGetCPR :=  '/pix';
-                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
-                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
-
-                          FEndPoints.LocGet      :=  '/loc';
-                          FEndPoints.LocIdGet      :=  '/loc/{locId}';
-                          FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
-                          FEndPoints.LocDelete   :=  '/loc/{locId}/{txid}';
-                          FEndPoints.LocPost     :=  '/loc';
-                        end;
-                        {============================================}
-      pspItau         : begin
-                          FURLToken           := 'https://devportal.itau.com.br/api/jwt/as/token.oauth2';
-                          FURLAPI             := 'https://devportal.itau.com.br/sandboxapi/pix_recebimentos_ext_v2/v2';
-                          FUrlHostCert        := 'https://devportal.itau.com.br/sandboxapi/seguranca/v1/certificado';
-
-                          FEndPoints.CobPut   :=  '/cob/{txid}';
-                          FEndPoints.CobPatch :=  '/cob/{txid}';
-                          FEndPoints.CobGet   :=  '/cob/{txid}';
-
-                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.FPixGetCPR :=  '/pix';
-                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
-                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
-
-                          FEndPoints.LocGet      :=  '/loc';
-                          FEndPoints.LocIdGet      :=  '/loc/{locId}';
-                          FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
-                          FEndPoints.LocDelete   :=  '/loc/{locId}/{txid}';
-                          FEndPoints.LocPost     :=  '/loc';
-                        end;
-    end;
-  end
-  else if TipoPspAmbiente = taHomologacao then
-  begin
-    case TipoPsp of
-                        {============================================}
-      pspSicredi      : begin
-                          FURLToken           := 'https://api-pix-h.sicredi.com.br/oauth/token';
-                          FURLAPI             := 'https://api-pix-h.sicredi.com.br/api/v2';
-                          FUrlHostCert        := 'https://api-pix-h.sicredi.com.br';
-
-                          FEndPoints.CobPut   :=  '/cob/{txid}';
-                          FEndPoints.CobPatch :=  '/cob/{txid}';
-                          FEndPoints.CobGet   :=  '/cob/{txid}';
-
-                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.FPixGetCPR :=  '/pix';
-                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
-                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
-
-                        end;
-                        {============================================}
-      pspBancoDoBrasil: begin
-                          FURLToken           := 'https://oauth.hm.bb.com.br/oauth/token';
-                          FURLAPI             := 'https://api.hm.bb.com.br/pix/v1';
-                          FUrlHostCert        := '';
-
-                          FEndPoints.CobPut   := '/cobqrcode/{txid}';
-                          FEndPoints.CobPatch :=  '/cob/{txid}';
-                          FEndPoints.CobGet   :=  '/cob/{txid}';
-
-                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.FPixGetCPR :=  '/pix';
-                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
-                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
-
-                        end;
-                        {============================================}
-      pspSantander:     begin
-                          FURLToken           := 'https://trust-pix-h.santander.com.br/oauth/token';
-                          FURLAPI             := 'https://trust-pix-h.santander.com.br/api/v1';
-                          FUrlHostCert        := 'https://trust-pix-h.santander.com.br';
-
-                          FEndPoints.CobPut   :=  '/cob/{txid}';
-                          FEndPoints.CobPatch :=  '/cob/{txid}';
-                          FEndPoints.CobGet   :=  '/cob/{txid}';
-
-                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.FPixGetCPR :=  '/pix';
-                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
-                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
-
-                        end;
-                        {============================================}
-      pspSicoob:        begin
-                          FURLToken           := 'https://api-homol.sicoob.com.br/cooperado/pix/token';
-                          FURLAPI             := 'https://api-homol.sicoob.com.br/cooperado/pix/api/v2';
-                          FUrlHostCert        := 'https://api-homol.sicoob.com.br';
-
-                          FEndPoints.CobPut   :=  '/cob/{txid}';
-                          FEndPoints.CobPatch :=  '/cob/{txid}';
-                          FEndPoints.CobGet   :=  '/cob/{txid}';
-
-                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.FPixGetCPR :=  '/pix';
-                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
-                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
-
-                        end;
-                        {============================================}
-      pspBradesco     : begin
-                          FURLToken           := 'https://qrpix-h.bradesco.com.br/oauth/token';
-                          FURLAPI             := 'https://qrpix-h.bradesco.com.br/v2';
-                          FUrlHostCert        := 'https://qrpix-h.bradesco.com.br';
-
-                          FEndPoints.CobPut   :=  '/cob/{txid}';
-                          FEndPoints.CobPatch :=  '/cob/{txid}';
-                          FEndPoints.CobGet   :=  '/cob/{txid}';
-
-                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.FPixGetCPR :=  '/pix';
-                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
-                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
-
-                          FEndPoints.LocGet      :=  '/loc';
-                          FEndPoints.LocIdGet      :=  '/loc/{locId}';
-                          FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
-                          FEndPoints.LocDelete   :=  '/loc/{locId}/{txid}';
-                          FEndPoints.LocPost     :=  '/loc';
-
-                        end;
-                        {============================================}
-      pspGerencianet  : begin
-                          FURLToken           := 'https://api-pix-h.gerencianet.com.br/oauth/token';
-                          FURLAPI             := 'https://api-pix-h.gerencianet.com.br/v2';
-                          FUrlHostCert        := 'https://api-pix-h.gerencianet.com.br';
-
-                          FEndPoints.CobPut   :=  '/cob/{txid}';
-                          FEndPoints.CobPatch :=  '/cob/{txid}';
-                          FEndPoints.CobGet   :=  '/cob/{txid}';
-
-                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.FPixGetCPR :=  '/pix';
-                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
-                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
-
-                          FEndPoints.LocGet      :=  '/loc';
-                          FEndPoints.LocIdGet      :=  '/loc/{locId}';
-                          FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
-                          FEndPoints.LocDelete   :=  '/loc/{locId}/{txid}';
-                          FEndPoints.LocPost     :=  '/loc';
-                        end;
-                        {============================================}
-      pspPagSeguro    : begin
-                          FURLToken           := 'https://secure.sandbox.api.pagseguro.com/pix/oauth2';
-                          FURLAPI             := 'https://secure.sandbox.api.pagseguro.com/instant-payments';
-                          FUrlHostCert        := 'https://secure.sandbox.api.pagseguro.com';
-
-                          FEndPoints.CobPut   :=  '/cob/{txid}';
-                          FEndPoints.CobPatch :=  '/cob/{txid}';
-                          FEndPoints.CobGet   :=  '/cob/{txid}';
-
-                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.FPixGetCPR :=  '/pix';
-                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
-                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
-
-                          FEndPoints.LocGet      :=  '/loc';
-                          FEndPoints.LocIdGet      :=  '/loc/{locId}';
-                          FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
-                          FEndPoints.LocDelete   :=  '/loc/{locId}/{txid}';
-                          FEndPoints.LocPost     :=  '/loc';
-                        end;
-                        {============================================}
-      pspItau         : begin
-                          FURLToken           := 'https://devportal.itau.com.br/api/jwt/as/token.oauth2';
-                          FURLAPI             := 'https://devportal.itau.com.br/sandboxapi/pix_recebimentos_ext_v2/v2';
-                          FUrlHostCert        := 'https://devportal.itau.com.br/sandboxapi/seguranca/v1/certificado';
-
-                          FEndPoints.CobPut   :=  '/cob/{txid}';
-                          FEndPoints.CobPatch :=  '/cob/{txid}';
-                          FEndPoints.CobGet   :=  '/cob/{txid}';
-
-                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.FPixGetCPR :=  '/pix';
-                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
-                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
-
-                          FEndPoints.LocGet      :=  '/loc';
-                          FEndPoints.LocIdGet      :=  '/loc/{locId}';
-                          FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
-                          FEndPoints.LocDelete   :=  '/loc/{locId}/{txid}';
-                          FEndPoints.LocPost     :=  '/loc';
-                        end;
-    end;
-  end
-  else if TipoPspAmbiente = taProducao then
-  begin
-    case TipoPsp of
-                        {============================================}
-      pspSicredi      : begin
-                          FURLToken           :=  'https://api-pix.sicredi.com.br/oauth/token';;  // 'https://api-pix.sicredi.com.br/v2/oauth/token';
-                          FURLAPI             :=  'https://api-pix.sicredi.com.br/api/v2';
-                          FUrlHostCert        :=  'https://api-pix.sicredi.com.br';
-
-                          FEndPoints.CobPut   :=  '/cob/{txid}';
-                          FEndPoints.CobPatch :=  '/cob/{txid}';
-                          FEndPoints.CobGet   :=  '/cob/{txid}';
-
-                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.FPixGetCPR :=  '/pix';
-                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
-                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
-
-                        end;
-                        {===========================================}
-      pspBancoDoBrasil: begin
-                          FURLToken           := 'https://oauth.bb.com.br/oauth/token';
-                          FURLAPI             := 'https://api.bb.com.br/pix/v1';
-                          FUrlHostCert        := '';
-
-                          FEndPoints.CobPut   := '/cobqrcode/{txid}';
-                          FEndPoints.CobPatch :=  '/cob/{txid}';
-                          FEndPoints.CobGet   :=  '/cob/{txid}';
-
-                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.FPixGetCPR :=  '/pix';
-                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
-                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
-
-                        end;
-                        {============================================}
-      pspSantander    : begin
-                          FURLToken           := 'https://trust-pix.santander.com.br/oauth/token';
-                          FURLAPI             := 'https://trust-pix.santander.com.br/api/v1';
-                          FUrlHostCert        := 'https://trust-pix.santander.com.br';
-
-                          FEndPoints.CobPut   :=  '/cob/{txid}';
-                          FEndPoints.CobPatch :=  '/cob/{txid}';
-                          FEndPoints.CobGet   :=  '/cob/{txid}';
-
-                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.FPixGetCPR :=  '/pix';
-                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
-                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
-
-                        end;
-                        {============================================}
-       pspSicoob:       begin
-                          FURLToken           := 'https://auth.sicoob.com.br/auth/realms/cooperado/protocol/openid-connect/token';
-                          FURLAPI             := 'https://apis.sicoob.com.br/cooperado/pix/api/v2';
-                          FUrlHostCert        := 'https://apis.sicoob.com.br';
-
-                          FEndPoints.CobPut   :=  '/cob/{txid}';
-                          FEndPoints.CobPatch :=  '/cob/{txid}';
-                          FEndPoints.CobGet   :=  '/cob/{txid}';
-
-                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.FPixGetCPR :=  '/pix';
-                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
-                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
-
-                        end;
-                        {============================================}
-      pspBradesco     : begin
-                          FURLToken           := 'https://qrpix.bradesco.com.br/oauth/token';
-                          FURLAPI             := 'https://qrpix.bradesco.com.br/v2';
-                          FUrlHostCert        := 'https://qrpix.bradesco.com.br';
-
-                          FEndPoints.CobPut   :=  '/cob/{txid}';
-                          FEndPoints.CobPatch :=  '/cob/{txid}';
-                          FEndPoints.CobGet   :=  '/cob/{txid}';
-
-                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.FPixGetCPR :=  '/pix';
-                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
-                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
-
-                          FEndPoints.LocGet      :=  '/loc';
-                          FEndPoints.LocIdGet      :=  '/loc/{locId}';
-                          FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
-                          FEndPoints.LocDelete   :=  '/loc/{locId}/{txid}';
-                          FEndPoints.LocPost     :=  '/loc';
-
-                        end;
-                        {============================================}
-      pspGerencianet  : begin
-                          FURLToken           := 'https://api-pix.gerencianet.com.br/oauth/token';
-                          FURLAPI             := 'https://api-pix.gerencianet.com.br/v2';
-                          FUrlHostCert        := 'https://api-pix.gerencianet.com.br';
-
-                          FEndPoints.CobPut   :=  '/cob/{txid}';
-                          FEndPoints.CobPatch :=  '/cob/{txid}';
-                          FEndPoints.CobGet   :=  '/cob/{txid}';
-
-                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.FPixGetCPR :=  '/pix';
-                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
-                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
-
-                          FEndPoints.LocGet      :=  '/loc';
-                          FEndPoints.LocIdGet      :=  '/loc/{locId}';
-                          FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
-                          FEndPoints.LocDelete   :=  '/loc/{locId}/{txid}';
-                          FEndPoints.LocPost     :=  '/loc';
-                        end;
-                        {============================================}
-      pspPagSeguro    : begin
-                          FURLToken           := 'https://secure.api.pagseguro.com/pix/oauth2';
-                          FURLAPI             := 'https://secure.api.pagseguro.com/instant-payments';
-                          FUrlHostCert        := 'https://secure.api.pagseguro.com';
-
-                          FEndPoints.CobPut   :=  '/cob/{txid}';
-                          FEndPoints.CobPatch :=  '/cob/{txid}';
-                          FEndPoints.CobGet   :=  '/cob/{txid}';
-
-                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.FPixGetCPR :=  '/pix';
-                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
-                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
-
-                          FEndPoints.LocGet      :=  '/loc';
-                          FEndPoints.LocIdGet      :=  '/loc/{locId}';
-                          FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
-                          FEndPoints.LocDelete   :=  '/loc/{locId}/{txid}';
-                          FEndPoints.LocPost     :=  '/loc';
-                        end;
-                        {============================================}
-      pspItau         : begin
-                          FURLToken           := 'https://sts.itau.com.br/as/token.oauth2';
-                          FURLAPI             := 'https://secure.api.itau/pix_recebimentos/v2';
-                          FUrlHostCert        := 'https://secure.api.itau/seguranca/v1/certificado';
-
-                          FEndPoints.CobPut   :=  '/cob/{txid}';
-                          FEndPoints.CobPatch :=  '/cob/{txid}';
-                          FEndPoints.CobGet   :=  '/cob/{txid}';
-
-                          FEndPoints.FPixPut    :=  '/pix/{e2eid}/devolucao/{id}';
-                          FEndPoints.FPixGetCPR :=  '/pix';
-                          FEndPoints.FPixGetCP  :=  '/pix/{e2eid}';
-                          FEndPoints.FPixGetCD  :=  '/pix/{e2eid}/devolucao/{id}';
-
-                          FEndPoints.LocGet      :=  '/loc';
-                          FEndPoints.LocIdGet      :=  '/loc/{locId}';
-                          FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
-                          FEndPoints.LocDelete   :=  '/loc/{locId}/{txid}';
-                          FEndPoints.LocPost     :=  '/loc';
-                        end;
-
-                        {
-  cItauPathCertificado = '/seguranca/v1/certificado';
-  cItauPathCertificadoSolicitacao = '/solicitacao';
-  cItauPathCertificadoRenovacao = '/renovacao';
-                        }
-    end;
+  case TipoPsp of
+
+    pspSicredi:
+      begin
+        case TipoPspAmbiente of
+          taSandBox:
+            begin
+              URLToken                  :=  'https://api-pix-h.sicredi.com.br/oauth/token';
+              FURLAPI                   :=  'https://api-pix-h.sicredi.com.br/api/v2';
+              FUrlHostCert              :=  'https://api-pix-h.sicredi.com.br';
+              FScopePix                 :=  '';
+
+              FEndPoints.CobPut         :=  '/cob/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+            end;
+
+          taHomologacao:
+            begin
+              FURLToken                 :=  'https://api-pix-h.sicredi.com.br/oauth/token';
+              FURLAPI                   :=  'https://api-pix-h.sicredi.com.br/api/v2';
+              FUrlHostCert              :=  'https://api-pix-h.sicredi.com.br';
+
+              FEndPoints.CobPut         :=  '/cob/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+            end;
+
+          taProducao:
+            begin
+              FURLToken                 :=  'https://api-pix.sicredi.com.br/oauth/token';;  // 'https://api-pix.sicredi.com.br/v2/oauth/token';
+              FURLAPI                   :=  'https://api-pix.sicredi.com.br/api/v2';
+              FUrlHostCert              :=  'https://api-pix.sicredi.com.br';
+
+              FEndPoints.CobPut         :=  '/cob/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+            end;
+        end;
+      end;
+
+    pspBancoDoBrasil:
+      begin
+        case TipoPspAmbiente of
+          taSandBox:
+            begin
+              FURLToken                 :=  'https://oauth.sandbox.bb.com.br/oauth/token';
+              FURLAPI                   :=  'https://api.sandbox.bb.com.br/pix/v1';
+              FUrlHostCert              :=  '';
+
+              FEndPoints.CobPut         :=  '/cobqrcode/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+            end;
+
+          taHomologacao:
+            begin
+              FURLToken                 :=  'https://oauth.hm.bb.com.br/oauth/token';
+              FURLAPI                   :=  'https://api.hm.bb.com.br/pix/v1';
+              FUrlHostCert              :=  '';
+
+              FEndPoints.CobPut         :=  '/cobqrcode/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+            end;
+
+          taProducao:
+            begin
+              FURLToken                 :=  'https://oauth.bb.com.br/oauth/token';
+              FURLAPI                   :=  'https://api.bb.com.br/pix/v1';
+              FUrlHostCert              :=  '';
+
+              FEndPoints.CobPut         :=  '/cobqrcode/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+            end;
+        end;
+      end;
+
+    pspBradesco:
+      begin
+        case TipoPspAmbiente of
+          taSandBox:
+            begin
+              FURLToken                 :=  'https://qrpix-h.bradesco.com.br/oauth/token';
+              FURLAPI                   :=  'https://qrpix-h.bradesco.com.br/v2';
+              FUrlHostCert              :=  'https://qrpix-h.bradesco.com.br';
+
+              FEndPoints.CobPut         :=  '/cob/{txid}';
+              FEndPoints.CobEmvPut      :=  '/cob-emv/{txid}';
+              FEndPoints.CobPostS       :=  '/cob';
+              FEndPoints.CobEmvPostS    :=  '/cob-emv';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+              FEndPoints.CobGetS        :=  '/cob';
+
+              FEndPoints.CobvPut        :=  '/cobv/{txid}';
+              FEndPoints.CobvEmvPut     :=  '/cobv-emv/{txid}';
+              FEndPoints.CobvPatch      :=  '/cobv/{txid}';
+              FEndPoints.CobvGet        :=  '/cobv/{txid}';
+
+              FEndPoints.LocPost        :=  '/loc';
+              FEndPoints.LocGet         :=  '/loc';
+              FEndPoints.LocIdGet       :=  '/loc/{locId}'; //{id}
+              FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode'; //{id}
+              FEndPoints.LocDelete      :=  '/loc/{locId}/{txid}'; //{id}
+
+              FEndPoints.PixPut         :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.PixGetCD       :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.PixGetCP       :=  '/pix/{e2eid}';
+              FEndPoints.PixGetCPR      :=  '/pix';
+
+              FEndPoints.WebhookPut     :=  '/webhook/{chave}';
+              FEndPoints.WebhookPost    :=  '{$request.body#/webhookUrl}/pix';
+              FEndPoints.WebhookGet     :=  '/webhook/{chave}';
+              FEndPoints.WebhookDelete  :=  '/webhook/{chave}';
+              FEndPoints.WebhookGetCWC  :=  '/webhook';
+            end;
+
+          taHomologacao:
+            begin
+              FURLToken                 :=  'https://qrpix-h.bradesco.com.br/oauth/token';
+              FURLAPI                   :=  'https://qrpix-h.bradesco.com.br/v2';
+              FUrlHostCert              :=  'https://qrpix-h.bradesco.com.br';
+
+              FEndPoints.CobPut         :=  '/cob/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+
+              FEndPoints.LocGet         :=  '/loc';
+              FEndPoints.LocIdGet       :=  '/loc/{locId}';
+              FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
+              FEndPoints.LocDelete      :=  '/loc/{locId}/{txid}';
+              FEndPoints.LocPost        :=  '/loc';
+            end;
+
+          taProducao:
+            begin
+              FURLToken                 :=  'https://qrpix.bradesco.com.br/oauth/token';
+              FURLAPI                   :=  'https://qrpix.bradesco.com.br/v2';
+              FUrlHostCert              :=  'https://qrpix.bradesco.com.br';
+
+              FEndPoints.CobPut         :=  '/cob/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+
+              FEndPoints.LocGet         :=  '/loc';
+              FEndPoints.LocIdGet       :=  '/loc/{locId}';
+              FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
+              FEndPoints.LocDelete      :=  '/loc/{locId}/{txid}';
+              FEndPoints.LocPost        :=  '/loc';
+            end;
+        end;
+      end;
+
+    pspSantander:
+      begin
+        case TipoPspAmbiente of
+          taSandBox:
+            begin
+              FURLToken                 :=  'https://pix.santander.com.br/sandbox/oauth/token';
+              FURLAPI                   :=  'https://pix.santander.com.br/api/v1/sandbox';
+              FUrlHostCert              :=  'https://trust-pix-h.santander.com.br';
+
+              FEndPoints.CobPut         :=  '/cob/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+            end;
+
+          taHomologacao:
+            begin
+              FURLToken                 :=  'https://trust-pix-h.santander.com.br/oauth/token';
+              FURLAPI                   :=  'https://trust-pix-h.santander.com.br/api/v1';
+              FUrlHostCert              :=  'https://trust-pix-h.santander.com.br';
+
+              FEndPoints.CobPut         :=  '/cob/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+            end;
+
+          taProducao:
+            begin
+              FURLToken                 :=  'https://trust-pix.santander.com.br/oauth/token';
+              FURLAPI                   :=  'https://trust-pix.santander.com.br/api/v1';
+              FUrlHostCert              :=  'https://trust-pix.santander.com.br';
+
+              FEndPoints.CobPut         :=  '/cob/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+            end;
+        end;
+      end;
+
+    pspSicoob:
+      begin
+        case TipoPspAmbiente of
+          taSandBox:
+            begin
+              FURLToken                 :=  'https://api-homol.sicoob.com.br/cooperado/pix/token';
+              FURLAPI                   :=  'https://api-homol.sicoob.com.br/cooperado/pix/api/v2';
+              FUrlHostCert              :=  'https://api-homol.sicoob.com.br';
+
+              FEndPoints.CobPut         :=  '/cob/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+            end;
+
+          taHomologacao:
+            begin
+              FURLToken                 :=  'https://api-homol.sicoob.com.br/cooperado/pix/token';
+              FURLAPI                   :=  'https://api-homol.sicoob.com.br/cooperado/pix/api/v2';
+              FUrlHostCert              :=  'https://api-homol.sicoob.com.br';
+
+              FEndPoints.CobPut         :=  '/cob/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+            end;
+
+          taProducao:
+            begin
+              FURLToken                 :=  'https://auth.sicoob.com.br/auth/realms/cooperado/protocol/openid-connect/token';
+              FURLAPI                   :=  'https://apis.sicoob.com.br/cooperado/pix/api/v2';
+              FUrlHostCert              :=  'https://apis.sicoob.com.br';
+
+              FEndPoints.CobPut         :=  '/cob/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+            end;
+        end;
+      end;
+
+    pspGerencianet:
+      begin
+        case TipoPspAmbiente of
+          taSandBox:
+            begin
+              FURLToken                 :=  'https://api-pix-h.gerencianet.com.br/oauth/token';
+              FURLAPI                   :=  'https://api-pix-h.gerencianet.com.br/v2';
+              FUrlHostCert              :=  'https://api-pix-h.gerencianet.com.br';
+
+              FEndPoints.CobPut         :=  '/cob/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+
+              FEndPoints.LocGet         :=  '/loc';
+              FEndPoints.LocIdGet       :=  '/loc/{locId}';
+              FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
+              FEndPoints.LocDelete      :=  '/loc/{locId}/{txid}';
+              FEndPoints.LocPost        :=  '/loc';
+            end;
+
+          taHomologacao:
+            begin
+              FURLToken                 :=  'https://api-pix-h.gerencianet.com.br/oauth/token';
+              FURLAPI                   :=  'https://api-pix-h.gerencianet.com.br/v2';
+              FUrlHostCert              :=  'https://api-pix-h.gerencianet.com.br';
+
+              FEndPoints.CobPut         :=  '/cob/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+
+              FEndPoints.LocGet         :=  '/loc';
+              FEndPoints.LocIdGet       :=  '/loc/{locId}';
+              FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
+              FEndPoints.LocDelete      :=  '/loc/{locId}/{txid}';
+              FEndPoints.LocPost        :=  '/loc';
+            end;
+
+          taProducao:
+            begin
+              FURLToken                 :=  'https://api-pix.gerencianet.com.br/oauth/token';
+              FURLAPI                   :=  'https://api-pix.gerencianet.com.br/v2';
+              FUrlHostCert              :=  'https://api-pix.gerencianet.com.br';
+
+              FEndPoints.CobPut         :=  '/cob/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+
+              FEndPoints.LocGet         :=  '/loc';
+              FEndPoints.LocIdGet       :=  '/loc/{locId}';
+              FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
+              FEndPoints.LocDelete      :=  '/loc/{locId}/{txid}';
+              FEndPoints.LocPost        :=  '/loc';
+            end;
+        end;
+      end;
+
+    pspPagSeguro:
+      begin
+        case TipoPspAmbiente of
+          taSandBox:
+            begin
+              FURLToken                 :=  'https://secure.sandbox.api.pagseguro.com/pix/oauth2';
+              FURLAPI                   :=  'https://secure.sandbox.api.pagseguro.com/instant-payments';
+              FUrlHostCert              :=  'https://secure.sandbox.api.pagseguro.com';
+
+              FEndPoints.CobPut         :=  '/cob/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+
+              FEndPoints.LocGet         :=  '/loc';
+              FEndPoints.LocIdGet       :=  '/loc/{locId}';
+              FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
+              FEndPoints.LocDelete      :=  '/loc/{locId}/{txid}';
+              FEndPoints.LocPost        :=  '/loc';
+            end;
+
+          taHomologacao:
+            begin
+              FURLToken                 :=  'https://secure.sandbox.api.pagseguro.com/pix/oauth2';
+              FURLAPI                   :=  'https://secure.sandbox.api.pagseguro.com/instant-payments';
+              FUrlHostCert              :=  'https://secure.sandbox.api.pagseguro.com';
+
+              FEndPoints.CobPut         :=  '/cob/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+
+              FEndPoints.LocGet         :=  '/loc';
+              FEndPoints.LocIdGet       :=  '/loc/{locId}';
+              FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
+              FEndPoints.LocDelete      :=  '/loc/{locId}/{txid}';
+              FEndPoints.LocPost        :=  '/loc';
+            end;
+
+          taProducao:
+            begin
+              FURLToken                 :=  'https://secure.api.pagseguro.com/pix/oauth2';
+              FURLAPI                   :=  'https://secure.api.pagseguro.com/instant-payments';
+              FUrlHostCert              :=  'https://secure.api.pagseguro.com';
+
+              FEndPoints.CobPut         :=  '/cob/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+
+              FEndPoints.LocGet         :=  '/loc';
+              FEndPoints.LocIdGet       :=  '/loc/{locId}';
+              FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
+              FEndPoints.LocDelete      :=  '/loc/{locId}/{txid}';
+              FEndPoints.LocPost        :=  '/loc';
+            end;
+        end;
+      end;
+
+    pspItau:
+      begin
+        case TipoPspAmbiente of
+          taSandBox:
+            begin
+              FURLToken                 :=  'https://devportal.itau.com.br/api/jwt/as/token.oauth2';
+              FURLAPI                   :=  'https://devportal.itau.com.br/sandboxapi/pix_recebimentos_ext_v2/v2';
+              FUrlHostCert              :=  'https://devportal.itau.com.br/sandboxapi/seguranca/v1/certificado';
+
+              FEndPoints.CobPut         :=  '/cob/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+
+              FEndPoints.LocGet         :=  '/loc';
+              FEndPoints.LocIdGet       :=  '/loc/{locId}';
+              FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
+              FEndPoints.LocDelete      :=  '/loc/{locId}/{txid}';
+              FEndPoints.LocPost        :=  '/loc';
+            end;
+
+          taHomologacao:
+            begin
+              FURLToken                 :=  'https://devportal.itau.com.br/api/jwt/as/token.oauth2';
+              FURLAPI                   :=  'https://devportal.itau.com.br/sandboxapi/pix_recebimentos_ext_v2/v2';
+              FUrlHostCert              :=  'https://devportal.itau.com.br/sandboxapi/seguranca/v1/certificado';
+
+              FEndPoints.CobPut         :=  '/cob/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+
+              FEndPoints.LocGet         :=  '/loc';
+              FEndPoints.LocIdGet       :=  '/loc/{locId}';
+              FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
+              FEndPoints.LocDelete      :=  '/loc/{locId}/{txid}';
+              FEndPoints.LocPost        :=  '/loc';
+            end;
+
+          taProducao:
+            begin
+              FURLToken                 :=  'https://sts.itau.com.br/as/token.oauth2';
+              FURLAPI                   :=  'https://secure.api.itau/pix_recebimentos/v2';
+              FUrlHostCert              :=  'https://secure.api.itau/seguranca/v1/certificado';
+
+              FEndPoints.CobPut         :=  '/cob/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+
+              FEndPoints.LocGet         :=  '/loc';
+              FEndPoints.LocIdGet       :=  '/loc/{locId}';
+              FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
+              FEndPoints.LocDelete      :=  '/loc/{locId}/{txid}';
+              FEndPoints.LocPost        :=  '/loc';
+            end;
+        end;
+      end;
   end;
+
 end;
 
 procedure TTPSP.SetTipoPsp(const Value: TTipoPSP);
@@ -818,6 +854,11 @@ end;
 procedure TTPSP.SetEndPoints(const Value: TEndPoint);
 begin
   FEndPoints := Value;
+end;
+
+procedure TTPSP.SetScopePix(const Value: string);
+begin
+  FScopePix := Value;
 end;
 
 end.

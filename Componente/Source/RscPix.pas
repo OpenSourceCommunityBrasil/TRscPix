@@ -210,14 +210,13 @@ begin
       TRESTDWIdClientREST(Rest).UseSSL          :=  FSeguranca.UseSSL;
       TRESTDWIdClientREST(Rest).VerifyCert      :=  FSeguranca.VerifyCert;
       TRESTDWIdClientREST(Rest).SSLVersions     :=  FSeguranca.SSLVersions;
-//      TRESTDWIdClientREST(Rest).SSLMethod       :=  FSeguranca.SSLMethod;
       TRESTDWIdClientREST(Rest).CertMode        :=  sslmClient;
       TRESTDWIdClientREST(Rest).CertFile        :=  Seguranca.CertFile;
       TRESTDWIdClientREST(Rest).KeyFile         :=  FSeguranca.CertKeyFile;
       TRESTDWIdClientREST(Rest).HostCert        :=  FPSP.UrlHostCert;
       TRESTDWIdClientREST(Rest).PortCert        :=  443;//PADRAO
       TRESTDWIdClientREST(Rest).Accept           := '*/*';
-      TRESTDWIdClientREST(Rest).AcceptEncoding   := 'gzip, deflate, br';
+//      TRESTDWIdClientREST(Rest).AcceptEncoding   := 'gzip, deflate, br';
       TRESTDWIdClientREST(Rest).ContentEncoding  := '';
       TRESTDWIdClientREST(Rest).HandleRedirects   :=  True;
       TRESTDWIdClientREST(Rest).UserAgent         := 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; GTB5; Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; Maxthon; InfoPath.1; .NET CLR 3.5.30729; .NET CLR 3.0.30618)';
@@ -880,6 +879,7 @@ var
   nResp         : Integer ;
   StrlHeader    : TStringList ;
   DWCR_Token    : TRESTDWIdClientREST;
+
 begin
 
   Result  :=  False;
@@ -891,8 +891,13 @@ begin
   try
     case FPSP.TipoPsp of
       pspSicredi      : begin
-                            StrlHeader.Add('grant_type=client_credentials');
-                            StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
+//                            StrlHeader.Add('grant_type=client_credentials');
+//                            StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
+
+                            DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwAOBasic;
+                            TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Username  := FDeveloper.Client_ID;
+                            TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Password  := FDeveloper.Client_Secret;
+
                         end;
 
       pspBancoDoBrasil: begin //OK
@@ -963,13 +968,41 @@ begin
 
                             StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
                         end;
+      pspItau:
+        begin
+                            DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwOAuth;
+                            StrlHeader.Add('grant_type=client_credentials');
+                            StrlHeader.Add('client_id='+FDeveloper.Client_ID);
+                            StrlHeader.Add('client_secret='+FDeveloper.Client_Secret);
+
+//          DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwAOBasic;
+//          StrlHeader.Add('grant_type=client_credentials');
+          //grant_type=client_credentials&client_id=d232fbd1-c54b-4c65-b49d-62e5e3c3f0d5&client_secret=00e41d10-324d-4ed7-9934-7200d3e4a414
+
+//          TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Username  := FDeveloper.Client_ID;
+//          TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Password  := FDeveloper.Client_Secret;
+
+//          StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
+        end;
     end;
 
 
 
     StrmBody := TStringStream.Create('', TEncoding.UTF8);
     try
-      nResp := DWCR_Token.Post(FPSP.URLToken, StrlHeader, StrmBody);
+      case FPSP.TipoPsp of
+        pspSicredi: DWCR_Token.Post(FPSP.URLToken + '?grant_type=client_credentials&scope=cob.read cob.write pix.read pix.write', StrlHeader, StrmBody);
+//        pspBancoDoBrasil: ;
+//        pspBradesco: ;
+//        pspSantander: ;
+//        pspSicoob: ;
+//        pspGerencianet: ;
+//        pspPagSeguro: ;
+//        pspItau: ;
+      else
+        nResp := DWCR_Token.Post(FPSP.URLToken, StrlHeader, StrmBody);
+      end;
+
       case nResp of
         200,201:
           begin
@@ -1108,6 +1141,14 @@ begin
         Exit;
 
        ConfigRestClient(DWCR_CobCriar);
+
+      case FPSP.TipoPsp of
+        pspSicredi: begin
+           DWCR_CobCriar.ContentType  := 'application/json';
+           DWCR_CobCriar.AcceptEncoding   := ' ';
+        end;
+      end;
+
        //Criando o Objeto Valor
        JsonValor := TJSONObject.Create;
        JsonValor.AddPair('original', MyPixCob.ValorToString);
