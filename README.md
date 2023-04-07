@@ -25,7 +25,7 @@
 | ITAU| mailto: [developerportal@itau-unibanco.com.br](mailto:developerportal@itau-unibanco.com.br) |OK|
 
 
-## O componente faz uso das bibliotecas do:
+## O componente faz uso das bibliotecas do: 
 
 * [Rest-Dataware](https://github.com/OpenSourceCommunityBrasil/REST-DataWare)
 
