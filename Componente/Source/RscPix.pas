@@ -48,7 +48,6 @@ uses
   IdSSLOpenSSL,
 
   {Client RDW}
-  uRESTDWComponentBase,
   uRESTDWBasicClass,
   uRESTDWIdBase,
   uRESTDWDataUtils,
@@ -891,8 +890,9 @@ begin
   try
     case FPSP.TipoPsp of
       pspSicredi      : begin
-//                            StrlHeader.Add('grant_type=client_credentials');
-//                            StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
+
+                           DWCR_Token.ContentType  := 'application/json';
+                           DWCR_Token.AcceptEncoding   := ' ';
 
                             DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwAOBasic;
                             TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Username  := FDeveloper.Client_ID;
@@ -991,7 +991,7 @@ begin
     StrmBody := TStringStream.Create('', TEncoding.UTF8);
     try
       case FPSP.TipoPsp of
-        pspSicredi: DWCR_Token.Post(FPSP.URLToken + '?grant_type=client_credentials&scope=cob.read cob.write pix.read pix.write', StrlHeader, StrmBody);
+        pspSicredi: nResp := DWCR_Token.Post(FPSP.URLToken + '?grant_type=client_credentials&scope=cob.write+cob.read+webhook.read+webhook.write+pix.read+pix.write', StrlHeader, StrmBody);
 //        pspBancoDoBrasil: ;
 //        pspBradesco: ;
 //        pspSantander: ;
