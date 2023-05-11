@@ -276,8 +276,8 @@ begin
         case FPSP.TipoPsp of
           pspSicredi: ;
           pspBancoDoBrasil: ;
-          pspBradesco: ;
           pspSantander: ;
+          pspBradesco,
           pspSicoob:
             begin
               DWCR_CobConsult.ContentType  := 'application/json';
@@ -368,8 +368,8 @@ begin
       case FPSP.TipoPsp of
         pspSicredi: ;
         pspBancoDoBrasil: ;
-        pspBradesco: ;
         pspSantander: ;
+        pspBradesco,
         pspSicoob:
           begin
             DWRC_PixRec.ContentType  := 'application/json';
@@ -473,8 +473,8 @@ begin
       case FPSP.TipoPsp of
         pspSicredi: ;
         pspBancoDoBrasil: ;
-        pspBradesco: ;
         pspSantander: ;
+        pspBradesco,
         pspSicoob:
           begin
             DWRC_PixConPer.ContentType  := 'application/json';
@@ -575,8 +575,8 @@ begin
       case FPSP.TipoPsp of
         pspSicredi: ;
         pspBancoDoBrasil: ;
-        pspBradesco: ;
         pspSantander: ;
+        pspBradesco,
         pspSicoob:
           begin
             DWRC_PixConsDev.ContentType  := 'application/json';
@@ -741,8 +741,8 @@ begin
       case FPSP.TipoPsp of
         pspSicredi: ;
         pspBancoDoBrasil: ;
-        pspBradesco: ;
         pspSantander: ;
+        pspBradesco,
         pspSicoob:
           begin
             DWCR_GerarQrCodeLoc.ContentType  := 'application/json';
@@ -935,7 +935,8 @@ begin
                             TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Username  := FDeveloper.Client_ID;
                             TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Password  := FDeveloper.Client_Secret;
 
-                            StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
+                            //StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
+                            DWCR_Token.ContentType      :=  'application/x-www-form-urlencoded';
                         end;
 
       pspGerencianet  : begin
@@ -1198,15 +1199,19 @@ begin
 
       case FPSP.TipoPsp of
         pspSicredi: ;
+
         pspBancoDoBrasil: ;
-        pspBradesco: ;
+
         pspSantander: ;
+
+        pspBradesco,
         pspSicoob:
           begin
             DWCR_CobCriar.ContentType  := 'application/json';
             DWCR_CobCriar.AcceptEncoding   := ' ';
           end;
         pspGerencianet: ;
+
         pspPagSeguro: ;
       end;
 
@@ -1358,8 +1363,8 @@ begin
           case FPSP.TipoPsp of
             pspSicredi: ;
             pspBancoDoBrasil: ;
-            pspBradesco: ;
             pspSantander: ;
+            pspBradesco,
             pspSicoob:
               begin
                 DWCR_CobCancel.ContentType  := 'application/json';
@@ -1582,8 +1587,8 @@ begin
         case FPSP.TipoPsp of
           pspSicredi: ;
           pspBancoDoBrasil: ;
-          pspBradesco: ;
           pspSantander: ;
+          pspBradesco,
           pspSicoob:
             begin
               DWRC_PixSolDev.ContentType  := 'application/json';
