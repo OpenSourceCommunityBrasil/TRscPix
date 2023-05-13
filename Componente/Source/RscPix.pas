@@ -249,14 +249,10 @@ begin
           Exit;
         end;
       end;
-      try
-        GetToToken;
-      except on E: Exception do
-        begin
-          InOnCobGet(Self, nil, e.Message);
-          Exit;
-        end;
-      end;
+
+      if not GetToToken then
+        Exit;
+
       Stream := TStringStream.Create('', TEncoding.UTF8);
       DWCR_CobConsult  :=  TRESTDWIdClientREST.Create(nil);
       try
@@ -340,15 +336,10 @@ var
 begin
   if not ValidaChavePix then
      exit;
-  try
-    GetToToken;
-  except on E: Exception do
-    begin
-      InOnPixGet(Self, nil, e.Message);
-      Exit;
-      Abort;
-    end;
-  end;
+
+  if not GetToToken then
+    Exit;
+
   RespPixGet  :=  nil;
   DWRC_PixRec := TRESTDWIdClientREST.Create(nil);
   Stream := TStringStream.Create('', TEncoding.UTF8) ;
@@ -442,15 +433,10 @@ begin
         Exit;
       end;
     end;
-    try
-      GetToToken;
-    except on E: Exception do
-      begin
-        InOnPixGet(Self, nil, e.Message);
-        Exit;
-        Abort;
-      end;
-    end;
+
+    if not GetToToken then
+      Exit;
+
     DWRC_PixConPer  := TRESTDWIdClientREST.Create(nil);
     Stream := TStringStream.Create('', TEncoding.UTF8) ;
     try
@@ -547,15 +533,10 @@ begin
         Exit;
       end;
     end;
-    try
-      GetToToken;
-    except on E: Exception do
-      begin
-        InOnPixGet(Self, nil, e.Message);
-        Exit;
-        Abort;
-      end;
-    end;
+
+    if not GetToToken then
+      Exit;
+
     DWRC_PixConsDev  := TRESTDWIdClientREST.Create(nil);
     Stream       := TStringStream.Create('', TEncoding.UTF8);
     try
@@ -893,6 +874,7 @@ begin
 
                            DWCR_Token.ContentType  := 'application/json';
                            DWCR_Token.AcceptEncoding   := ' ';
+                           FPSP.URLToken  :=  FPSP.URLToken + '?grant_type=client_credentials&scope=cob.write+cob.read+webhook.read+webhook.write+pix.read+pix.write';
 
                             DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwAOBasic;
                             TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Username  := FDeveloper.Client_ID;
@@ -935,84 +917,65 @@ begin
                             TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Username  := FDeveloper.Client_ID;
                             TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Password  := FDeveloper.Client_Secret;
 
-                            //StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
+                            StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
                             DWCR_Token.ContentType      :=  'application/x-www-form-urlencoded';
                         end;
 
       pspGerencianet  : begin
-//                            DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwOAuth;
                             StrlHeader.Add('grant_type=client_credentials');
-//                            StrlHeader.Add('client_id='+FDeveloper.Client_ID);
-//                            StrlHeader.Add('client_secret='+FDeveloper.Client_Secret);
-//                            StrlHeader.Add('Content-Type=application/json; application/x-www-form-urlencoded;');
 
                             DWCR_Token.ContentType      :=  'application/json';
-
-
-
-//                            StrlHeader.Add('grant_type=client_credentials');
                             DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwAOBasic;
-//                            DWCR_Token.Accept           := '*/*';
-//                            DWCR_Token.AcceptEncoding   := 'gzip, deflate, br';
-////                            DWCR_Token.ContentEncoding  := '';
 //
                             TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Username  := FDeveloper.Client_ID;
                             TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Password  := FDeveloper.Client_Secret;
                         end;
 
       pspPagSeguro    : begin
-                            DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwAOBasic;
                             StrlHeader.Add('grant_type=client_credentials');
+                            StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
 
+                            DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwAOBasic;
                             TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Username  := FDeveloper.Client_ID;
                             TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Password  := FDeveloper.Client_Secret;
-
-                            StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
                         end;
-      pspItau:
-        begin
-                            DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwOAuth;
-                            StrlHeader.Add('grant_type=client_credentials');
-                            StrlHeader.Add('client_id='+FDeveloper.Client_ID);
-                            StrlHeader.Add('client_secret='+FDeveloper.Client_Secret);
 
-//          DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwAOBasic;
-//          StrlHeader.Add('grant_type=client_credentials');
-          //grant_type=client_credentials&client_id=d232fbd1-c54b-4c65-b49d-62e5e3c3f0d5&client_secret=00e41d10-324d-4ed7-9934-7200d3e4a414
+      pspItau         : begin
+                          DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwOAuth;
+                          StrlHeader.Add('grant_type=client_credentials');
+                          StrlHeader.Add('client_id='+FDeveloper.Client_ID);
+                          StrlHeader.Add('client_secret='+FDeveloper.Client_Secret);
+                        end;
 
-//          TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Username  := FDeveloper.Client_ID;
-//          TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Password  := FDeveloper.Client_Secret;
-
-//          StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
-        end;
+      pspInter         : begin
+                          DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwOAuth;
+                          StrlHeader.Add('grant_type=client_credentials');
+                          StrlHeader.Add('client_id='+FDeveloper.Client_ID);
+                          StrlHeader.Add('client_secret='+FDeveloper.Client_Secret);
+                          StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
+                        end;
     end;
 
 
 
     StrmBody := TStringStream.Create('', TEncoding.UTF8);
     try
-      case FPSP.TipoPsp of
-        pspSicredi: nResp := DWCR_Token.Post(FPSP.URLToken + '?grant_type=client_credentials&scope=cob.write+cob.read+webhook.read+webhook.write+pix.read+pix.write', StrlHeader, StrmBody);
-//        pspBancoDoBrasil: ;
-//        pspBradesco: ;
-//        pspSantander: ;
-//        pspSicoob: ;
-//        pspGerencianet: ;
-//        pspPagSeguro: ;
-//        pspItau: ;
-      else
-        nResp := DWCR_Token.Post(FPSP.URLToken, StrlHeader, StrmBody);
-      end;
+      nResp := DWCR_Token.Post(FPSP.URLToken, StrlHeader, StrmBody);
 
       case nResp of
         200,201:
           begin
             Result  :=  True;
             JsonResponse        := TJSONObject.ParseJsonValue(UTF8ToWideString(RawByteString(StrmBody.DataString))) as TJSONObject;
-            Token.AcessToken    := JsonResponse.GetValue<string>('access_token');
-            Token.TokenType     := JsonResponse.GetValue<string>('token_type');
-            Token.Expires_in    := JsonResponse.GetValue<Integer>('expires_in');
-            InOnToken(Self, Token);
+            try
+              Token.AcessToken    := JsonResponse.GetValue<string>('access_token');
+              Token.TokenType     := JsonResponse.GetValue<string>('token_type');
+              Token.Expires_in    := JsonResponse.GetValue<Integer>('expires_in');
+              InOnToken(Self, Token);
+            finally
+              JsonResponse.DisposeOf;
+            end;
+
           end;
       else
         InOnToken(Self, nil, ErroGeralToString(nResp));
@@ -1024,11 +987,9 @@ begin
         end;
     end;
   finally
-    DWCR_Token.Free;
     StrmBody.Free;
-    if Assigned(JsonResponse) then
-      JsonResponse.Free;
-    StrlHeader.Free
+    StrlHeader.Free;
+    FreeAndNil(DWCR_Token);
   end;
 end;
 function TRscPix.GetUniquePayment(INITIATION_METHOD:  string = '12'): string;
@@ -1110,8 +1071,6 @@ var
   erroStr        : string;
   cURL           : String ;
   cdata          : String ;
-//  Json           : String ;
-//  JsonDevedor    : TJsonObject ;
   RequestBody    : TStringList ;
   nResp          : Integer ;
   Stream         : TStringStream ;
@@ -1119,8 +1078,6 @@ var
   JsonValor      : TJsonObject ;
   JsonCalendario : TJsonObject ;
   JsonEnviar     : TJSONObject ;
-//  JSonInfoA      : TJSOnArray ;
-//  JSonInfo       : TJSOnObject ;
   MyPixCob       : TPixCobranca;
 
   DWCR_CobCriar  :  TRESTDWIdClientREST;
@@ -1153,39 +1110,17 @@ begin
        //Criando o Objeto Valor
        JsonValor := TJSONObject.Create;
        JsonValor.AddPair('original', MyPixCob.ValorToString);
+
        //Criando o Objeto Calendario
        JsonCalendario := TJSONObject.Create;
        JsonCalendario.AddPair('expiracao', TJSONNumber.Create(TitularPix.DuracaoMinutos * 60)); // aqui é em segundo 3600 segundos = 1 h
 
-       //Dados do Devedor
-//                           if ((Devedor_Documento <> '') and (Devedor_Nome <> '')) then
-//                              begin
-//                                JsonDevedor := TJSONObject.Create;
-//                                 case Devedor_Documento_Tipo of
-//                                   pFisica   : JsonDevedor.AddPair('cpf', GetStrNumber(Devedor_Documento));
-//                                   pJuridica : JsonDevedor.AddPair('cnpj', GetStrNumber(Devedor_Documento));
-//                                 end;
-//                                JsonDevedor.AddPair('nome', copy(TirarAcentoE(Devedor_Nome),1,200)); //<200
-//                              end;
-       //Info Adicionais - Não tenho necessidade de mais de uma informação, por isso vou deixar uma somente
-//                           if ((info_adicionais_Nome <> '') and (info_adicionais_Valor <> '')) then
-//                              begin
-//                                JSonInfoA := TJSOnArray.Create;//Criando a Lista de Objetos
-//                                JSonInfo  := TJSOnObject.Create;//Criando o Objeto
-//                                JSonInfo.AddPair('nome',TirarAcentoE(info_adicionais_Nome));
-//                                JSonInfo.AddPair('valor',TirarAcentoE(info_adicionais_Valor));
-//                                JSonInfoA.AddElement(JSonInfo);//Adicionando o Objeto na Lista de Objetos
-//                              end;
-       //Montrando o Json a Enviar
-       JsonEnviar := TJSOnObject.Create;//Criando o Objeto
+       JsonEnviar := TJSOnObject.Create;
        JsonEnviar.AddPair('calendario', JsonCalendario);
-//                           if Assigned(JsonDevedor) then
-//                              JsonEnviar.AddPair('devedor', JsonDevedor);
        JsonEnviar.AddPair('valor', JsonValor);
        JsonEnviar.AddPair('chave', TitularPix.ChavePix);
        JsonEnviar.AddPair('solicitacaoPagador', TirarAcentoE(MyPixCob.Mensagem));
-//                           if Assigned(JSonInfoA) then
-//                              JsonEnviar.AddPair('info_adicionais', JSonInfoA) ;
+
        cdata := JsonEnviar.ToString ;
        cURL := FPSP.URLApi + FPSP.EndPoints.CobPut;
        cURL := StringReplace(cURL, '{txid}', MyPixCob.TXID , [rfReplaceAll]);
@@ -1213,6 +1148,7 @@ begin
         pspGerencianet: ;
 
         pspPagSeguro: ;
+        pspInter:;
       end;
 
       RequestBody.Add(JsonEnviar.ToString) ;//JSON
@@ -1248,11 +1184,10 @@ begin
     end;
 
   finally
-      DWCR_CobCriar.Free;
+    FreeAndNil(DWCR_CobCriar);
        Stream.Free ;
        RequestBody.DisposeOf; ;
-//                           if Assigned(JSonInfoA) then
-//                              JSonInfoA.DisposeOf;
+
        if Assigned(JsonEnviar) then
           JsonEnviar.DisposeOf;
     MyPixCob.DisposeOf;
@@ -1328,14 +1263,8 @@ begin
 
     try
 
-      try
-        GetToToken;
-      except on E: Exception do
-        begin
-          InOnCobPatch(Self, nil, e.Message);
-          Exit;
-        end;
-      end;
+      if not GetToToken then
+        Exit;
 
       Stream       := TStringStream.Create('', TEncoding.UTF8);
       RequestBody  := TStringList.Create;
@@ -1409,8 +1338,7 @@ begin
         end;
       finally
         RequestBody.Free;
-//        if Assigned(JSonInfoA) then
-//            JSonInfoA.Free;
+
         if Assigned(JsonEnviar) then
             JsonEnviar.Free;
           Stream.Free;
@@ -1554,15 +1482,10 @@ begin
         Exit;
       end;
     end;
-    try
-      GetToToken;
-    except on E: Exception do
-      begin
-        InOnPixPut(Self, nil, e.Message);
-        Exit;
-        Abort;
-      end;
-    end;
+
+    if not GetToToken then
+      Exit;
+
     JasonValor  :=  TJSONObject.Create;
     RequestBody := TStringList.Create;
     Stream       := TStringStream.Create('', TEncoding.UTF8);

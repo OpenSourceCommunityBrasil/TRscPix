@@ -687,6 +687,77 @@ begin
             end;
         end;
       end;
+
+    pspInter:
+      begin
+        case TipoPspAmbiente of
+          taSandBox:
+            begin
+              FURLToken                 :=  'https://cdpj.partners.bancointer.com.br/oauth/v2/token';
+              FURLAPI                   :=  'https://cdpj.partners.bancointer.com.br/pix/v2';
+              FUrlHostCert              :=  'https://cdpj.partners.bancointer.com.br';
+
+              FEndPoints.CobPut         :=  '/cob/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+
+              FEndPoints.LocGet         :=  '/loc';
+              FEndPoints.LocIdGet       :=  '/loc/{locId}';
+              FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
+              FEndPoints.LocDelete      :=  '/loc/{locId}/{txid}';
+              FEndPoints.LocPost        :=  '/loc';
+            end;
+
+          taHomologacao:
+            begin
+              FURLToken                 :=  'https://cdpj.partners.bancointer.com.br/oauth/v2/token';
+              FURLAPI                   :=  'https://cdpj.partners.bancointer.com.br/pix/v2';
+              FUrlHostCert              :=  'https://cdpj.partners.bancointer.com.br';
+
+              FEndPoints.CobPut         :=  '/cob/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+
+              FEndPoints.LocGet         :=  '/loc';
+              FEndPoints.LocIdGet       :=  '/loc/{locId}';
+              FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
+              FEndPoints.LocDelete      :=  '/loc/{locId}/{txid}';
+              FEndPoints.LocPost        :=  '/loc';
+            end;
+
+          taProducao:
+            begin
+              FURLToken                 :=  'https://cdpj.partners.bancointer.com.br/oauth/v2/token';
+              FURLAPI                   :=  'https://cdpj.partners.bancointer.com.br/pix/v2';
+              FUrlHostCert              :=  'https://cdpj.partners.bancointer.com.br';
+
+              FEndPoints.CobPut         :=  '/cob/{txid}';
+              FEndPoints.CobPatch       :=  '/cob/{txid}';
+              FEndPoints.CobGet         :=  '/cob/{txid}';
+
+              FEndPoints.FPixPut        :=  '/pix/{e2eid}/devolucao/{id}';
+              FEndPoints.FPixGetCPR     :=  '/pix';
+              FEndPoints.FPixGetCP      :=  '/pix/{e2eid}';
+              FEndPoints.FPixGetCD      :=  '/pix/{e2eid}/devolucao/{id}';
+
+              FEndPoints.LocGet         :=  '/loc';
+              FEndPoints.LocIdGet       :=  '/loc/{locId}';
+              FEndPoints.LocGetGQL      :=  '/loc/{locId}/qrcode';
+              FEndPoints.LocDelete      :=  '/loc/{locId}/{txid}';
+              FEndPoints.LocPost        :=  '/loc';
+            end;
+        end;
+      end;
   end;
 
 end;
