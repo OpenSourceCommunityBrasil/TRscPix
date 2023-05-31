@@ -23,6 +23,7 @@
 | SICRED| Implementado |OK|
 | PAGSEGURO |  https://documenter.getpostman.com/view/10863174 /TVetc6HV#3322de97-b3cc-453a-81a7-b3c2e34c8016  |OK|
 | ITAU| mailto: [developerportal@itau-unibanco.com.br](mailto:developerportal@itau-unibanco.com.br) |OK|
+| BANCO INTER| https://developers.bancointer.com.br/reference/get_pix-e2eid |OK|
 
 
 ## O componente faz uso das bibliotecas do: 

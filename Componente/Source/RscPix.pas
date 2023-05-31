@@ -1160,7 +1160,17 @@ begin
              Retorno       := UTF8ToWideString(RawByteString(Stream.DataString));
              ResultCobPut  := TJson.JsonToObject<TRespCobPut>(Retorno);
              if ResultCobPut.textoImagemQRcode = '' then
-                ResultCobPut.textoImagemQRcode := GeraPayload(ResultCobPut.valor.original, ResultCobPut.txid, ResultCobPut.location) ;
+              begin
+                if ResultCobPut.pixCopiaECola <> '' then
+                  begin
+                    ResultCobPut.textoImagemQRcode := ResultCobPut.pixCopiaECola;
+                  end
+                else
+                  begin
+                    ResultCobPut.textoImagemQRcode := GeraPayload(ResultCobPut.valor.original, ResultCobPut.txid, ResultCobPut.location) ;
+                  end;
+              end;
+
              InOnCobPut(Self, ResultCobPut, '');
             end;
         else
