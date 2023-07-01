@@ -35,8 +35,8 @@
 ## Instalação
 [![Como Instalar](https://img.youtube.com/vi/1mzO-G5Ldcs/maxresdefault.jpg)](https://youtu.be/1mzO-G5Ldcs)
 
-## Demos do Componente
-[![DEMOS](https://trscpix.rscsistemas.com.br/assets/images/trscpix.png)](https://github.com/OpenSourceCommunityBrasil/TRscPix-Demos)
+## Demos
+* [Aesse aqui para baixar os demos do componente](https://github.com/OpenSourceCommunityBrasil/TRscPix-Demos)
 
 ## Grupos de Delphi para discusão e compartilhamneto de informações sobre Delphi, Pascal e afins.
 
