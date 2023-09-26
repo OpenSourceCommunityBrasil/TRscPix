@@ -874,7 +874,6 @@ begin
 
                            DWCR_Token.ContentType  := 'application/json';
                            DWCR_Token.AcceptEncoding   := ' ';
-                           FPSP.URLToken  :=  FPSP.URLToken + '?grant_type=client_credentials&scope=cob.write+cob.read+webhook.read+webhook.write+pix.read+pix.write';
 
                             DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwAOBasic;
                             TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Username  := FDeveloper.Client_ID;

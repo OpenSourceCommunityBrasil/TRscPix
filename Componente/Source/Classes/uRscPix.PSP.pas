@@ -181,7 +181,7 @@ begin
         case TipoPspAmbiente of
           taSandBox:
             begin
-              URLToken                  :=  'https://api-pix-h.sicredi.com.br/oauth/token';
+              URLToken                  :=  'https://api-pix-h.sicredi.com.br/oauth/token?grant_type=client_credentials&scope=cob.write+cob.read+webhook.read+webhook.write+pix.read+pix.write';
               FURLAPI                   :=  'https://api-pix-h.sicredi.com.br/api/v2';
               FUrlHostCert              :=  'https://api-pix-h.sicredi.com.br';
               FScopePix                 :=  '';
@@ -198,7 +198,7 @@ begin
 
           taHomologacao:
             begin
-              FURLToken                 :=  'https://api-pix-h.sicredi.com.br/oauth/token';
+              FURLToken                 :=  'https://api-pix-h.sicredi.com.br/oauth/token?grant_type=client_credentials&scope=cob.write+cob.read+webhook.read+webhook.write+pix.read+pix.write';
               FURLAPI                   :=  'https://api-pix-h.sicredi.com.br/api/v2';
               FUrlHostCert              :=  'https://api-pix-h.sicredi.com.br';
 
@@ -214,7 +214,7 @@ begin
 
           taProducao:
             begin
-              FURLToken                 :=  'https://api-pix.sicredi.com.br/oauth/token';;  // 'https://api-pix.sicredi.com.br/v2/oauth/token';
+              FURLToken                 :=  'https://api-pix.sicredi.com.br/oauth/token?grant_type=client_credentials&scope=cob.write+cob.read+webhook.read+webhook.write+pix.read+pix.write';  // 'https://api-pix.sicredi.com.br/v2/oauth/token';
               FURLAPI                   :=  'https://api-pix.sicredi.com.br/api/v2';
               FUrlHostCert              :=  'https://api-pix.sicredi.com.br';
 
