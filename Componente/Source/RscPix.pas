@@ -51,6 +51,7 @@ uses
   uRESTDWBasicClass,
   uRESTDWIdBase,
   uRESTDWDataUtils,
+  uRESTDWConsts,
 
   {TRscPix}
   uRscPix.Tipos,
@@ -613,12 +614,12 @@ begin
   FSeguranca              :=  TSeguranca.Create;
   FSeguranca.UseSSL       :=  True;
   FSeguranca.VerifyCert   :=  True;
-  FSeguranca.SSLMethod    :=  sslvSSLv3;
-  FSeguranca.SSLVersions  := [sslvTLSv1, sslvTLSv1_1, sslvTLSv1_2, sslvSSLv23];
-  FTitularPix          :=  TTitularPix.Create;
-  FDeveloper    :=  TDeveloper.Create;
-  FPSP          :=  TPSP.Create;
-  Token         :=  TToken.Create;
+  FSeguranca.SSLMethod    :=  TIdSSLVersion.sslvTLSv1_2;
+  FSeguranca.SSLVersions  :=  [TIdSSLVersion.sslvTLSv1_2];
+  FTitularPix             :=  TTitularPix.Create;
+  FDeveloper              :=  TDeveloper.Create;
+  FPSP                    :=  TPSP.Create;
+  Token                   :=  TToken.Create;
 end;
 
 procedure TRscPix.CriarCobranca (cValor: Currency; sTXID, sMensagem: string);
@@ -642,7 +643,6 @@ begin
   FDeveloper.DisposeOf;
   FPSP.DisposeOf;
   Token.DisposeOf;
-//  DWCR_PIX.Free;
   inherited;
 end;
 
@@ -744,22 +744,14 @@ begin
             end;
         else
           begin
-//            erroStr :=  ErroCobPostPutPatchToString(nResp);
-//            if erroStr <> '' then
-//              begin
-//                raise Exception.Create(erroStr);
-//              end
-//            else
-//              begin
-                errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(RawByteString(Stream.DataString));
-                raise Exception.Create(erroStr);
-//              end;
+            errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(RawByteString(Stream.DataString));
+            InOnLocGet(Self, nil, errostr);
           end;
         end;
       Except
        on E:exception do
           begin
-            InOnPixPut(Self, nil, e.Message);
+            InOnLocGet(Self, nil, e.Message);
           end;
       end;
     finally
@@ -1435,8 +1427,7 @@ begin
               + 'gw-app-key=95cad3f03fd9013a9d15005056825665';
     DWClint.ContentType      := 'application/json';
     DWClint.UseSSL       :=  True;
-//    DWClint.SSLMethod    :=  sslvSSLv23;
-    DWClint.SSLVersions  :=  [sslvSSLv23];
+    DWClint.SSLVersions  :=  [TIdSSLVersion.sslvTLSv1_2];
     RequestBody.Add('{"pix": "{'  + Payload + '}"}');
 
     try
@@ -1477,7 +1468,7 @@ var
 begin
   if not ValidaChavePix then
      exit;
-//  ResultPixPut  :=  nil;
+
   MyPixSDev := TPIXSolicitaDevolocao.Create;
   try
     try
@@ -1629,6 +1620,7 @@ begin
       end;
   end;
 end;
+
 function TRscPix.ValidaTitularPix: Boolean;
 begin
 
