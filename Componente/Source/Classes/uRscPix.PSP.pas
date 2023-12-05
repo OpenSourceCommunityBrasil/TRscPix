@@ -236,10 +236,10 @@ begin
           taSandBox:
             begin
               FURLToken                 :=  'https://oauth.sandbox.bb.com.br/oauth/token';
-              FURLAPI                   :=  'https://api.sandbox.bb.com.br/pix/v1';
+              FURLAPI                   :=  'https://api.sandbox.bb.com.br/pix/v2';
               FUrlHostCert              :=  '';
 
-              FEndPoints.CobPut         :=  '/cobqrcode/{txid}';
+              FEndPoints.CobPut         :=  '/cob/{txid}';
               FEndPoints.CobPatch       :=  '/cob/{txid}';
               FEndPoints.CobGet         :=  '/cob/{txid}';
 
@@ -252,10 +252,10 @@ begin
           taHomologacao:
             begin
               FURLToken                 :=  'https://oauth.hm.bb.com.br/oauth/token';
-              FURLAPI                   :=  'https://api.hm.bb.com.br/pix/v1';
+              FURLAPI                   :=  'https://api.hm.bb.com.br/pix/v2';
               FUrlHostCert              :=  '';
 
-              FEndPoints.CobPut         :=  '/cobqrcode/{txid}';
+              FEndPoints.CobPut         :=  '/cob/{txid}';
               FEndPoints.CobPatch       :=  '/cob/{txid}';
               FEndPoints.CobGet         :=  '/cob/{txid}';
 
@@ -268,10 +268,10 @@ begin
           taProducao:
             begin
               FURLToken                 :=  'https://oauth.bb.com.br/oauth/token';
-              FURLAPI                   :=  'https://api.bb.com.br/pix/v1';
+              FURLAPI                   :=  'https://api.bb.com.br/pix/v2';
               FUrlHostCert              :=  '';
 
-              FEndPoints.CobPut         :=  '/cobqrcode/{txid}';
+              FEndPoints.CobPut         :=  '/cob/{txid}';
               FEndPoints.CobPatch       :=  '/cob/{txid}';
               FEndPoints.CobGet         :=  '/cob/{txid}';
 
