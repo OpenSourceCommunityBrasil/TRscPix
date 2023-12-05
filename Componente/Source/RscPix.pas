@@ -205,8 +205,8 @@ procedure TRscPix.ConfigRestClient(Rest: TObject);
 begin
   if TRESTDWIdClientREST(Rest) <> nil then
     begin
-      TRESTDWIdClientREST(Rest).ConnectTimeOut  := 90000;
-      TRESTDWIdClientREST(Rest).RequestTimeOut  := 90000;
+      TRESTDWIdClientREST(Rest).ConnectTimeOut  := 20000;
+      TRESTDWIdClientREST(Rest).RequestTimeOut  := 20000;
       TRESTDWIdClientREST(Rest).UseSSL          :=  FSeguranca.UseSSL;
       TRESTDWIdClientREST(Rest).VerifyCert      :=  FSeguranca.VerifyCert;
       TRESTDWIdClientREST(Rest).SSLVersions     :=  FSeguranca.SSLVersions;
@@ -214,9 +214,9 @@ begin
       TRESTDWIdClientREST(Rest).CertFile        :=  Seguranca.CertFile;
       TRESTDWIdClientREST(Rest).KeyFile         :=  FSeguranca.CertKeyFile;
       TRESTDWIdClientREST(Rest).HostCert        :=  FPSP.UrlHostCert;
-      TRESTDWIdClientREST(Rest).PortCert        :=  443;//PADRAO
+      TRESTDWIdClientREST(Rest).PortCert        :=  443;
       TRESTDWIdClientREST(Rest).Accept           := '*/*';
-//      TRESTDWIdClientREST(Rest).AcceptEncoding   := 'gzip, deflate, br';
+      TRESTDWIdClientREST(Rest).AcceptEncoding   := '';//gzip, deflate, br
       TRESTDWIdClientREST(Rest).ContentEncoding  := '';
       TRESTDWIdClientREST(Rest).HandleRedirects   :=  True;
       TRESTDWIdClientREST(Rest).UserAgent         := 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; GTB5; Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; Maxthon; InfoPath.1; .NET CLR 3.5.30729; .NET CLR 3.0.30618)';
@@ -853,7 +853,6 @@ var
   DWCR_Token    : TRESTDWIdClientREST;
 
 begin
-
   Result  :=  False;
 
   DWCR_Token  :=  TRESTDWIdClientREST.Create(nil);
@@ -873,12 +872,12 @@ begin
 
                         end;
 
-      pspBancoDoBrasil: begin //OK
+      pspBancoDoBrasil: begin
+                            DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwAOBasic;
+                            TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Username  := FDeveloper.Client_ID;
+                            TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Password  := FDeveloper.Client_Secret;
                             StrlHeader.Add('grant_type=client_credentials');
-                            StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
-                            DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwOAuth;
-                            TRestDWAuthOAuth(DWCR_Token.AuthenticationOptions.OptionParams).ClientID      := FDeveloper.Client_ID;
-                            TRestDWAuthOAuth(DWCR_Token.AuthenticationOptions.OptionParams).ClientSecret  := FDeveloper.Client_Secret;
+                            StrlHeader.Add('scope=cob.read cob.write cobv.write cobv.read lotecobv.write lotecobv.read pix.read pix.write webhookread webhook.write payloadlocation.write payloadlocation.read');
                         end;
 
       pspSantander    : begin  //sANDbOX - OK
@@ -913,7 +912,7 @@ begin
                         end;
 
       pspGerencianet  : begin
-                            StrlHeader.Add('grant_type=client_credentials');
+                            StrlHeader.Add('{"grant_type": "client_credentials"}');
 
                             DWCR_Token.ContentType      :=  'application/json';
                             DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwAOBasic;
@@ -949,7 +948,7 @@ begin
 
 
 
-    StrmBody := TStringStream.Create('', TEncoding.UTF8);
+    StrmBody := TStringStream.Create;
     try
       nResp := DWCR_Token.Post(FPSP.URLToken, StrlHeader, StrmBody);
 

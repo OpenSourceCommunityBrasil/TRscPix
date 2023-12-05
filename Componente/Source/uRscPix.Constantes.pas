@@ -33,7 +33,7 @@ interface
 
 const
 
-  VersaoComponente                            = '1.2.0.0'; {Versão anterior = 1.1.0.0 }
+  VersaoComponente                            = '2.0.0.0'; {Versão anterior = 1.2.0.0 }
 
   ID_PAYLOAD_FORMAT_INDICATOR                 = '00';
   ID_POINT_OF_INITIATION_METHOD               = '01';
