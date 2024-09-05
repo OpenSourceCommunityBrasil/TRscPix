@@ -28,9 +28,7 @@
 
 ## O componente faz uso das bibliotecas do: 
 
-* [Rest-Dataware](https://github.com/OpenSourceCommunityBrasil/REST-DataWare)
-
-* [ZXing - VCL](https://github.com/foxitsoftware/DelphiZXingQRCode)
+* [RscJSON](https://github.com/OpenSourceCommunityBrasil/RscJSON)
 
 ## Instalação
 [![Como Instalar](https://img.youtube.com/vi/1mzO-G5Ldcs/maxresdefault.jpg)](https://youtu.be/1mzO-G5Ldcs)
