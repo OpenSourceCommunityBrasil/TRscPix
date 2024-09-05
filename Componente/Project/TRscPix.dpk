@@ -1,0 +1,64 @@
+package TRscPix;
+
+{$R *.res}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION OFF}
+{$OVERFLOWCHECKS ON}
+{$RANGECHECKS ON}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES ON}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DEFINE DEBUG}
+{$DEFINE DEBUG}
+{$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'RSC - PIX'}
+{$IMPLICITBUILD ON}
+
+requires
+  rtl,
+  vcl;
+
+contains
+  RscPix in '..\source\RscPix.pas',
+  RscPixRegister in '..\source\RscPixRegister.pas',
+  RscPixTipos in '..\source\RscPixTipos.pas',
+  RscPixUtils in '..\source\RscPixUtils.pas',
+  RscPixAutenticar in '..\source\Classes\RscPixAutenticar.pas',
+  RscPixCalendario in '..\source\Classes\RscPixCalendario.pas',
+  RscPixCertificado in '..\source\Classes\RscPixCertificado.pas',
+  RscPixCob in '..\source\Classes\RscPixCob.pas',
+  RscPixDevolucao in '..\source\Classes\RscPixDevolucao.pas',
+  RscPixEndPoint in '..\source\Classes\RscPixEndPoint.pas',
+  RscPixHorario in '..\source\Classes\RscPixHorario.pas',
+  RscPixInformacoesAdicionais in '..\source\Classes\RscPixInformacoesAdicionais.pas',
+  RscPixLoc in '..\source\Classes\RscPixLoc.pas',
+  RscPixPaginacao in '..\source\Classes\RscPixPaginacao.pas',
+  RscPixParametro in '..\source\Classes\RscPixParametro.pas',
+  RscPixPessoas in '..\source\Classes\RscPixPessoas.pas',
+  RscPixPix in '..\source\Classes\RscPixPix.pas',
+  RscPixPSP in '..\source\Classes\RscPixPSP.pas',
+  RscPixRequesteListar in '..\source\Classes\RscPixRequesteListar.pas',
+  RscPixTitular in '..\source\Classes\RscPixTitular.pas',
+  RscPixToken in '..\source\Classes\RscPixToken.pas',
+  RscPixValor in '..\source\Classes\RscPixValor.pas',
+  RscPixWebhook in '..\source\Classes\RscPixWebhook.pas';
+
+end.
+
+
+

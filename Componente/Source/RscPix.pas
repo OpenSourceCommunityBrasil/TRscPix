@@ -1,1616 +1,476 @@
-{=======================================}
-{             RSC SISTEMAS              }
-{        SOLUÇÕES TECNOLÓGICAS          }
-{         rscsistemas.com.br            }
-{          +55 92 4141-2737             }
-{      contato@rscsistemas.com.br       }
-{                                       }
-{ Desenvolvidor por:                    }
-{   Roniery Santos Cardoso              }
-{     ronierys2@hotmail.com             }
-{     +55 92 984391279                  }
-{                                       }
-{                                       }
-{ Versão Original RSC SISTEMAS          }
-{ Versão: 3.0.0                         }
-{                                       }
-{ Faça uma  doação:                     }
-{ Pix - Email: ronierys2@hotmail.com    }
-{ Banco: NuBank                         }
-{                                       }
-{                                       }
-{                                       }
-{ Componente TRscPix                    }
-{ Componente OpenSource                 }
-{ license Apache-2.0                    }
-{                                       }
-{=======================================}
 unit RscPix;
 
 interface
 
 uses
-  System.SysUtils,
-  System.Classes,
-  System.StrUtils,
-  System.SyncObjs,
-  System.DateUtils,
-  System.threading,
-  System.JSON, //
+  SysUtils
+  , Classes
+  
+  , IdHTTP
+  , IdGlobal
+  , IdSSLOpenSSL
 
-  Vcl.Dialogs,
+  , RscJSON
 
-  REST.Json,
+  , RscPixToken
+  , RscPixCalendario
+  , RscPixValor
+  , RscPixInformacoesAdicionais
+  , RscPixDevolucao
+  , RscPixPessoas
+  , RscPixEndPoint
 
-  Winapi.Windows,
+  , RscPixRequesteListar
 
-  IdHashMessageDigest,
-  IdSSLOpenSSL,
+  , RscPixCob
+  , RscPixPix
+  , RscPixLoc
+  , RscPixWebhook
 
-  {Client RDW}
-  uRESTDWBasicClass,
-  uRESTDWIdBase,
-  uRESTDWDataUtils,
-  uRESTDWConsts,
+  , RscPixAutenticar
+  , RscPixCertificado
+  , RscPixTitular
+  , RscPixPSP
 
-  {TRscPix}
-  uRscPix.Tipos,
-  uRscPix.Constantes,
-  uRscPix.Classes,
-  uRscPix.Variaveis,
-  uRscPix.Parametros,
-  uRscPix.funcoes,
-  uRscPix.Validations,
-  uRscPix.ErrosToString
+  , RscPixUtils
+  , RscPixTipos
 
   ;
+
+type
+
+  TInfo_Adicionais = class(TInformacoesAdicionais)
+  end;
+  //
+  TRespCobPut = class(TCob)
+  end;
+
+  TRespCobPatch = class(TCob)
+  end;
+
+  TRespCobGet = class(TCob)
+  end;
+
+  TRespCobListar = class(TCobListar)
+  end;
+
+  //
+  TRespPixGetEndToEndId = class(TPix)
+  end;
+
+  TRespPixListaRecebidos = class(TPixRecebidoLista)
+  end;
+
+  TRespPixPut = class(TPix)
+  end;
+
+  TRespPixPutSD = class(TDevolucao) //solicitar devolução
+  end;
+
+  //
+  TRespLocPost = class(TLocGet)
+  end;
+
+  TRespLocGet = class(TLocGet)
+  end;
+
+  TRespLocGetIdQrcode = class(TLocIdQrcode)
+  end;
+
+  TRespLocDelete = class(TLocGet)
+  end;
+
+  TRespLocList = class(TLocListar)
+  end;
+
+  TRespWebhookListar = class(TWebHookListar)
+  end;
+
+  TRespWebhookGet = class(TWebHook)
+  end;
+
+  TRespWebhookPutDelete = class(TWebHookPutDelete)
+  end;
+
+type
+
+  TNotificaToken        = procedure(Sender : TObject; Const Token: TToken = nil; Erro: String = '')  of object;
+
+  TNotificaCobPut       = procedure(Sender : TObject; Const Response: TRespCobPut = nil; Erro: String = '')  of object;
+  TNotificaCobPatch     = procedure(Sender : TObject; Const Response: TRespCobPatch = nil; Erro: String = '')  of object;
+  TNotificaCobGet       = procedure(Sender : TObject; Const Response: TRespCobGet = nil; Erro: String = '')  of object;
+  TNotificaCobGetListar = procedure(Sender : TObject; Const Responser: TRespCobListar = nil; Erro: String = '')  of object;
+
+  TNotificaPixEndToEndId  = procedure(Sender : TObject; Const Response: TRespPixGetEndToEndId = nil; Erro: String = '')  of object;
+  TNotificaPixPut         = procedure(Sender : TObject; Const Response: TRespPixPut = nil; Erro: String = '')  of object;
+  TNotificaPixListaRecebidos  = procedure(Sender : TObject; Const Response: TRespPixListaRecebidos = nil; Erro: String = '')  of object;
+  TNotificaPixPutSD         = procedure(Sender : TObject; Const Response: TRespPixPutSD = nil; Erro: String = '')  of object;
+
+  TNotificaLocPost      = procedure(Sender : TObject; Const Response: TRespLocPost = nil; Erro: String = '')  of object;
+  TNotificaLocGet       = procedure(Sender : TObject; Const Response: TRespLocGet = nil; Erro: String = '')  of object;
+  TNotificaLocIdQrcode  = procedure(Sender : TObject; Const Response: TRespLocGetIdQrcode = nil; Erro: String = '')  of object;
+  TNotificaLocDelete    = procedure(Sender : TObject; Const Response: TRespLocDelete = nil; Erro: String = '')  of object;
+  TNotificaLocList      = procedure(Sender : TObject; Const Response: TRespLocList = nil; Erro: String = '')  of object;
+
+  TNotificaWebhookListar  = procedure(Sender : TObject; Const Response: TRespWebhookListar = nil; Erro: String = '')  of object;
+  TNotificaWebhookGet     = procedure(Sender : TObject; Const Response: TRespWebhookGet = nil; Erro: String = '')  of object;
+  TNotificaWebhookPut     = procedure(Sender : TObject; Const Response: TRespWebhookPutDelete = nil; Erro: String = '')  of object;
+  TNotificaWebhookDelete  = procedure(Sender : TObject; Const Response: TRespWebhookPutDelete = nil; Erro: String = '')  of object;
+
 type
   TRscPix = class(TComponent)
-  protected
-    FSeguranca: TSeguranca;
-    FTitularPix: TTitularPix;
-    FDeveloper: TDeveloper;
-    FPSP: TPSP;
-    FToken: TToken;
   private
-    FRetorno: string;
-    Finfo_adicionais_Nome: String;
-    Finfo_adicionais_Valor: String;
-    FDevedor_Documento: String;
-    FDevedor_Nome: String;
-    FDevedor_Documento_Tipo: TTipoPessoa;
-    {notifica}
-    FOnCobGet: TNotificaCobGet;
+    FAutenticar: TAutenticar;
+    FCertificado: TCertificado;
+    FPSP: TPSP;
+    FTitular: TTitular;
+    FToken: TToken;
     FOnToken: TNotificaToken;
     FOnCobPut: TNotificaCobPut;
+    FOnCobGet: TNotificaCobGet;
     FOnCobPatch: TNotificaCobPatch;
-    FOnPixPut: TNotificaPixPut;
-    FOnPixGet: TNotificaPixGet;
-    FOnLocPost: TNotificaLocPost;
-    FOnLocGet: TNotificaLocGet;
     FOnLocDelete: TNotificaLocDelete;
-    procedure SetDevedor_Documento(const Value: String);
-    procedure SetDevedor_Documento_Tipo(const Value: TTipoPessoa);
-    procedure SetDevedor_Nome(const Value: String);
-    procedure Setinfo_adicionais_Nome(const Value: String);
-    procedure Setinfo_adicionais_Valor(const Value: String);
-    procedure SetRetorno(const Value: string);
+    FOnLocGet: TNotificaLocGet;
+    FOnLocPost: TNotificaLocPost;
     { Private declarations }
-    function GeraPayload(sValor: string = '0'; TXID: string = ''; Location: string = ''): String;
-    function GetValue(Id, Value: string): string;
-    function GetUniquePayment(INITIATION_METHOD:  string = '12'): string;
-    function GetMerchantAccountInformation(Location: string = ''): string;
-    function GetAdditionalDataField(TXID: string = ''): string;
-    function GetAdditionalDataFieldTemplate: string;
-    function GetCRC16(Payload: string): string;
-    {========================================}
-    function GetToToken: Boolean;
-    {========================================}
-    {========================================}
-    procedure InOnCobGet(Sender : TObject; Const RespCobGet: TRespCobGet = nil; Erro: String = '');
-    procedure InOnCobPut(Sender : TObject; Const RespCobPut: TRespCobPut = nil; Erro: String = '');
-    procedure InOnCobPatch(Sender : TObject; Const RespCobPatch: TRespCobPatch = nil; Erro: String = '');
 
-    procedure InOnToken(Sender : TObject; Const Token: TToken = nil; Erro: String = '');
-
-    procedure InOnPixGet(Sender : TObject; Const RespPixGet: TRespPixGet = nil; Erro: String = '');
-    procedure InOnPixPut(Sender : TObject; Const RespPixPut: TRespPixPut = nil; Erro: String = '');
-
-    procedure InOnLocPost(Sender : TObject; Const RespLocPost: TRespLocPost = nil; Erro: String = '');
-    procedure InOnLocGet(Sender : TObject; Const RespLocGet: TRespLocGet = nil; Erro: String = '');
-    procedure InOnLocDelete(Sender : TObject; Const RespLocDelete: TRespLocDelete = nil; Erro: String = '');
-    {-------------------------------------------------------------------------------}
-    procedure SetCertificado(const Value: TSeguranca);
-    procedure SetTitularPix(const Value: TTitularPix);
-    procedure SetDeveloper(const Value: TDeveloper);
-    procedure SetPSP(const Value: TPSP);
-    procedure SetToken(const Value: TToken);
-    {========================================}
-    {========================================}
-    Function ValidaChavePix:  Boolean;
-    Function ValidaTitularPix:  Boolean;
-    {========================================}
-    procedure ConfigRestClient(Rest : TObject);
-    {====}
+    FConsultarlocIdQrCode : string;
+    FOnPixListaRecebidos: TNotificaPixListaRecebidos;
+    FOnLocList: TNotificaLocList;
+    FOnLocGetIdQrCode: TNotificaLocIdQrcode;
+    FOnWebhookListar: TNotificaWebhookListar;
+    FOnWebhookGet: TNotificaWebhookGet;
+    FOnWebhookPut: TNotificaWebhookPut;
+    FOnWebhookDelete: TNotificaWebhookDelete;
+    FOnCobGetListar: TNotificaCobGetListar;
+    FOnPixGetEndToEndId: TNotificaPixEndToEndId;
+    FOnPixPutDevolucao: TNotificaPixPutSD;
 
     function GetVersao: string;
-
-    property Token                  : TToken read FToken write SetToken;
   protected
     { Protected declarations }
-    procedure InternalCriarQrCodeEstatico(cValor: Currency; sTXID: string; sMensagem: string);
-    procedure InternalCriarCobranca(cValor: Currency; sTXID: string; sMensagem: string);
-  public
-    { Public declarations }
-  Constructor Create(AOwner   : TComponent);  Override;
-  Destructor  Destroy;  Override;
-  function GerarTXID: String;
-  function GerarTXIDDEV: string;
-  {========================================}
-  {COB - PUT}
-  procedure CriarCobranca(cValor: Currency; sTXID: string; sMensagem: string = '');
+    {token}
+    procedure InOnToken(Sender : TObject; Const Token: TToken = nil; Erro: String = '');
+    {cob}
+    procedure InOnCobPut(Sender : TObject; Const Response: TRespCobPut = nil; Erro: String = '');
+    procedure InOnCobGet(Sender : TObject; Const Response: TRespCobGet = nil; Erro: String = '');
+    procedure InOnCobGetListar(Sender : TObject; Const Response: TRespCobListar = nil; Erro: String = '');
+    procedure InOnCobPatch(Sender : TObject; Const Response: TRespCobPatch = nil; Erro: String = '');
+    {loc}
+    procedure InOnLocPost(Sender : TObject; Const Response: TRespLocPost = nil; Erro: String = '');
+    procedure InOnLocGetId(Sender : TObject; Const Response: TRespLocGet = nil; Erro: String = '');
+    procedure InOnLocGetIdQrCode(Sender : TObject; Const Response: TRespLocGetIdQrcode = nil; Erro: String = '');
+    procedure InOnLocDelete(Sender : TObject; Const Response: TRespLocDelete = nil; Erro: String = '');
+    procedure InOnLocConsultarList(Sender : TObject; Const Response: TRespLocList = nil; Erro: String = '');
+    {Pix}
+    procedure InOnPixGetEndToEndId(Sender : TObject; Const Response: TRespPixGetEndToEndId = nil; Erro: String = '');
+    procedure InOnPixPutSD(Sender : TObject; Const Response: TRespPixPutSD = nil; Erro: String = '');
+    procedure InOnPixListaRecebidos(Sender : TObject; Const Response: TRespPixListaRecebidos = nil; Erro: String = '');
+    {Webhook}
+    procedure InOnWebhookListar(Sender : TObject; Const Response: TRespWebhookListar = nil; Erro: String = '');
+    procedure InOnWebhookGet(Sender : TObject; Const Response: TRespWebhookGet = nil; Erro: String = '');
+    procedure InOnWebhookPut(Sender : TObject; Const Response: TRespWebhookPutDelete = nil; Erro: String = '');
+    procedure InOnWebhookDelete(Sender : TObject; Const Response: TRespWebhookPutDelete = nil; Erro: String = '');
 
-  {COB - PATH}
-  procedure CancelarCobranca(sTXID: string);
-  {COB - GET}
-  procedure ConsultarCobranca(sTXID: string);
-  {PIX - PUT}
-  procedure SolicitarDevolucaoPix(sEndToEndId, sTXIDDev: string; cValor: Currency);
-  {PIX - GET}
-  procedure ConsultarListPixsRecebPeriodo(dtData_Hora_Inicial, dtData_Hora_Final: TDateTime; iPagIndex: integer);
-  procedure ConsultarPixRecebido(sE2eid: string);
-  procedure ConsultarDevolucaoPix(sE2eid, sTXIDDev: string);
-  {========================================}
-  {LOC's}
-  procedure GerarQRCodelocation(locId: integer);
-  {========================================}
-  procedure SimularPagamentoPix(Payload:String);
-    property Retorno                : string read FRetorno write SetRetorno;
-    property Devedor_Nome           : String read FDevedor_Nome write SetDevedor_Nome;
-    property Devedor_Documento      : String read FDevedor_Documento write SetDevedor_Documento;
-    property Devedor_Documento_Tipo : TTipoPessoa read FDevedor_Documento_Tipo write SetDevedor_Documento_Tipo;
-    property info_adicionais_Nome   : String read Finfo_adicionais_Nome write Setinfo_adicionais_Nome;
-    property info_adicionais_Valor  : String read Finfo_adicionais_Valor write Setinfo_adicionais_Valor;
+
+    Function ValidaChavePix(out sErro: string):  Boolean;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor  Destroy; override;
+
+    {token}
+    procedure NovoToken;
+    {Cob}
+    procedure CobCriar(dValor: Double; sTXID: string; sMensagem: string = '');
+    procedure CobTxId(sTXID: string);
+    procedure CobListar(
+                        dtData_Hora_Inicial: TDateTime;
+                        dtData_Hora_Final: TDateTime;
+                        iPagIndex: integer = 0;
+                        iQtdItensPag: integer = 100;
+                        cpf: string = '';
+                        cnpj: string = '';
+                        status: string = '';
+                        locationPresente: boolean = False
+                       );
+    procedure CobCancelar(sTXID: string);
+    {Pix}
+    procedure PixEndToEndId(endToEndId: string);
+    procedure PixListar(
+                        dtData_Hora_Inicial: TDateTime;
+                        dtData_Hora_Final: TDateTime;
+                        txid: string = '';
+                        txIdPresente: Boolean = False;
+                        devolucaoPresente: Boolean = False;
+                        cpf: string = '';
+                        cnpj: string = '';
+                        iPagIndex: integer = -1;
+                        iQtdItensPag: integer = 0
+                       );
+    procedure PixDevolucaoSolicitar(sEndToEndId, sTXIDDev: string; dValor: Double);
+    procedure PixDevolucaoConsultar(sEndToEndId, sTXIDDev: string);
+    {loc}
+    procedure LocationCriar(const TipoCobranca: TTipoCobranca);
+    procedure LocationListarCadastrados(
+                                        dtData_Hora_Inicial: TDateTime;
+                                        dtData_Hora_Final: TDateTime;
+                                        txIdPresente: Boolean = True;
+                                        tipoCob: TTipoCobranca = tcbCob;
+                                        iPagIndex: integer = 0;
+                                        iQtdItensPag: integer = 100
+                                       );
+
+    procedure LocationId(locId: integer);
+    procedure LocationIdToQrCode(locId: integer);
+    procedure LocationDesvincularTxId(locId: integer);
+    {WebHook}
+    procedure WebhookListarCadastrados(
+                                        dtData_Hora_Inicial: TDateTime;
+                                        dtData_Hora_Final: TDateTime;
+                                        iPagIndex: integer = 0;
+                                        iQtdItensPag: integer = 100
+                                      );
+    procedure WebhookConfigurar(const webhookUrl: string);
+    procedure WebhookConsultar;
+    procedure WebhookDesvincular;
+    { Public declarations }
+    property Token                  : TToken read FToken write FToken;
   published
     { Published declarations }
+    property Versao                       : string        read GetVersao;
+    property Certificado                  : TCertificado  read FCertificado write FCertificado;
+    property Titular                      : TTitular      read FTitular     write FTitular;
+    property Autenticar                   : TAutenticar   read FAutenticar  write FAutenticar;
+    property PSP                          : TPSP          read FPSP         write FPSP;
 
-    property Versao                     : string read GetVersao;
-
-    property Seguranca                  : TSeguranca read FSeguranca write SetCertificado;
-    property TitularPix                 : TTitularPix read FTitularPix write SetTitularPix;
-    property Developer                  : TDeveloper read FDeveloper write SetDeveloper;
-    property PSP                        : TPSP read FPSP write SetPSP;
-    property OnCobGet                   : TNotificaCobGet       read  FOnCobGet            write  FOnCobGet;
-    property OnCobPut                   : TNotificaCobPut       read  FOnCobPut            write  FOnCobPut;
-    property OnCobPatch                 : TNotificaCobPatch     read  FOnCobPatch          write  FOnCobPatch;
-    property OnToken                    : TNotificaToken        read  FOnToken             write  FOnToken;
-    property OnPixGet                   : TNotificaPixGet       read  FOnPixGet            write  FOnPixGet;
-    property OnPixPut                   : TNotificaPixPut       read  FOnPixPut            write  FOnPixPut;
-    property OnLocPost                  : TNotificaLocPost      read  FOnLocPost           write  FOnLocPost;
-    property OnLocGet                   : TNotificaLocGet       read  FOnLocGet            write  FOnLocGet;
-    property OnLocDelete                : TNotificaLocDelete    read  FOnLocDelete         write  FOnLocDelete;
+    {token}
+    property OnToken                      : TNotificaToken        read  FOnToken             write  FOnToken;
+    {Cob}
+    property OnCobCriar                   : TNotificaCobPut       read  FOnCobPut            write  FOnCobPut;
+    property OnCobTxId                    : TNotificaCobGet       read  FOnCobGet            write  FOnCobGet;
+    property OnCobListar                  : TNotificaCobGetListar       read  FOnCobGetListar            write  FOnCobGetListar;
+    property OnCobCancelar                : TNotificaCobPatch     read  FOnCobPatch          write  FOnCobPatch;
+    {Loc}
+    property OnLocationCriar              : TNotificaLocPost      read  FOnLocPost           write  FOnLocPost;
+    property OnLocationId                 : TNotificaLocGet       read  FOnLocGet            write  FOnLocGet;
+    property OnLocationIdtoQrCode         : TNotificaLocIdQrcode  read  FOnLocGetIdQrCode    write  FOnLocGetIdQrCode;
+    property OnLocationListarCadastrados  : TNotificaLocList      read  FOnLocList           write  FOnLocList;
+    property OnLocationDesvincularTxId    : TNotificaLocDelete    read  FOnLocDelete         write  FOnLocDelete;
+    {Pix}
+    property OnPixGetEndToEndId           : TNotificaPixEndToEndId       read  FOnPixGetEndToEndId            write  FOnPixGetEndToEndId;
+    property OnPixDevolucao               : TNotificaPixPutSD       read  FOnPixPutDevolucao            write  FOnPixPutDevolucao;
+    property OnPixListaRecebidos          : TNotificaPixListaRecebidos read  FOnPixListaRecebidos  write  FOnPixListaRecebidos;
+    {Webhook}
+    property OnWebhookListar              : TNotificaWebhookListar  read FOnWebhookListar write FOnWebhookListar;
+    property OnWebhookGet                 : TNotificaWebhookGet     read FOnWebhookGet    write FOnWebhookGet;
+    property OnWebhookPut                 : TNotificaWebhookPut     read FOnWebhookPut    write FOnWebhookPut;
+    property OnWebhookDelete              : TNotificaWebhookDelete  read FOnWebhookDelete write FOnWebhookDelete;
 
   end;
-procedure Register;
+
+
 
 implementation
 
-procedure Register;
-begin
-  RegisterComponents('Rsc', [TRscPix]);
-end;
-
-{ TPix }
-procedure TRscPix.ConfigRestClient(Rest: TObject);
-begin
-  if TRESTDWIdClientREST(Rest) <> nil then
-    begin
-      TRESTDWIdClientREST(Rest).ConnectTimeOut  := 20000;
-      TRESTDWIdClientREST(Rest).RequestTimeOut  := 20000;
-      TRESTDWIdClientREST(Rest).UseSSL          :=  FSeguranca.UseSSL;
-      TRESTDWIdClientREST(Rest).VerifyCert      :=  FSeguranca.VerifyCert;
-      TRESTDWIdClientREST(Rest).SSLVersions     :=  FSeguranca.SSLVersions;
-      TRESTDWIdClientREST(Rest).CertMode        :=  sslmClient;
-      TRESTDWIdClientREST(Rest).CertFile        :=  Seguranca.CertFile;
-      TRESTDWIdClientREST(Rest).KeyFile         :=  FSeguranca.CertKeyFile;
-      TRESTDWIdClientREST(Rest).HostCert        :=  FPSP.UrlHostCert;
-      TRESTDWIdClientREST(Rest).PortCert        :=  443;
-      TRESTDWIdClientREST(Rest).Accept           := '*/*';
-      TRESTDWIdClientREST(Rest).AcceptEncoding   := '';//gzip, deflate, br
-      TRESTDWIdClientREST(Rest).ContentEncoding  := '';
-      TRESTDWIdClientREST(Rest).HandleRedirects   :=  True;
-      TRESTDWIdClientREST(Rest).UserAgent         := 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; GTB5; Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; Maxthon; InfoPath.1; .NET CLR 3.5.30729; .NET CLR 3.0.30618)';
-      TRESTDWIdClientREST(Rest).ContentType       := 'application/json; application/x-www-form-urlencoded; charset=UTF-8;';
-    end
-  else
-    begin
-      raise Exception.Create('DWRestClient não criado');
-    end;
-end;
-procedure TRscPix.ConsultarCobranca(sTXID: string);
-var
-  erroStr     : string;
-  cURL        : String ;
-  nResp       : Integer ;
-  Stream      : TStringStream ;
-  MyPixCob    : TPixCobranca;
-  RespCobGet  :TRespCobGet;
-  DWCR_CobConsult  :  TRESTDWIdClientREST;
-begin
-  if not ValidaChavePix then
-     exit;
-    RespCobGet  :=  nil;
-    MyPixCob := TPixCobranca.Create;
-    try
-      try
-        MyPixCob.TXID         :=  sTXID;
-      except on E: Exception do
-        begin
-          InOnCobGet(Self, nil, e.Message);
-          Exit;
-        end;
-      end;
-
-      if not GetToToken then
-        Exit;
-
-      Stream := TStringStream.Create('', TEncoding.UTF8);
-      DWCR_CobConsult  :=  TRESTDWIdClientREST.Create(nil);
-      try
-        ConfigRestClient(DWCR_CobConsult);
-         cURL := FPSP.URLAPI  + FPSP.EndPoints.CobGet;
-         cURL := StringReplace(cURL, '{txid}', MyPixCob.TXID, [rfReplaceAll]);
 
 
-         {verificar para outros bancos}
-         if Developer.Application_key <> '' then
-            cURL := cURL + '?gw-dev-app-key=' + Developer.Application_key;
-
-
-         DWCR_CobConsult.AuthenticationOptions.AuthorizationOption  := rdwAOBearer ;
-         TRestDWAuthOptionBearerClient(DWCR_CobConsult.AuthenticationOptions.OptionParams).Token := Token.AcessToken ;
-
-        case FPSP.TipoPsp of
-          pspSicredi: ;
-          pspBancoDoBrasil: ;
-          pspSantander: ;
-          pspBradesco,
-          pspSicoob:
-            begin
-              DWCR_CobConsult.ContentType  := 'application/json';
-              DWCR_CobConsult.AcceptEncoding   := ' ';
-            end;
-          pspGerencianet: ;
-          pspPagSeguro: ;
-        end;
-
-        try
-           nResp := DWCR_CobConsult.Get(cURL,Nil,Stream,false);
-          case nResp of
-            200, 201:
-              begin
-               Retorno     := UTF8ToWideString(RawByteString(Stream.DataString));
-               RespCobGet  := TJson.JsonToObject<TRespCobGet>(Retorno);
-               if RespCobGet.textoImagemQRcode = '' then
-                  RespCobGet.textoImagemQRcode := GeraPayload(RespCobGet.valor.original, RespCobGet.txid, RespCobGet.location) ;
-
-               InOnCobGet(Self, RespCobGet, '');
-              end;
-          else
-            begin
-              erroStr :=  ErroCobGetPatchToString(nResp);
-              if erroStr <> '' then
-                begin
-                  raise Exception.Create(erroStr);
-                end
-              else
-                begin
-                  errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(RawByteString(Stream.DataString));
-                  raise Exception.Create(erroStr);
-                end;
-            end;
-          end;
-        Except
-         on E:exception do
-            begin
-              InOnCobGet(Self, nil, e.Message);
-            end;
-        end;
-      finally
-          Stream.Free;
-          DWCR_CobConsult.free;
-      end;
-    finally
-      MyPixCob.DisposeOf;
-      if Assigned(RespCobGet) then
-        RespCobGet.DisposeOf;
-    end;
-end;
-procedure TRscPix.ConsultarPixRecebido(sE2eid: string);
-var
-  erroStr       : string;
-  cURL          : String ;
-  nResp         : Integer ;
-  Stream        : TStringStream ;
-  RespPixGet  : TRespPixGet;
-  DWRC_PixRec: TRESTDWIdClientREST;
-begin
-  if not ValidaChavePix then
-     exit;
-
-  if not GetToToken then
-    Exit;
-
-  RespPixGet  :=  nil;
-  DWRC_PixRec := TRESTDWIdClientREST.Create(nil);
-  Stream := TStringStream.Create('', TEncoding.UTF8) ;
-  try
-    ConfigRestClient(DWRC_PixRec);
-
-    cURL := FPSP.URLAPI + FPSP.EndPoints.PixGetCP;
-
-    cURL := StringReplace(cURL,'{e2eid}', sE2eid, [rfReplaceAll]) ;
-
-   if Developer.Application_key <> '' then
-    cURL := cURL + '?gw-dev-app-key=' + Developer.Application_key;
-
-    DWRC_PixRec.AuthenticationOptions.AuthorizationOption  := rdwAOBearer ;
-    TRestDWAuthOptionBearerClient(DWRC_PixRec.AuthenticationOptions.OptionParams).Token := Token.AcessToken ;
-
-      case FPSP.TipoPsp of
-        pspSicredi: ;
-        pspBancoDoBrasil: ;
-        pspSantander: ;
-        pspBradesco,
-        pspSicoob:
-          begin
-            DWRC_PixRec.ContentType  := 'application/json';
-            DWRC_PixRec.AcceptEncoding   := ' ';
-          end;
-        pspGerencianet: ;
-        pspPagSeguro: ;
-      end;
-
-    try
-      nResp := DWRC_PixRec.Get(cURL,nil,Stream,false);
-      case nResp of
-        200, 201:
-          begin
-           Retorno     := UTF8ToWideString(RawByteString(Stream.DataString));
-           RespPixGet  := TJson.JsonToObject<TRespPixGet>(Retorno);
-           InOnPixGet(Self, RespPixGet, '');
-          end;
-      else
-        begin
-          erroStr :=  ErroPixGetToString(nResp);
-          if erroStr <> '' then
-            begin
-              raise Exception.Create(erroStr);
-            end
-          else
-            begin
-              errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(RawByteString(Stream.DataString));
-              raise Exception.Create(erroStr);
-            end;
-        end;
-      end;
-    Except
-     on E:exception do
-        begin
-          InOnPixGet(Self, nil, e.Message);
-        end;
-    end;
-  finally
-    if RespPixGet <> nil then
-      RespPixGet.DisposeOf;
-   Stream.Free ;
-   DWRC_PixRec.Free;
-  end;
-end;
-procedure TRscPix.ConsultarListPixsRecebPeriodo(dtData_Hora_Inicial, dtData_Hora_Final: TDateTime; iPagIndex: integer);
-var
-  erroStr : string;
-  cURL    : String ;
-  nResp   : Integer ;
-  Stream  : TStringStream ;
-  MyPixListRebPer     : TPix_ListPixsRecebPeriodo;
-  RespPixGet  : TRespPixGet;
-  DWRC_PixConPer  : TRESTDWIdClientREST;
-begin
-  if not ValidaChavePix then
-     exit;
-  RespPixGet  :=  nil;
-  MyPixListRebPer := TPix_ListPixsRecebPeriodo.Create;
-  try
-    try
-      MyPixListRebPer.PSP           :=  FPSP.TipoPsp;
-      MyPixListRebPer.Data_Hora_Ini :=  dtData_Hora_Inicial;
-      MyPixListRebPer.Data_Hora_Fim :=  dtData_Hora_Final;
-      MyPixListRebPer.Index_Pag     :=  iPagIndex;
-
-    except on E: Exception do
-      begin
-        InOnPixGet(Self, nil, e.Message);
-        Exit;
-      end;
-    end;
-
-    if not GetToToken then
-      Exit;
-
-    DWRC_PixConPer  := TRESTDWIdClientREST.Create(nil);
-    Stream := TStringStream.Create('', TEncoding.UTF8) ;
-    try
-      ConfigRestClient(DWRC_PixConPer);
-
-      cURL := FPSP.URLAPI + FPSP.EndPoints.PixGetCPR +
-            '?inicio=' + MyPixListRebPer.Data_Hora_Ini_ToStr  +
-            '&fim='    + MyPixListRebPer.Data_Hora_Fim_ToStr;
-
-       if MyPixListRebPer.Index_Pag > 0 then
-          cURL := cURL + '&paginaAtual=' + IntToStr(MyPixListRebPer.Index_Pag);
-
-       if Developer.Application_key <> '' then
-          cURL := cURL + '&gw-dev-app-key=' + Developer.Application_key;
-
-
-      DWRC_PixConPer.AuthenticationOptions.AuthorizationOption  := rdwAOBearer ;
-      TRestDWAuthOptionBearerClient(DWRC_PixConPer.AuthenticationOptions.OptionParams).Token :=  Token.AcessToken ;
-
-      case FPSP.TipoPsp of
-        pspSicredi: ;
-        pspBancoDoBrasil: ;
-        pspSantander: ;
-        pspBradesco,
-        pspSicoob:
-          begin
-            DWRC_PixConPer.ContentType  := 'application/json';
-            DWRC_PixConPer.AcceptEncoding   := ' ';
-          end;
-        pspGerencianet: ;
-        pspPagSeguro: ;
-      end;
-
-      try
-        nResp := DWRC_PixConPer.Get(cURL,nil,Stream,false) ;
-        case nResp of
-          200, 201:
-            begin
-             Retorno     := UTF8ToWideString(RawByteString(Stream.DataString));
-             RespPixGet  := TJson.JsonToObject<TRespPixGet>(Retorno);
-             InOnPixGet(Self, RespPixGet, '');
-            end;
-        else
-          begin
-            erroStr :=  ErroPixGetToString(nResp);
-            if erroStr <> '' then
-              begin
-                raise Exception.Create(erroStr);
-              end
-            else
-              begin
-                errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(RawByteString(Stream.DataString));
-                raise Exception.Create(erroStr);
-              end;
-          end;
-        end;
-      Except
-       on E:exception do
-          begin
-            InOnPixGet(Self, nil, e.Message);
-          end;
-      end;
-    finally
-     Stream.Free ;
-     DWRC_PixConPer.Free;
-    end;
-  finally
-    MyPixListRebPer.Free;
-    if RespPixGet <> nil then
-      RespPixGet.DisposeOf;
-  end;
-end;
-procedure TRscPix.ConsultarDevolucaoPix(sE2eid, sTXIDDev: string);
-var
-  erroStr       : string;
-  cURL          : String;
-  nResp         : Integer;
-  Stream        : TStringStream;
-  MyPixSDev     : TPIXSolicitaDevolocao;
-  RespPixGet  : TRespPixGet;
-  DWRC_PixConsDev  : TRESTDWIdClientREST;
-begin
-  if not ValidaChavePix then
-     exit;
-  RespPixGet  :=  nil;
-  MyPixSDev := TPIXSolicitaDevolocao.Create;
-  try
-    try
-      MyPixSDev.TXIDDev   :=  sTXIDDev;
-      MyPixSDev.endToEndId     :=  sE2eid;
-    except on E: Exception do
-      begin
-        InOnPixGet(Self, nil, e.Message);
-        Exit;
-      end;
-    end;
-
-    if not GetToToken then
-      Exit;
-
-    DWRC_PixConsDev  := TRESTDWIdClientREST.Create(nil);
-    Stream       := TStringStream.Create('', TEncoding.UTF8);
-    try
-      ConfigRestClient(DWRC_PixConsDev);
-
-       cURL := FPSP.URLAPI  + FPSP.EndPoints.PixGetCD;
-
-         cURL := StringReplace(cURL, '{e2eid}', MyPixSDev.endToEndId, [rfReplaceAll]);
-         cURL := StringReplace(cURL, '{id}', MyPixSDev.TXIDDev, [rfReplaceAll]);
-
-       if Developer.Application_key <> '' then
-          cURL := cURL + '?gw-dev-app-key=' + Developer.Application_key;
-
-       DWRC_PixConsDev.AuthenticationOptions.AuthorizationOption  := rdwAOBearer;
-       TRestDWAuthOptionBearerClient(DWRC_PixConsDev.AuthenticationOptions.OptionParams).Token := Token.AcessToken;
-
-      case FPSP.TipoPsp of
-        pspSicredi: ;
-        pspBancoDoBrasil: ;
-        pspSantander: ;
-        pspBradesco,
-        pspSicoob:
-          begin
-            DWRC_PixConsDev.ContentType  := 'application/json';
-            DWRC_PixConsDev.AcceptEncoding   := ' ';
-          end;
-        pspGerencianet: ;
-        pspPagSeguro: ;
-      end;
-
-      try
-        nResp := DWRC_PixConsDev.Get(cURL,nil,Stream,false);
-        case nResp of
-          200, 201:
-            begin
-             Retorno     := UTF8ToWideString(RawByteString(Stream.DataString));
-             RespPixGet  := TJson.JsonToObject<TRespPixGet>(Retorno);
-             InOnPixGet(Self, RespPixGet, '');
-            end;
-        else
-            begin
-              erroStr :=  ErroPixGetToString(nResp);
-              if erroStr <> '' then
-                begin
-                  raise Exception.Create(erroStr);
-                end
-              else
-                begin
-                  errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(RawByteString(Stream.DataString));
-                  raise Exception.Create(erroStr);
-                end;
-            end;
-        end;
-      Except
-       on E:exception do
-          begin
-            InOnPixGet(Self, nil, e.Message);
-          end;
-      end;
-    finally
-      Stream.Free;
-      DWRC_PixConsDev.Free;
-    end;
-  finally
-    MyPixSDev.Free;
-    if RespPixGet <> nil then
-      RespPixGet.DisposeOf;
-  end;
-end;
+{ TRscPix }
 
 constructor TRscPix.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  FSeguranca              :=  TSeguranca.Create;
-  FSeguranca.UseSSL       :=  True;
-  FSeguranca.VerifyCert   :=  True;
-  FSeguranca.SSLMethod    :=  TIdSSLVersion.sslvTLSv1_2;
-  FSeguranca.SSLVersions  :=  [TIdSSLVersion.sslvTLSv1_2];
-  FTitularPix             :=  TTitularPix.Create;
-  FDeveloper              :=  TDeveloper.Create;
-  FPSP                    :=  TPSP.Create;
-  Token                   :=  TToken.Create;
-end;
-
-procedure TRscPix.CriarCobranca (cValor: Currency; sTXID, sMensagem: string);
-begin
-  case FTitularPix.TipoQRCode of
-    tqDinamico:
-      begin
-        InternalCriarCobranca(cValor, sTXID, sMensagem);
-      end;
-    tqEstatico:
-      begin
-        InternalCriarQrCodeEstatico(cValor, sTXID, sMensagem);
-      end;
-  end;
+  inherited;
+  FAutenticar   :=  TAutenticar.Create;
+  FCertificado  :=  TCertificado.Create;
+  FPSP          :=  TPSP.Create;
+  FTitular      :=  TTitular.Create;
+  FToken        :=  TToken.Create;
 end;
 
 destructor TRscPix.Destroy;
 begin
-  FSeguranca.DisposeOf;
-  FTitularPix.DisposeOf;
-  FDeveloper.DisposeOf;
-  FPSP.DisposeOf;
-  Token.DisposeOf;
+  FAutenticar.Free;
+  FCertificado.Free;
+  FPSP.Free;
+  FTitular.Free;
+  FToken.Free;
+  
   inherited;
 end;
 
-
-function TRscPix.GeraPayload(sValor: string = '0'; TXID: string = ''; Location: string = ''): String;
-var
-  Payload
-  {, cRecebedor} : String;
-begin
-  case FTitularPix.TipoQRCode of
-    tqDinamico:
-      begin
-        if Pos(',', sValor) > 0 then
-          sValor := StringReplace(sValor, ',', '.', [rfReplaceAll]);
-
-        Payload := GetValue(ID_PAYLOAD_FORMAT_INDICATOR,'01') +
-                   GetUniquePayment() +
-                   GetMerchantAccountInformation(Location) +
-                   GetValue(ID_MERCHANT_CATEGORY_CODE,'0000') +
-                   GetValue(ID_TRANSACTION_CURRENCY,'986') +
-                   GetValue(ID_COUNTRY_CODE,'BR') +
-                   GetValue(ID_MERCHANT_NAME,FTitularPix.NomeTitularConta) +
-                   GetValue(ID_MERCHANT_CITY, FTitularPix.CidadeTitularConta) +
-                   GetAdditionalDataFieldTemplate;
-      end;
-
-    tqEstatico:
-      begin
-        if Pos(',', sValor) > 0 then
-          sValor := StringReplace(sValor, ',', '.', [rfReplaceAll]);
-
-        Payload := GetValue(ID_PAYLOAD_FORMAT_INDICATOR,'01') +
-                   GetUniquePayment() +
-                   GetMerchantAccountInformation +
-                   GetValue(ID_MERCHANT_CATEGORY_CODE,'0000') +
-                   GetValue(ID_TRANSACTION_CURRENCY,'986') +
-                   IfThen(lENGTH(sValor) > 0, GetValue(ID_TRANSACTION_AMOUNT, sValor), '') +
-                   GetValue(ID_COUNTRY_CODE,'BR') +
-                   GetValue(ID_MERCHANT_NAME,FTitularPix.NomeTitularConta) +
-                   GetValue(ID_MERCHANT_CITY, FTitularPix.CidadeTitularConta) +
-                   GetAdditionalDataFieldTemplate;
-      end;
-  end;
-    Result := Payload + GetCRC16(Payload);
-end;
-procedure TRscPix.GerarQRCodelocation(locId: integer);
-var
-  ErroStr       : string;
-  cURL          : string;
-  nResp         : Integer;
-  Stream        : TStringStream;
-  ResultLocGet  : TRespLocGet;
-  DWCR_GerarQrCodeLoc : TRESTDWIdClientREST;
-begin
-  if not ValidaChavePix then
-     exit;
-
-    GetToToken;
-
-    Stream       := TStringStream.Create('', TEncoding.UTF8);
-    DWCR_GerarQrCodeLoc  := TRESTDWIdClientREST.Create(nil);
-    try
-      ConfigRestClient(DWCR_GerarQrCodeLoc);
-
-       cURL := FPSP.URLAPI  + FPSP.EndPoints.LocGetGQL;
-
-       cURL := StringReplace(cURL, '{locId}', IntToStr(locId), [rfReplaceAll]);
-
-
-       {rever para outros bancos}
-       if FDeveloper.Application_key <> '' then
-           cURL := cURL + '?gw-dev-app-key=' + FDeveloper.Application_key;
-
-       DWCR_GerarQrCodeLoc.AuthenticationOptions.AuthorizationOption  := rdwAOBearer;
-       TRestDWAuthOptionBearerClient(DWCR_GerarQrCodeLoc.AuthenticationOptions.OptionParams).Token := Token.AcessToken;
-
-      case FPSP.TipoPsp of
-        pspSicredi: ;
-        pspBancoDoBrasil: ;
-        pspSantander: ;
-        pspBradesco,
-        pspSicoob:
-          begin
-            DWCR_GerarQrCodeLoc.ContentType  := 'application/json';
-            DWCR_GerarQrCodeLoc.AcceptEncoding   := ' ';
-          end;
-        pspGerencianet: ;
-        pspPagSeguro: ;
-      end;
-
-      try
-        nResp := DWCR_GerarQrCodeLoc.Get(cURL,nil,Stream,false);
-        case nResp of
-          200, 201:
-            begin
-             Retorno     := UTF8ToWideString(RawByteString(Stream.DataString));
-             ResultLocGet  := TJson.JsonToObject<TRespLocGet>(Retorno);
-             InOnLocGet(Self, ResultLocGet, '');
-            end;
-        else
-          begin
-            errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(RawByteString(Stream.DataString));
-            InOnLocGet(Self, nil, errostr);
-          end;
-        end;
-      Except
-       on E:exception do
-          begin
-            InOnLocGet(Self, nil, e.Message);
-          end;
-      end;
-    finally
-      Stream.Free;
-
-      if Assigned(ResultLocGet) then
-        ResultLocGet.DisposeOf;
-
-      if Assigned(DWCR_GerarQrCodeLoc) then
-        DWCR_GerarQrCodeLoc.DisposeOf;
-    end;
-
-
-end;
-
-function TRscPix.GerarTXID: String;
-var
-  Uid: TGuid;
-  sFPixTXID : string;
-begin
-    CreateGUID(Uid);
-    sFPixTXID := Uid.ToString;
-    if Length(sFPixTXID) < 26 then
-        StrZero(sFPixTXID, 26);
-    sFPixTXID := MD5(sFPixTXID);
-    Result  :=  sFPixTXID;
-end;
-function TRscPix.GerarTXIDDEV: string;
-var
-  Uid: TGuid;
-  sTXIDDEV : string;
-begin
-    CreateGUID(Uid);
-    sTXIDDEV := Uid.ToString;
-    if Length(sTXIDDEV) < 26 then
-        StrZero(sTXIDDEV, 26);
-    sTXIDDEV := MD5(sTXIDDEV);
-    Result  :=  sTXIDDEV;
-end;
-function TRscPix.GetAdditionalDataField(TXID: string = ''): string;
-var
-  sTxId: string;
-begin
-  //TXID
-  sTxId := GetValue(ID_ADDITIONAL_DATA_FIELD_TEMPLATE_TXID, TXID);
-  //RETORNA O VALOR COMPLETO
-  Result := GetValue(ID_ADDITIONAL_DATA_FIELD_TEMPLATE, sTxId);
-end;
-
-function TRscPix.GetAdditionalDataFieldTemplate: string;
-var
-  sTxId: string;
-begin
-  //TXID
-  sTxId := GetValue(ID_ADDITIONAL_DATA_FIELD_TEMPLATE_TXID, '***');//fTxid
-  //RETORNA O VALOR COMPLETO
-  Result := GetValue(ID_ADDITIONAL_DATA_FIELD_TEMPLATE, sTxId);
-end;
-function TRscPix.GetCRC16(Payload: string): string;
-begin
-  //ADICIONA DADOS GERAIS NO PAYLOAD
-  Payload := Payload + ID_CRC16 + '04';
-  Result := ID_CRC16 + '04' + Inttohex(CRC16CCITT(Payload), 4);
-end;
-function TRscPix.GetMerchantAccountInformation(Location: string = ''): string;
-var
-  Gui: string;
-  Key: string;
-  Description: string;
-  Url: string;
-begin
-  //DOMÍNIO DO BANCO
-  Gui := GetValue(ID_MERCHANT_ACCOUNT_INFORMATION_GUI,'br.gov.bcb.pix');
-
-  case FTitularPix.TipoQRCode of
-    tqDinamico:
-      begin
-        //URL DO QR CODE DINÂMICO
-        Url := IfThen(Length(Location) > 0, GetValue(ID_MERCHANT_ACCOUNT_INFORMATION_URL, Location), '');
-        //VALOR COMPLETO DA CONTA
-        Result  := GetValue(ID_MERCHANT_ACCOUNT_INFORMATION, Gui + Url);
-      end;
-    tqEstatico:
-      begin
-        //CHAVE PIX
-        Key := IfThen(Length(FTitularPix.ChavePix) > 0, GetValue(ID_MERCHANT_ACCOUNT_INFORMATION_KEY, FTitularPix.ChavePix), '');
-        //VALOR COMPLETO DA CONTA
-        Result  := GetValue(ID_MERCHANT_ACCOUNT_INFORMATION, Gui + Key);
-      end;
-  end;
-end;
-
-function TRscPix.GetToToken: Boolean;
-var
-  JsonResponse  : TJSONObject ;
-  StrmBody      : TStringStream ;
-  nResp         : Integer ;
-  StrlHeader    : TStringList ;
-  DWCR_Token    : TRESTDWIdClientREST;
-
-begin
-  Result  :=  False;
-
-  DWCR_Token  :=  TRESTDWIdClientREST.Create(nil);
-  ConfigRestClient(DWCR_Token);
-  StrlHeader := TStringList.Create;
-  DWCR_Token.ContentType      :=  'application/x-www-form-urlencoded';
-  try
-    case FPSP.TipoPsp of
-      pspSicredi      : begin
-
-                           DWCR_Token.ContentType  := 'application/json';
-                           DWCR_Token.AcceptEncoding   := ' ';
-
-                            DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwAOBasic;
-                            TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Username  := FDeveloper.Client_ID;
-                            TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Password  := FDeveloper.Client_Secret;
-
-                        end;
-
-      pspBancoDoBrasil: begin
-                            DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwAOBasic;
-                            TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Username  := FDeveloper.Client_ID;
-                            TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Password  := FDeveloper.Client_Secret;
-                            StrlHeader.Add('grant_type=client_credentials');
-                            StrlHeader.Add('scope=cob.read cob.write cobv.write cobv.read lotecobv.write lotecobv.read pix.read pix.write webhookread webhook.write payloadlocation.write payloadlocation.read');
-                        end;
-
-      pspSantander    : begin  //sANDbOX - OK
-                            DWCR_Token.Accept           := '*/*';
-                            DWCR_Token.AcceptEncoding   := 'gzip, deflate, br';
-                            DWCR_Token.ContentEncoding  := '';
-                            DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwAONone;
-                            FPSP.URLToken := FPSP.URLToken+'{param}';
-                            FPSP.URLToken := StringReplace(FPSP.URLToken, '{param}', '?grant_type=client_credentials', [rfReplaceAll]);
-                            StrlHeader.Add('client_id='+FDeveloper.Client_ID);
-                            StrlHeader.Add('client_secret='+FDeveloper.Client_Secret);
-                        end;
-
-      pspSicoob       : begin
-                            DWCR_Token.HostCert :=  'https://auth.sicoob.com.br';
-                            DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwOAuth;
-                            StrlHeader.Add('grant_type=client_credentials');
-                            StrlHeader.Add('client_id='+FDeveloper.Client_ID);
-                            StrlHeader.Add('client_secret='+FDeveloper.Client_Secret);
-                            StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
-                        end;
-
-      pspBradesco     : begin
-                            DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwAOBasic;
-                            StrlHeader.Add('grant_type=client_credentials');
-
-                            TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Username  := FDeveloper.Client_ID;
-                            TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Password  := FDeveloper.Client_Secret;
-
-                            StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
-                            DWCR_Token.ContentType      :=  'application/x-www-form-urlencoded';
-                        end;
-
-      pspGerencianet  : begin
-                            StrlHeader.Add('{"grant_type": "client_credentials"}');
-
-                            DWCR_Token.ContentType      :=  'application/json';
-                            DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwAOBasic;
-//
-                            TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Username  := FDeveloper.Client_ID;
-                            TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Password  := FDeveloper.Client_Secret;
-                        end;
-
-      pspPagSeguro    : begin
-                            StrlHeader.Add('grant_type=client_credentials');
-                            StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
-
-                            DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwAOBasic;
-                            TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Username  := FDeveloper.Client_ID;
-                            TRestDWAuthOptionBasic(DWCR_Token.AuthenticationOptions.OptionParams).Password  := FDeveloper.Client_Secret;
-                        end;
-
-      pspItau         : begin
-                          DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwOAuth;
-                          StrlHeader.Add('grant_type=client_credentials');
-                          StrlHeader.Add('client_id='+FDeveloper.Client_ID);
-                          StrlHeader.Add('client_secret='+FDeveloper.Client_Secret);
-                        end;
-
-      pspInter         : begin
-                          DWCR_Token.AuthenticationOptions.AuthorizationOption  := rdwOAuth;
-                          StrlHeader.Add('grant_type=client_credentials');
-                          StrlHeader.Add('client_id='+FDeveloper.Client_ID);
-                          StrlHeader.Add('client_secret='+FDeveloper.Client_Secret);
-                          StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
-                        end;
-    end;
-
-
-
-    StrmBody := TStringStream.Create;
-    try
-      nResp := DWCR_Token.Post(FPSP.URLToken, StrlHeader, StrmBody);
-
-      case nResp of
-        200,201:
-          begin
-            Result  :=  True;
-            JsonResponse        := TJSONObject.ParseJsonValue(UTF8ToWideString(RawByteString(StrmBody.DataString))) as TJSONObject;
-            try
-              Token.AcessToken    := JsonResponse.GetValue<string>('access_token');
-              Token.TokenType     := JsonResponse.GetValue<string>('token_type');
-              Token.Expires_in    := JsonResponse.GetValue<Integer>('expires_in');
-              InOnToken(Self, Token);
-            finally
-              JsonResponse.DisposeOf;
-            end;
-
-          end;
-      else
-        InOnToken(Self, nil, ErroGeralToString(nResp));
-      end;
-    Except
-     on E:exception do
-        begin
-          InOnToken(Self, nil, e.Message);
-        end;
-    end;
-  finally
-    StrmBody.Free;
-    StrlHeader.Free;
-    FreeAndNil(DWCR_Token);
-  end;
-end;
-function TRscPix.GetUniquePayment(INITIATION_METHOD:  string = '12'): string;
-begin
-  Result := GetValue(ID_POINT_OF_INITIATION_METHOD, INITIATION_METHOD);
-end;
-function TRscPix.GetValue(Id, Value: string): string;
-var Size:  Integer;
-begin
-  if Length(Value) < 2 then
-    Value := StrZero(Value, 2);
-  Size := Length(Value);
-  Result := Id + IfThen(Size < 10, StrZero(Size.ToString, 2), Size.ToString) + Value;
-end;
 function TRscPix.GetVersao: string;
 begin
-  Result  :=  VersaoComponente;
+  Result  :=  '3.0';
 end;
 
-procedure TRscPix.InOnCobGet(Sender : TObject; Const RespCobGet: TRespCobGet = nil;
-  Erro: String = '');
-begin
-  if Assigned(FOnCobGet) then
-     FOnCobGet(Sender, RespCobGet, Erro);
-end;
-procedure TRscPix.InOnCobPatch(Sender: TObject;
-  const RespCobPatch: TRespCobPatch; Erro: String);
-begin
-  if Assigned(FOnCobPatch) then
-     FOnCobPatch(Sender, RespCobPatch, Erro);
-end;
-procedure TRscPix.InOnCobPut(Sender: TObject; const RespCobPut: TRespCobPut;
+procedure TRscPix.InOnToken(Sender: TObject; const Token: TToken;
   Erro: String);
-begin
-  if Assigned(FOnCobPut) then
-     FOnCobPut(Sender, RespCobPut, Erro);
-end;
-procedure TRscPix.InOnLocDelete(Sender: TObject;
-  const RespLocDelete: TRespLocDelete; Erro: String);
-begin
-  if Assigned(FOnLocDelete) then
-     FOnLocDelete(Sender, RespLocDelete, Erro);
-end;
-
-procedure TRscPix.InOnLocGet(Sender: TObject; const RespLocGet: TRespLocGet;
-  Erro: String);
-begin
-  if Assigned(FOnLocGet) then
-     FOnLocGet(Sender, RespLocGet, Erro);
-end;
-
-procedure TRscPix.InOnLocPost(Sender: TObject; const RespLocPost: TRespLocPost;
-  Erro: String);
-begin
-  if Assigned(FOnLocPost) then
-     FOnLocPost(Sender, RespLocPost, Erro);
-end;
-
-procedure TRscPix.InOnPixGet(Sender: TObject; const RespPixGet: TRespPixGet;
-  Erro: String);
-begin
-  if Assigned(FOnPixGet) then
-     FOnPixGet(Sender, RespPixGet, Erro);
-end;
-procedure TRscPix.InOnPixPut(Sender: TObject; const RespPixPut: TRespPixPut;
-  Erro: String);
-begin
-  if Assigned(FOnPixPut) then
-     FOnPixPut(Sender, RespPixPut, Erro);
-end;
-procedure TRscPix.InOnToken(Sender: TObject; const Token: TToken; Erro: String);
 begin
   if Assigned(FOnToken) then
      FOnToken(Sender, Token, Erro);
 end;
-procedure TRscPix.InternalCriarCobranca(cValor: Currency; sTXID,
-  sMensagem: string);
-var
-  erroStr        : string;
-  cURL           : String ;
-  cdata          : String ;
-  RequestBody    : TStringList ;
-  nResp          : Integer ;
-  Stream         : TStringStream ;
-  ResultCobPut   : TRespCobPut;
-  JsonValor      : TJsonObject ;
-  JsonCalendario : TJsonObject ;
-  JsonEnviar     : TJSONObject ;
-  MyPixCob       : TPixCobranca;
 
-  DWCR_CobCriar  :  TRESTDWIdClientREST;
+procedure TRscPix.InOnCobPut(Sender: TObject;
+  const Response: TRespCobPut; Erro: String);
 begin
-  ResultCobPut  :=  nil;
-  MyPixCob := TPixCobranca.Create;
-  DWCR_CobCriar  :=  TRESTDWIdClientREST.Create(nil);
-  Stream       := TStringStream.Create('', TEncoding.UTF8);
-  RequestBody  := TStringList.Create ;
-  try
-    try
-      ValidaChavePix;
-
-      MyPixCob.Mensagem :=  sMensagem;
-      MyPixCob.Valor    :=  cValor;
-      MyPixCob.TXID     :=  sTXID;
-
-      if not GetToToken then
-        Exit;
-
-       ConfigRestClient(DWCR_CobCriar);
-
-      case FPSP.TipoPsp of
-        pspSicredi: begin
-           DWCR_CobCriar.ContentType  := 'application/json';
-           DWCR_CobCriar.AcceptEncoding   := ' ';
-        end;
-      end;
-
-       //Criando o Objeto Valor
-       JsonValor := TJSONObject.Create;
-       JsonValor.AddPair('original', MyPixCob.ValorToString);
-
-       //Criando o Objeto Calendario
-       JsonCalendario := TJSONObject.Create;
-       JsonCalendario.AddPair('expiracao', TJSONNumber.Create(TitularPix.DuracaoMinutos * 60)); // aqui é em segundo 3600 segundos = 1 h
-
-       JsonEnviar := TJSOnObject.Create;
-       JsonEnviar.AddPair('calendario', JsonCalendario);
-       JsonEnviar.AddPair('valor', JsonValor);
-       JsonEnviar.AddPair('chave', TitularPix.ChavePix);
-       JsonEnviar.AddPair('solicitacaoPagador', TirarAcentoE(MyPixCob.Mensagem));
-
-       cdata := JsonEnviar.ToString ;
-       cURL := FPSP.URLApi + FPSP.EndPoints.CobPut;
-       cURL := StringReplace(cURL, '{txid}', MyPixCob.TXID , [rfReplaceAll]);
-
-
-     if Developer.Application_key <> '' then
-        cURL := cURL + '?gw-dev-app-key=' + Developer.Application_key;
-
-      DWCR_CobCriar.AuthenticationOptions.AuthorizationOption  := rdwAOBearer ;
-      TRestDWAuthOptionBearerClient(DWCR_CobCriar.AuthenticationOptions.OptionParams).Token := Token.AcessToken ;
-
-      case FPSP.TipoPsp of
-        pspSicredi: ;
-
-        pspBancoDoBrasil: ;
-
-        pspSantander: ;
-
-        pspBradesco,
-        pspSicoob:
-          begin
-            DWCR_CobCriar.ContentType  := 'application/json';
-            DWCR_CobCriar.AcceptEncoding   := ' ';
-          end;
-        pspGerencianet: ;
-
-        pspPagSeguro: ;
-        pspInter:;
-      end;
-
-      RequestBody.Add(JsonEnviar.ToString) ;//JSON
-
-         nResp := DWCR_CobCriar.Put(cURL,RequestBody,Stream,false) ;
-        case nResp of
-          200, 201:
-            begin
-             Retorno       := UTF8ToWideString(RawByteString(Stream.DataString));
-             ResultCobPut  := TJson.JsonToObject<TRespCobPut>(Retorno);
-             if ResultCobPut.textoImagemQRcode = '' then
-              begin
-                if ResultCobPut.pixCopiaECola <> '' then
-                  begin
-                    ResultCobPut.textoImagemQRcode := ResultCobPut.pixCopiaECola;
-                  end
-                else
-                  begin
-                    ResultCobPut.textoImagemQRcode := GeraPayload(ResultCobPut.valor.original, ResultCobPut.txid, ResultCobPut.location) ;
-                  end;
-              end;
-
-             InOnCobPut(Self, ResultCobPut, '');
-            end;
-        else
-          begin
-            erroStr :=  ErroCobPostPutPatchToString(nResp);
-            if erroStr <> '' then
-              begin
-                raise Exception.Create(erroStr);
-              end
-            else
-              begin
-                errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(RawByteString(Stream.DataString));
-                raise Exception.Create(erroStr);
-              end;
-          end;
-        end;
-    except on E: Exception do
-      begin
-        InOnCobPut(Self, nil, e.Message);
-      end;
-    end;
-
-  finally
-    FreeAndNil(DWCR_CobCriar);
-       Stream.Free ;
-       RequestBody.DisposeOf; ;
-
-       if Assigned(JsonEnviar) then
-          JsonEnviar.DisposeOf;
-    MyPixCob.DisposeOf;
-    if Assigned(ResultCobPut) then
-      ResultCobPut.DisposeOf;
-  end;
+  if Assigned(FOnCobPut) then
+     FOnCobPut(Sender, Response, Erro);
 end;
 
-procedure TRscPix.InternalCriarQrCodeEstatico(cValor: Currency; sTXID,
-  sMensagem: string);
-var
-  Stream         : TStringStream ;
-  ResultCobPut   : TRespCobPut;
-  MyPixCob       : TPixCobranca;
+procedure TRscPix.InOnCobGet(Sender: TObject;
+  const Response: TRespCobGet; Erro: String);
 begin
-  ResultCobPut  :=  nil;
-  MyPixCob      := TPixCobranca.Create;
-  Stream        :=  TStringStream.Create(JsonQRCodeStatico, TEncoding.UTF8) ;
-  try
-    try
-      ValidaChavePix;
-
-      MyPixCob.Mensagem :=  sMensagem;
-      MyPixCob.Valor    :=  cValor;
-      MyPixCob.TXID     :=  sTXID;
-
-      Retorno                          :=  UTF8ToWideString(RawByteString(Stream.DataString));
-      ResultCobPut                     :=  TJson.JsonToObject<TRespCobPut>(Retorno);
-      ResultCobPut.solicitacaopagador  :=  MyPixCob.Mensagem;
-      ResultCobPut.txid                :=  MyPixCob.TXID;
-      ResultCobPut.chave               :=  TitularPix.ChavePix ;
-      ResultCobPut.valor.original      :=  MyPixCob.ValorToString;
-
-      if ResultCobPut.textoImagemQRcode = '' then
-        ResultCobPut.textoImagemQRcode := GeraPayload(MyPixCob.ValorToString, MyPixCob.TXID ) ;
-
-      InOnCobPut(Self, ResultCobPut, '');
-    except on E: Exception do
-      begin
-        InOnCobPut(Self, nil, e.Message);
-      end;
-    end;
-  finally
-    Stream.Free ;
-    ResultCobPut.Free;
-    MyPixCob.Free;
-  end;
+  if Assigned(FOnCobGet) then
+     FOnCobGet(Sender, Response, Erro);
 end;
 
-procedure TRscPix.CancelarCobranca(sTXID: string);
-var
-  errostr       : string;
-  cURL         : string;
-  cdata        : string;
-  RequestBody : TStringList;
-  nResp : Integer;
-  Stream: TStringStream;
-  JsonEnviar     : TJSONObject;  //
-  MyPixCob       : TPixCobRevisa;
-  RespCobPatch   : TRespCobPatch;
-  DWCR_CobCancel: TRESTDWIdClientREST;
+procedure TRscPix.InOnCobGetListar(Sender: TObject;
+  const Response: TRespCobListar; Erro: String);
 begin
-  if not ValidaChavePix then
-     exit;
-
-  RespCobPatch  :=  nil;
-
-  if sTXID = '' then
-    begin
-      InOnCobPatch(Self, nil, 'Não foi informado o TXID');
-      Exit;
-    end;
-
-    try
-
-      if not GetToToken then
-        Exit;
-
-      Stream       := TStringStream.Create('', TEncoding.UTF8);
-      RequestBody  := TStringList.Create;
-      DWCR_CobCancel  := TRESTDWIdClientREST.Create(nil);
-      try
-        ConfigRestClient(DWCR_CobCancel);
-
-         //Montrando o Json a Enviar
-         JsonEnviar := TJSOnObject.Create;//Criando o Objeto
-         JsonEnviar.AddPair('status', 'REMOVIDA_PELO_USUARIO_RECEBEDOR');
-
-         cdata := JsonEnviar.ToString;
-         cURL := FPSP.URLApi +  FPSP.EndPoints.CobPatch;
-         cURL := StringReplace(cURL, '{txid}', sTXID, [rfReplaceAll]);
-
-
-         {verificar essa parte para outros bancos}
-         if FDeveloper.Application_key <> '' then
-            cURL := cURL + '?gw-dev-app-key=' + FDeveloper.Application_key;
-
-
-         DWCR_CobCancel.AuthenticationOptions.AuthorizationOption  := rdwAOBearer;
-         TRestDWAuthOptionBearerClient(DWCR_CobCancel.AuthenticationOptions.OptionParams).Token := Token.AcessToken;
-
-          case FPSP.TipoPsp of
-            pspSicredi: ;
-            pspBancoDoBrasil: ;
-            pspSantander: ;
-            pspBradesco,
-            pspSicoob:
-              begin
-                DWCR_CobCancel.ContentType  := 'application/json';
-                DWCR_CobCancel.AcceptEncoding   := ' ';
-              end;
-            pspGerencianet: ;
-            pspPagSeguro: ;
-          end;
-
-         //body
-         RequestBody.Add(JsonEnviar.ToString);//JSON
-        try
-           nResp := DWCR_CobCancel.Patch(cURL,requestBody,Stream,false);
-          case nResp of
-            200, 201:
-              begin
-
-                RespCobPatch  :=  TRespCobPatch.Create;
-                RespCobPatch.status  :=  'Cobrança Removida Com Sucesso!';
-
-                InOnCobPatch(Self, RespCobPatch, '');
-              end;
-          else
-            begin
-              erroStr :=  ErroCobPostPutPatchToString(nResp);
-              if erroStr <> '' then
-                begin
-                  raise Exception.Create(erroStr);
-                end
-              else
-                begin
-                  errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(RawByteString(Stream.DataString));
-                  raise Exception.Create(erroStr);
-                end;
-            end;
-          end;
-        Except
-         on E:exception do
-            begin
-              InOnCobPatch(Self, nil, e.Message);
-            end;
-        end;
-      finally
-        RequestBody.Free;
-
-        if Assigned(JsonEnviar) then
-            JsonEnviar.Free;
-          Stream.Free;
-          DWCR_CobCancel.Free;
-      end;
-    finally
-      MyPixCob.DisposeOf;
-      if Assigned(RespCobPatch) then
-        RespCobPatch.DisposeOf;
-    end;
-end;
-procedure TRscPix.SetCertificado(const Value: TSeguranca);
-begin
-  FSeguranca := Value;
-end;
-procedure TRscPix.SetDevedor_Documento(const Value: String);
-begin
-  FDevedor_Documento := Value;
-end;
-procedure TRscPix.SetDevedor_Documento_Tipo(const Value: TTipoPessoa);
-begin
-  FDevedor_Documento_Tipo := Value;
-  case Value of
-    pFisica:
-      begin
-      end;
-    pJuridica:
-      begin
-      end;
-  end;
-end;
-procedure TRscPix.SetDevedor_Nome(const Value: String);
-begin
-  FDevedor_Nome := Value;
-end;
-procedure TRscPix.SetDeveloper(const Value: TDeveloper);
-begin
-  FDeveloper := Value;
-end;
-procedure TRscPix.Setinfo_adicionais_Nome(const Value: String);
-begin
-  Finfo_adicionais_Nome := Value;
-end;
-procedure TRscPix.Setinfo_adicionais_Valor(const Value: String);
-begin
-  Finfo_adicionais_Valor := Value;
-end;
-procedure TRscPix.SetTitularPix(const Value: TTitularPix);
-begin
-  FTitularPix := Value;
-end;
-procedure TRscPix.SetPSP(const Value: TPSP);
-begin
-  FPSP := Value;
-end;
-procedure TRscPix.SetRetorno(const Value: string);
-begin
-  FRetorno := Value;
-end;
-procedure TRscPix.SetToken(const Value: TToken);
-begin
-  FToken := Value;
-end;
-procedure TRscPix.SimularPagamentoPix(Payload: String);
-var
-  DWClint : TRESTDWIdClientREST;
-  sUrl    : String;
-  RequestBody  : TStringList ;
-  nResp : integer;
-  Stream      : TStringStream ;
-  RespCobGet  :TRespCobGet;
-begin
-  if PSP.TipoPsp <> TTipoPSP.pspBancoDoBrasil then
-    begin
-      raise Exception.Create('A Simulação de pagamente esta disponivel apenas para o Banco do Brasil');
-      Exit;
-    end;
-  RespCobGet  :=  nil;
-  Stream := TStringStream.Create('', TEncoding.UTF8);
-  RequestBody := TStringList.Create;
-  DWClint := TRESTDWIdClientREST.Create(nil);
-  try
-    sUrl  :=  'https://api.hm.bb.com.br/testes-portal-desenvolvedor/v1'
-              + '/boletos-pix/pagar?'
-              + 'gw-app-key=95cad3f03fd9013a9d15005056825665';
-    DWClint.ContentType      := 'application/json';
-    DWClint.UseSSL       :=  True;
-    DWClint.SSLVersions  :=  [TIdSSLVersion.sslvTLSv1_2];
-    RequestBody.Add('{"pix": "{'  + Payload + '}"}');
-
-    try
-       nResp := DWClint.Post(sUrl, RequestBody, Stream);
-      case nResp of
-        200:
-          begin
-           Retorno     := UTF8ToWideString(RawByteString(Stream.DataString));
-           RespCobGet  := TJson.JsonToObject<TRespCobGet>(Retorno);
-           if RespCobGet.textoImagemQRcode = '' then
-              RespCobGet.textoImagemQRcode := GeraPayload ;
-           InOnCobGet(Self, RespCobGet, '');
-          end;
-      else
-        raise Exception.Create(ErroCobGetPatchToString(nResp));
-      end;
-    Except
-     on E:exception do
-        begin
-          InOnCobGet(Self, nil, e.Message);
-        end;
-    end;
-  finally
-    DWClint.Free;
-  end;
-end;
-procedure TRscPix.SolicitarDevolucaoPix(sEndToEndId, sTXIDDev: string; cValor: Currency);
-var
-  errostr       : string;
-  cURL          : string;
-  nResp         : Integer;
-  Stream        : TStringStream;
-  JasonValor    : TJSONObject;
-  RequestBody   : TStringList;
-  MyPixSDev     : TPIXSolicitaDevolocao;
-  ResultPixPut  : TRespPixPut;
-  DWRC_PixSolDev: TRESTDWIdClientREST;
-begin
-  if not ValidaChavePix then
-     exit;
-
-  MyPixSDev := TPIXSolicitaDevolocao.Create;
-  try
-    try
-      MyPixSDev.Valor       :=  cValor;
-      MyPixSDev.TXIDDev     :=  sTXIDDev;
-      MyPixSDev.endToEndId  :=  sEndToEndId;
-      MyPixSDev.ValidaDaddos;
-    except on E: Exception do
-      begin
-        InOnPixPut(Self, nil, e.Message);
-        Exit;
-      end;
-    end;
-
-    if not GetToToken then
-      Exit;
-
-    JasonValor  :=  TJSONObject.Create;
-    RequestBody := TStringList.Create;
-    Stream       := TStringStream.Create('', TEncoding.UTF8);
-    DWRC_PixSolDev  := TRESTDWIdClientREST.Create(nil);
-    try
-      ConfigRestClient(DWRC_PixSolDev);
-      JasonValor.AddPair('valor',  MyPixSDev.ValorToString);
-      RequestBody.clear;
-      RequestBody.Add(JasonValor.ToString);
-       cURL := FPSP.URLAPI  + FPSP.EndPoints.PixPut;
-       cURL := StringReplace(cURL, '{e2eid}', MyPixSDev.endToEndId, [rfReplaceAll]);
-       cURL := StringReplace(cURL, '{id}', MyPixSDev.TXIDDev, [rfReplaceAll]);
-
-
-       {rever para outros bancos}
-       if FDeveloper.Application_key <> '' then
-           cURL := cURL + '?gw-dev-app-key=' + FDeveloper.Application_key;
-
-       DWRC_PixSolDev.AuthenticationOptions.AuthorizationOption  := rdwAOBearer;
-       TRestDWAuthOptionBearerClient(DWRC_PixSolDev.AuthenticationOptions.OptionParams).Token := Token.AcessToken;
-
-        case FPSP.TipoPsp of
-          pspSicredi: ;
-          pspBancoDoBrasil: ;
-          pspSantander: ;
-          pspBradesco,
-          pspSicoob:
-            begin
-              DWRC_PixSolDev.ContentType  := 'application/json';
-              DWRC_PixSolDev.AcceptEncoding   := ' ';
-            end;
-          pspGerencianet: ;
-          pspPagSeguro: ;
-        end;
-
-      try
-        nResp := DWRC_PixSolDev.Put(cURL,RequestBody,Stream,false);
-        case nResp of
-          200, 201:
-            begin
-             Retorno     := UTF8ToWideString(RawByteString(Stream.DataString));
-             ResultPixPut  := TJson.JsonToObject<TRespPixPut>(Retorno);
-             InOnPixPut(Self, ResultPixPut, '');
-            end;
-        else
-          begin
-            erroStr :=  ErroPixPutToString(nResp);
-            if erroStr <> '' then
-              begin
-                raise Exception.Create(erroStr);
-              end
-            else
-              begin
-                errostr :=  'Cód. Erro: '  + IntToStr(nResp) +  #13 + UTF8ToWideString(RawByteString(Stream.DataString));
-                raise Exception.Create(erroStr);
-              end;
-          end;
-        end;
-      Except
-       on E:exception do
-          begin
-            InOnPixPut(Self, nil, e.Message);
-          end;
-      end;
-    finally
-      RequestBody.Free;
-      JasonValor.Free;
-      Stream.Free;
-      if Assigned(ResultPixPut) then
-        ResultPixPut.DisposeOf;
-      if Assigned(DWRC_PixSolDev) then
-        DWRC_PixSolDev.DisposeOf;
-    end;
-  finally
-    MyPixSDev.Free;
-  end;
+  if Assigned(FOnCobGetListar) then
+     FOnCobGetListar(Sender, Response, Erro);
 end;
 
-function TRscPix.ValidaChavePix: Boolean;
+procedure TRscPix.InOnCobPatch(Sender: TObject;
+  const Response: TRespCobPatch; Erro: String);
+begin
+  if Assigned(FOnCobPatch) then
+     FOnCobPatch(Sender, Response, Erro);
+end;
+
+procedure TRscPix.InOnLocConsultarList(Sender: TObject;
+  const Response: TRespLocList; Erro: String);
+begin
+  if Assigned(FOnLocList) then
+     FOnLocList(Sender, Response, Erro);
+end;
+
+procedure TRscPix.InOnLocDelete(Sender: TObject;
+  const Response: TRespLocDelete; Erro: String);
+begin
+  if Assigned(FOnLocDelete) then
+     FOnLocDelete(Sender, Response, Erro);
+end;
+
+procedure TRscPix.InOnLocGetId(Sender: TObject;
+  const Response: TRespLocGet; Erro: String);
+begin
+  if Assigned(FOnLocGet) then
+     FOnLocGet(Sender, Response, Erro);
+end;
+
+procedure TRscPix.InOnLocGetIdQrCode(Sender: TObject;
+  const Response: TRespLocGetIdQrcode; Erro: String);
+begin
+  if Assigned(Response) then
+    FConsultarlocIdQrCode :=  Response.qrcode;
+  if Assigned(FOnLocGetIdQrCode) then
+     FOnLocGetIdQrCode(Sender, Response, Erro);
+end;
+
+procedure TRscPix.InOnLocPost(Sender: TObject;
+  const Response: TRespLocPost; Erro: String);
+begin
+  if Assigned(FOnLocPost) then
+     FOnLocPost(Sender, Response, Erro);
+end;
+
+procedure TRscPix.InOnPixGetEndToEndId(Sender: TObject;
+  const Response: TRespPixGetEndToEndId; Erro: String);
+begin
+  if Assigned(FOnPixGetEndToEndId) then
+     FOnPixGetEndToEndId(Sender, Response, Erro);
+end;
+
+procedure TRscPix.InOnPixListaRecebidos(Sender: TObject;
+  const Response: TRespPixListaRecebidos; Erro: String);
+begin
+  if Assigned(FOnPixListaRecebidos) then
+     FOnPixListaRecebidos(Sender, Response, Erro);
+end;
+
+procedure TRscPix.InOnPixPutSD(Sender: TObject; const Response: TRespPixPutSD;
+  Erro: String);
+begin
+  if Assigned(FOnPixPutDevolucao) then
+     FOnPixPutDevolucao(Sender, Response, Erro);
+end;
+
+procedure TRscPix.InOnWebhookListar(Sender: TObject;
+  const Response: TRespWebhookListar; Erro: String);
+begin
+  if Assigned(FOnWebhookListar) then
+     FOnWebhookListar(Sender, Response, Erro);
+end;
+
+procedure TRscPix.InOnWebhookGet(Sender: TObject;
+  const Response: TRespWebhookGet; Erro: String);
+begin
+  if Assigned(FOnWebhookGet) then
+     FOnWebhookGet(Sender, Response, Erro);
+end;
+
+procedure TRscPix.InOnWebhookPut(Sender: TObject;
+  const Response: TRespWebhookPutDelete; Erro: String);
+begin
+  if Assigned(FOnWebhookPut) then
+     FOnWebhookPut(Sender, Response, Erro);
+end;
+
+procedure TRscPix.InOnWebhookDelete(Sender: TObject;
+  const Response: TRespWebhookPutDelete; Erro: String);
+begin
+  if Assigned(FOnWebhookDelete) then
+     FOnWebhookDelete(Sender, Response, Erro);
+end;
+
+function TRscPix.ValidaChavePix(out sErro: string): Boolean;
 begin
   Result  :=  False;
-  case TitularPix.TipoChavePix of
+  case FTitular.TipoChavePix of
     tcCPF:
       begin
-        if IsCPF(TitularPix.ChavePix) then
+        if IsCPF(FTitular.ChavePix) then
           begin
             Result  :=  True;
           end
         else
           begin
-            raise Exception.Create('A Chave Pix informada: '  + TitularPix.ChavePix + ' não é um CFP válido.');
+            sErro :=  'A Chave Pix informada: '  + FTitular.ChavePix + ' não é um CFP válido.';
           end;
       end;
     tcCNPJ:
       begin
-        if IsCNPJ(TitularPix.ChavePix) then
+        if IsCNPJ(FTitular.ChavePix) then
           begin
             Result  :=  True;
           end
         else
           begin
-            raise Exception.Create('A Chave Pix informada: '  + TitularPix.ChavePix + ' não é um CNPJ válido.');
+            sErro :=  'A Chave Pix informada: '  + FTitular.ChavePix + ' não é um CNPJ válido.';
           end;
       end;
     tcTelefone:
       begin
-        if IsCelular(TitularPix.ChavePix) then
+        if IsCelular(FTitular.ChavePix) then
           begin
             Result  :=  True;
           end
         else
           begin
-            raise Exception.Create('A Chave Pix informada: '  + TitularPix.ChavePix + ' não é um Nº de TELEFONE válido.'
+            sErro :=  'A Chave Pix informada: '  + FTitular.ChavePix + ' não é um Nº de TELEFONE válido.'
                                     + #13
-                                    + 'Informe o Nº como no Ex: +5544988887777');
+                                    + 'Informe o Nº como no Ex: +5544988887777';
           end;
       end;
     tcEmail:
       begin
-        if IsEMail(TitularPix.ChavePix) then
+        if IsEMail(FTitular.ChavePix) then
           begin
             Result  :=  True;
           end
         else
           begin
-            raise Exception.Create('A Chave Pix informada: '  + TitularPix.ChavePix + ' não é um E-MAIL válido.');
+            sErro :=  'A Chave Pix informada: '  + FTitular.ChavePix + ' não é um E-MAIL válido.';
           end;
       end;
     tcAleatoria:
@@ -1620,9 +480,2566 @@ begin
   end;
 end;
 
-function TRscPix.ValidaTitularPix: Boolean;
+procedure TRscPix.NovoToken;
+var
+  StrmBody      : TStringStream ;
+  StrlHeader    : TStringList ;
+  vIdHTTP       : TIdHTTP;
+  SSLHandler    : TIdSSLIOHandlerSocketOpenSSL;
 begin
+  StrlHeader  :=  TStringList.Create;
+  StrmBody    :=  TStringStream.Create('');
+  vIdHTTP     := TIdHTTP.Create(nil);
+  SSLHandler  := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+  try
+    try
+      SSLHandler.SSLOptions.SSLVersions       :=  [sslvTLSv1_2];
+      SSLHandler.SSLOptions.CertFile          :=  FCertificado.CertFile;
+      SSLHandler.SSLOptions.KeyFile           :=  FCertificado.CertKeyFile;
+      SSLHandler.SSLOptions.RootCertFile      :=  '';
+      SSLHandler.Host                         := FPSP.UrlHostCert;
+      SSLHandler.Port                         := 443;
+      SSLHandler.SSLOptions.Mode              := sslmClient;
+      SSLHandler.SSLOptions.Method            := sslvTLSv1_2;
 
+      vIdHTTP.IOHandler := SSLHandler;
+      vIdHTTP.Request.CustomHeaders.Clear;
+      vIdHTTP.Request.ContentType         :=  'application/x-www-form-urlencoded';
+      vIdHTTP.Request.Username            :=  FAutenticar.Client_ID;
+      vIdHTTP.Request.Password            :=  FAutenticar.Client_Secret;
+      vIdHTTP.Request.BasicAuthentication :=  True;
+
+      case FPSP.Psp of
+        pspSicredi:
+          begin
+            vIdHTTP.Request.AcceptEncoding :=  '';
+          end;
+        pspBancoDoBrasil:
+          begin
+            StrlHeader.Add('grant_type=client_credentials');
+            StrlHeader.Add('scope=cob.read cob.write cobv.write cobv.read lotecobv.write lotecobv.read pix.read pix.write webhookread webhook.write payloadlocation.write payloadlocation.read');
+          end;
+        pspBradesco:
+          begin
+            StrlHeader.Add('grant_type=client_credentials');
+            StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
+          end;
+        pspSantander:
+          begin
+            vIdHTTP.Request.Accept  :=  '*/*';
+            vIdHTTP.Request.AcceptEncoding  :=  'gzip, deflate, br';
+            vIdHTTP.Request.ContentEncoding :=  '';
+            vIdHTTP.Request.BasicAuthentication :=  False;
+
+            StrlHeader.Add('client_id='+FAutenticar.Client_ID);
+            StrlHeader.Add('client_secret='+FAutenticar.Client_Secret);
+          end;
+        pspSicoob:
+          begin
+            vIdHTTP.Request.BasicAuthentication :=  False;
+            SSLHandler.Host := 'https://auth.sicoob.com.br';
+
+            StrlHeader.Add('client_id='+FAutenticar.Client_ID);
+            StrlHeader.Add('client_secret='+FAutenticar.Client_Secret);
+            StrlHeader.Add('grant_type=client_credentials');
+            StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
+
+          end;
+        pspEfi:
+          begin
+            StrlHeader.Add('grant_type=client_credentials');
+          end;
+        pspPagSeguro:
+          begin
+            StrlHeader.Add('grant_type=client_credentials');
+            StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
+          end;
+        pspItau:
+          begin
+            vIdHTTP.Request.BasicAuthentication :=  False;
+            StrlHeader.Add('grant_type=client_credentials');
+            StrlHeader.Add('client_id='+FAutenticar.Client_ID);
+            StrlHeader.Add('client_secret='+FAutenticar.Client_Secret);
+          end;
+        pspInter:
+          begin
+            vIdHTTP.Request.BasicAuthentication :=  False;
+            StrlHeader.Add('grant_type=client_credentials');
+            StrlHeader.Add('client_id='+FAutenticar.Client_ID);
+            StrlHeader.Add('client_secret='+FAutenticar.Client_Secret);
+            StrlHeader.Add('scope=cob.read cob.write pix.read pix.write');
+          end;
+        pspBanRiSul:
+          begin
+            StrlHeader.Add('grant_type=client_credentials');
+            StrlHeader.Add('scope=cob.read+cob.write+pix.read+pix.write+cobv.read+cobv.write+payloadlocation.read+payloadlocation.write+webhook.read+webhook.write');
+          end;
+      end;
+
+      try
+        case FPSP.Psp of
+          pspSantander: vIdHTTP.Post(FPSP.UrlToken+'?grant_type=client_credentials', StrlHeader, StrmBody);
+        else
+          vIdHTTP.Post(FPSP.UrlToken, StrlHeader, StrmBody);
+        end;
+
+        case vIdHTTP.ResponseCode of
+          200, 201:
+            begin
+              Token.LoadJson(StrmBody.DataString);
+              InOnToken(Self, Token, '');
+            end;
+        else
+          InOnToken(Self, nil, StrmBody.DataString);
+        end;
+      Except
+        On E: EIdHTTPProtocolException Do
+          Begin
+            If (Length(E.ErrorMessage) > 0) and (E.ErrorCode <> 0) Then
+              Begin
+                InOnToken(Self, nil, E.ErrorMessage);
+              End;
+          End;
+
+        on E: Exception do
+          begin
+            InOnToken(Self, nil, E.Message);
+          end;
+      end;
+
+    except on E: Exception do
+      begin
+        InOnToken(Self, nil, E.Message);
+      end;
+    end;
+  finally
+    vIdHTTP.Free;
+    SSLHandler.Free;
+    StrmBody.Free;
+    StrlHeader.Free;
+  end;
+end;
+
+procedure TRscPix.CobCriar(dValor: Double; sTXID, sMensagem: string);
+var
+  StrmBody        : TStringStream;
+  RequestStrm     : TStringStream;
+  vIdHTTP         : TIdHTTP;
+  SSLHandler      : TIdSSLIOHandlerSocketOpenSSL;
+
+  ResultCobPut    : TRespCobPut;
+  MsgErro         : string;
+  sUrl            : string;
+  sReqJson        : string;
+
+  JsonValor      : TRscJSONobject;
+  JsonCalendario : TRscJSONobject;
+  JsonEnviar     : TRscJSONobject;
+begin
+  FConsultarlocIdQrCode :=  '';
+  if  not ValidaChavePix(MsgErro)  then
+    begin
+      InOnCobPut(Self, nil, MsgErro);
+      Exit;
+    end;
+  if  dValor <= 0 then
+    begin
+      InOnCobPut(Self, nil, 'Valor Informado é inválido');
+      Exit;
+    end;
+
+  if  (Length(sMensagem) > 140) then
+    begin
+      InOnCobPut(Self, nil, 'O Texto da Mensagem deve ter até 140 caracteres!');
+      Exit;
+    end;
+
+  if  sTXID = '' then
+    begin
+      InOnCobPut(Self, nil, 'O TXID deve ser informado!');
+      Exit;
+    end;
+
+  if  (Length(sTXID) < 26) or (Length(sTXID) > 38) then
+    begin
+      InOnCobPut(Self, nil, 'O TXID deve ter entre 26 á 38 caracteres!');
+      Exit;
+    end;
+
+  if  Token.AccessToken = '' then
+    begin
+      InOnCobPut(Self, nil, 'AccessToken não informado: Use o evento -NovoToken para solicitar um novo token ao psp');
+      Exit;
+    end;
+
+  JsonValor       := TRscJSONobject.Create;
+  JsonCalendario  := TRscJSONobject.Create;
+  JsonEnviar      := TRscJSONobject.Create;
+  try
+    JsonValor.AddPair('original', StringReplace(FormatFloat('#0.00', dValor),',','.',[rfReplaceAll]));
+    JsonCalendario.AddPair('expiracao', Titular.DuracaoMinutos * 60); // aqui é em segundo 3600 segundos = 1 h
+
+    JsonEnviar.AddPair('calendario', JsonCalendario);
+    JsonEnviar.AddPair('valor', JsonValor);
+    JsonEnviar.AddPair('chave', Titular.ChavePix);
+
+    case FPSP.Psp of
+      pspSicredi,
+      pspBancoDoBrasil,
+      pspBradesco,
+      pspSantander,
+      pspSicoob,
+      pspEfi,
+      pspPagSeguro,
+      pspItau,
+      pspInter: JsonEnviar.AddPair('solicitacaoPagador', TirarAcentoE(sMensagem));
+      pspBanRiSul: ;
+    end;
+
+    sReqJson  :=  JsonEnviar.ToJson;
+
+  finally
+    JsonEnviar.Free;
+  end;
+
+  RequestStrm :=  TStringStream.Create(sReqJson);
+  StrmBody    :=  TStringStream.Create('');
+  vIdHTTP     := TIdHTTP.Create(nil);
+  SSLHandler  := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+  try
+    try
+      SSLHandler.SSLOptions.SSLVersions       :=  [sslvTLSv1_2];
+      SSLHandler.SSLOptions.CertFile          :=  FCertificado.CertFile;
+      SSLHandler.SSLOptions.KeyFile           :=  FCertificado.CertKeyFile;
+      SSLHandler.SSLOptions.RootCertFile      :=  '';
+      SSLHandler.Host                         := FPSP.UrlHostCert;
+      SSLHandler.Port                         := 443;
+      SSLHandler.SSLOptions.Mode              := sslmClient;
+      SSLHandler.SSLOptions.Method            := sslvTLSv1_2;
+
+      vIdHTTP.IOHandler := SSLHandler;
+      vIdHTTP.Request.CustomHeaders.Clear;
+      vIdHTTP.Request.ContentType         :=  'application/json; application/x-www-form-urlencoded; charset=UTF-8;';
+      vIdHTTP.Request.UserAgent           :=  'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; GTB5; Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; Maxthon; InfoPath.1; .NET CLR 3.5.30729; .NET CLR 3.0.30618)';
+      vIdHTTP.Request.ContentEncoding     :=  '';
+      vIdHTTP.Request.AcceptEncoding      :=  '';
+      vIdHTTP.Request.Accept              :=  '*/*';
+      vIdHTTP.ConnectTimeout              :=  20000;
+
+      vIdHTTP.Request.BasicAuthentication :=  False;
+      vIdHTTP.Request.CustomHeaders.AddValue('Authorization','Bearer ' + FToken.AccessToken);
+
+      case FPSP.Psp of
+        pspSicredi:;
+        pspBancoDoBrasil:;
+        pspSantander:;
+        pspBradesco,
+        pspSicoob:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+            //vIdHTTP.Request.AcceptEncoding      :=  ' '; VERIFICAR NECESSIDADE DESSE AQUI
+          end;
+        pspEfi:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+            vIdHTTP.Request.AcceptEncoding      :=  'gzip, deflate, br';
+          end;
+        pspPagSeguro:;
+        pspItau:;
+        pspInter:;
+        pspBanRiSul:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+            vIdHTTP.Request.Accept              :=  'application/json';
+          end;
+      end;
+
+      sUrl  :=  FPSP.UrlApi + FPSP.EndPoints.CobPut;
+      sUrl := StringReplace(sUrl, '{txid}', sTXID , [rfReplaceAll]);
+
+     if FAutenticar.Application_key <> '' then
+        sUrl := sUrl + '?gw-dev-app-key=' + FAutenticar.Application_key;
+
+      try
+        vIdHTTP.Put(sUrl, RequestStrm, StrmBody);
+
+        case vIdHTTP.ResponseCode of
+          200, 201:
+            begin
+              ResultCobPut  :=  TRespCobPut.Create;
+              try
+                ResultCobPut.LoadJson(StrmBody.DataString);
+                InOnCobPut(Self, ResultCobPut, '');
+              finally
+                ResultCobPut.Free;
+              end;
+
+            end;
+        else
+          InOnCobPut(Self, nil, StrmBody.DataString);
+        end;
+      Except
+        On E: EIdHTTPProtocolException Do
+          Begin
+            If (Length(E.ErrorMessage) > 0) or (E.ErrorCode <> 0) Then
+              Begin
+                InOnCobPut(Self, nil, E.ErrorMessage);
+              End;
+          End;
+
+        on E: Exception do
+          begin
+            InOnCobPut(Self, nil, E.Message);
+          end;
+      end;
+
+    except on E: Exception do
+      begin
+        InOnCobPut(Self, nil, E.Message);
+      end;
+    end;
+  finally
+    vIdHTTP.Free;
+    SSLHandler.Free;
+    StrmBody.Free;
+    RequestStrm.Free;
+  end;
+end;
+
+procedure TRscPix.CobTxId(sTXID: string);
+var
+  StrmBody        : TStringStream ;
+  vIdHTTP         : TIdHTTP;
+  SSLHandler      : TIdSSLIOHandlerSocketOpenSSL;
+
+  RespCobGet    : TRespCobGet;
+  MsgErro         : string;
+  sUrl            : string;
+begin
+  FConsultarlocIdQrCode :=  '';
+  if  not ValidaChavePix(MsgErro)  then
+    begin
+      InOnCobGet(Self, nil, MsgErro);
+      Exit;
+    end;
+
+  if  sTXID = '' then
+    begin
+      InOnCobGet(Self, nil, 'O TXID deve ser informado!');
+      Exit;
+    end;
+
+  if  (Length(sTXID) < 26) or (Length(sTXID) > 38) then
+    begin
+      InOnCobGet(Self, nil, 'O TXID deve ter entre 26 á 38 caracteres!');
+      Exit;
+    end;
+
+  if  Token.AccessToken = '' then
+    begin
+      InOnCobGet(Self, nil, 'AccessToken não informado: Use o evento -NovoToken para solicitar um novo token ao psp');
+      Exit;
+    end;
+
+  StrmBody    :=  TStringStream.Create('');
+  vIdHTTP     := TIdHTTP.Create(nil);
+  SSLHandler  := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+  try
+    try
+      SSLHandler.SSLOptions.SSLVersions       :=  [sslvTLSv1_2];
+      SSLHandler.SSLOptions.CertFile          :=  FCertificado.CertFile;
+      SSLHandler.SSLOptions.KeyFile           :=  FCertificado.CertKeyFile;
+      SSLHandler.SSLOptions.RootCertFile      :=  '';
+      SSLHandler.Host                         := FPSP.UrlHostCert;
+      SSLHandler.Port                         := 443;
+      SSLHandler.SSLOptions.Mode              := sslmClient;
+      SSLHandler.SSLOptions.Method            := sslvTLSv1_2;
+
+      vIdHTTP.IOHandler := SSLHandler;
+      vIdHTTP.Request.CustomHeaders.Clear;
+      vIdHTTP.Request.ContentType         :=  'application/json; application/x-www-form-urlencoded; charset=UTF-8;';
+      vIdHTTP.Request.UserAgent           :=  'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; GTB5; Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; Maxthon; InfoPath.1; .NET CLR 3.5.30729; .NET CLR 3.0.30618)';
+      vIdHTTP.Request.ContentEncoding     :=  '';
+      vIdHTTP.Request.AcceptEncoding      :=  '';
+      vIdHTTP.Request.Accept              :=  '*/*';
+      vIdHTTP.ConnectTimeout              :=  20000;
+
+      vIdHTTP.Request.BasicAuthentication :=  False;
+      vIdHTTP.Request.CustomHeaders.AddValue('Authorization','Bearer ' + FToken.AccessToken);
+
+      case FPSP.Psp of
+        pspSicredi:;
+        pspBancoDoBrasil:;
+        pspSantander:;
+        pspBradesco,
+        pspSicoob:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+            //vIdHTTP.Request.AcceptEncoding      :=  ' '; VERIFICAR NECESSIDADE DESSE AQUI
+          end;
+        pspEfi:;
+        pspPagSeguro:;
+        pspItau:;
+        pspInter:;
+        pspBanRiSul:;
+      end;
+
+      sUrl  :=  FPSP.UrlApi + FPSP.EndPoints.CobGet;
+      sUrl := StringReplace(sUrl, '{txid}', sTXID , [rfReplaceAll]);
+
+     if FAutenticar.Application_key <> '' then
+        sUrl := sUrl + '?gw-dev-app-key=' + FAutenticar.Application_key;
+
+      try
+        vIdHTTP.Get(sUrl, StrmBody);
+
+        case vIdHTTP.ResponseCode of
+          200, 201:
+            begin
+              RespCobGet:=  TRespCobGet.Create;
+              try
+                RespCobGet.LoadJson(StrmBody.DataString);
+                InOnCobGet(Self, RespCobGet, '');
+              finally
+                RespCobGet.Free;
+              end;
+
+            end;
+        else
+          InOnCobGet(Self, nil, StrmBody.DataString);
+        end;
+      Except
+        On E: EIdHTTPProtocolException Do
+          Begin
+            If (Length(E.ErrorMessage) > 0) or (E.ErrorCode <> 0) Then
+              Begin
+                InOnCobGet(Self, nil, E.ErrorMessage);
+              End;
+          End;
+
+        on E: Exception do
+          begin
+            InOnCobGet(Self, nil, E.Message);
+          end;
+      end;
+
+    except on E: Exception do
+      begin
+        InOnCobGet(Self, nil, E.Message);
+      end;
+    end;
+  finally
+    vIdHTTP.Free;
+    SSLHandler.Free;
+    StrmBody.Free;
+  end;
+end;
+
+procedure TRscPix.CobListar(dtData_Hora_Inicial,
+  dtData_Hora_Final: TDateTime; iPagIndex, iQtdItensPag: integer; cpf, cnpj,
+  status: string; locationPresente: boolean);
+var
+  StrmBody        : TStringStream ;
+  vIdHTTP         : TIdHTTP;
+  SSLHandler      : TIdSSLIOHandlerSocketOpenSSL;
+
+  MyPixListRebPer     : TRequesteListar;
+  vResponse    : TRespCobListar;
+  MsgErro         : string;
+  sUrl            : string;
+begin
+  FConsultarlocIdQrCode :=  '';
+  if  not ValidaChavePix(MsgErro)  then
+    begin
+      InOnCobGetListar(Self, nil, MsgErro);
+      Exit;
+    end;
+
+  MyPixListRebPer := TRequesteListar.Create;
+  try
+    try
+      MyPixListRebPer.PSP           :=  FPSP.Psp;
+      MyPixListRebPer.Data_Hora_Ini :=  dtData_Hora_Inicial;
+      MyPixListRebPer.Data_Hora_Fim :=  dtData_Hora_Final;
+      MyPixListRebPer.Index_Pag     :=  iPagIndex;
+
+    except on E: Exception do
+      begin
+        InOnPixListaRecebidos(Self, nil, e.Message);
+        Exit;
+      end;
+    end;
+
+    if  Token.AccessToken = '' then
+      begin
+        InOnCobGetListar(Self, nil, 'AccessToken não informado: Use o evento -NovoToken para solicitar um novo token ao psp');
+        Exit;
+      end;
+
+    StrmBody    :=  TStringStream.Create('');
+    vIdHTTP     := TIdHTTP.Create(nil);
+    SSLHandler  := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+    try
+      try
+        SSLHandler.SSLOptions.SSLVersions       :=  [sslvTLSv1_2];
+        SSLHandler.SSLOptions.CertFile          :=  FCertificado.CertFile;
+        SSLHandler.SSLOptions.KeyFile           :=  FCertificado.CertKeyFile;
+        SSLHandler.SSLOptions.RootCertFile      :=  '';
+        SSLHandler.Host                         := FPSP.UrlHostCert;
+        SSLHandler.Port                         := 443;
+        SSLHandler.SSLOptions.Mode              := sslmClient;
+        SSLHandler.SSLOptions.Method            := sslvTLSv1_2;
+
+        vIdHTTP.IOHandler := SSLHandler;
+        vIdHTTP.Request.CustomHeaders.Clear;
+        vIdHTTP.Request.ContentType         :=  'application/json; application/x-www-form-urlencoded; charset=UTF-8;';
+        vIdHTTP.Request.UserAgent           :=  'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; GTB5; Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; Maxthon; InfoPath.1; .NET CLR 3.5.30729; .NET CLR 3.0.30618)';
+        vIdHTTP.Request.ContentEncoding     :=  '';
+        vIdHTTP.Request.AcceptEncoding      :=  '';
+        vIdHTTP.Request.Accept              :=  '*/*';
+        vIdHTTP.ConnectTimeout              :=  20000;
+
+        vIdHTTP.Request.BasicAuthentication :=  False;
+        vIdHTTP.Request.CustomHeaders.AddValue('Authorization','Bearer ' + FToken.AccessToken);
+
+        sUrl := FPSP.URLAPI + FPSP.EndPoints.CobGetS +
+            '?inicio=' + MyPixListRebPer.Data_Hora_Ini_ToStr  +
+            '&fim='    + MyPixListRebPer.Data_Hora_Fim_ToStr;
+
+        if MyPixListRebPer.Index_Pag > 0 then
+          sUrl := sUrl + '&paginaAtual=' + IntToStr(MyPixListRebPer.Index_Pag);
+
+        if (iQtdItensPag > 0) and (iQtdItensPag <= 100) then
+          sUrl := sUrl + '&itensPorPagina=' + IntToStr(iQtdItensPag);
+
+        if (cpf <> '') then
+          sUrl := sUrl + '&cpf=' + Trim(cpf);
+
+        if (cnpj <> '') then
+          sUrl := sUrl + '&cnpj=' + Trim(cnpj);
+
+        if (status <> '') then
+          sUrl := sUrl + '&status=' + Trim(status);
+
+        case FPSP.Psp of
+          pspSicredi:;
+          pspBancoDoBrasil:
+            begin
+              if locationPresente then
+                sUrl := sUrl + '&locationPresente=true'
+              else
+                sUrl := sUrl + '&locationPresente=false';
+
+              if FAutenticar.Application_key <> '' then
+                sUrl := sUrl + '&gw-dev-app-key=' + FAutenticar.Application_key;
+            end;
+          pspSantander:;
+          pspBradesco,
+          pspSicoob:
+            begin
+              vIdHTTP.Request.ContentType         :=  'application/json';
+              //vIdHTTP.Request.AcceptEncoding      :=  ' '; VERIFICAR NECESSIDADE DESSE AQUI
+            end;
+          pspEfi:
+            begin
+              vIdHTTP.Request.ContentType         :=  'application/json';
+            end;
+          pspPagSeguro:;
+          pspItau:;
+          pspInter:;
+          pspBanRiSul:;
+        end;
+
+
+        try
+          vIdHTTP.Get(sUrl, StrmBody);
+
+          case vIdHTTP.ResponseCode of
+            200, 201:
+              begin
+                vResponse:=  TRespCobListar.Create;
+                try
+                  vResponse.LoadJson(StrmBody.DataString);
+                  InOnCobGetListar(Self, vResponse, '');
+                finally
+                  vResponse.Free;
+                end;
+
+              end;
+          else
+            InOnCobGetListar(Self, nil, StrmBody.DataString);
+          end;
+        Except
+          On E: EIdHTTPProtocolException Do
+            Begin
+              If (Length(E.ErrorMessage) > 0) or (E.ErrorCode <> 0) Then
+                Begin
+                  InOnCobGetListar(Self, nil, E.ErrorMessage);
+                End;
+            End;
+
+          on E: Exception do
+            begin
+              InOnCobGetListar(Self, nil, E.Message);
+            end;
+        end;
+
+      except on E: Exception do
+        begin
+          InOnCobGetListar(Self, nil, E.Message);
+        end;
+      end;
+    finally
+      vIdHTTP.Free;
+      SSLHandler.Free;
+      StrmBody.Free;
+    end;
+  finally
+    MyPixListRebPer.Free;
+  end;
+end;
+
+procedure TRscPix.CobCancelar(sTXID: string);
+var
+  StrmBody        : TStringStream;
+  RequestStrm     : TStringStream;
+  vIdHTTP         : TIdHTTP;
+  SSLHandler      : TIdSSLIOHandlerSocketOpenSSL;
+
+  JsonEnviar      : TRscJSONobject;
+
+  RespCobPatch    : TRespCobPatch;
+  MsgErro         : string;
+  sUrl            : string;
+  sReqJson        : string;
+begin
+  FConsultarlocIdQrCode :=  '';
+  if  not ValidaChavePix(MsgErro)  then
+    begin
+      InOnCobPatch(Self, nil, MsgErro);
+      Exit;
+    end;
+
+  if  sTXID = '' then
+    begin
+      InOnCobPatch(Self, nil, 'O TXID deve ser informado!');
+      Exit;
+    end;
+
+  if  (Length(sTXID) < 26) or (Length(sTXID) > 38) then
+    begin
+      InOnCobPatch(Self, nil, 'O TXID deve ter entre 26 á 38 caracteres!');
+      Exit;
+    end;
+
+  if  Token.AccessToken = '' then
+    begin
+      InOnCobPatch(Self, nil, 'AccessToken não informado: Use o evento -NovoToken para solicitar um novo token ao psp');
+      Exit;
+    end;
+
+  JsonEnviar  :=  TRscJSONobject.Create;
+  try                                   
+    JsonEnviar.AddPair('status', 'REMOVIDA_PELO_USUARIO_RECEBEDOR');
+    sReqJson  :=  JsonEnviar.ToJson;
+  finally
+    JsonEnviar.Free;
+  end;
+
+  RequestStrm :=  TStringStream.Create(sReqJson);
+  StrmBody    :=  TStringStream.Create('');
+  vIdHTTP     :=  TIdHTTP.Create(nil);
+  SSLHandler  :=  TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+  try
+    try
+      SSLHandler.SSLOptions.SSLVersions       :=  [sslvTLSv1_2];
+      SSLHandler.SSLOptions.CertFile          :=  FCertificado.CertFile;
+      SSLHandler.SSLOptions.KeyFile           :=  FCertificado.CertKeyFile;
+      SSLHandler.SSLOptions.RootCertFile      :=  '';
+      SSLHandler.Host                         := FPSP.UrlHostCert;
+      SSLHandler.Port                         := 443;
+      SSLHandler.SSLOptions.Mode              := sslmClient;
+      SSLHandler.SSLOptions.Method            := sslvTLSv1_2;
+
+      vIdHTTP.IOHandler := SSLHandler;
+      vIdHTTP.Request.CustomHeaders.Clear;
+      vIdHTTP.Request.ContentType         :=  'application/json; application/x-www-form-urlencoded; charset=UTF-8;';
+      vIdHTTP.Request.UserAgent           :=  'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; GTB5; Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; Maxthon; InfoPath.1; .NET CLR 3.5.30729; .NET CLR 3.0.30618)';
+      vIdHTTP.Request.ContentEncoding     :=  '';
+      vIdHTTP.Request.AcceptEncoding      :=  '';
+      vIdHTTP.Request.Accept              :=  '*/*';
+      vIdHTTP.ConnectTimeout              :=  20000;
+
+      vIdHTTP.Request.BasicAuthentication :=  False;
+      vIdHTTP.Request.CustomHeaders.AddValue('Authorization','Bearer ' + FToken.AccessToken);
+
+      case FPSP.Psp of
+        pspSicredi:;
+        pspBancoDoBrasil:;
+        pspSantander:;
+        pspBradesco,
+        pspSicoob:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+            //vIdHTTP.Request.AcceptEncoding      :=  ' '; VERIFICAR NECESSIDADE DESSE AQUI
+          end;
+        pspEfi:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+            vIdHTTP.Request.AcceptEncoding      :=  'gzip, deflate, br';
+          end;
+        pspPagSeguro:;
+        pspItau:;
+        pspInter:;
+        pspBanRiSul:;
+      end;
+
+      sUrl  :=  FPSP.UrlApi + FPSP.EndPoints.CobPatch;
+      sUrl  := StringReplace(sUrl, '{txid}', sTXID , [rfReplaceAll]);
+
+     if FAutenticar.Application_key <> '' then
+        sUrl := sUrl + '?gw-dev-app-key=' + FAutenticar.Application_key;
+
+      try
+        vIdHTTP.Patch(sUrl, RequestStrm,  StrmBody);
+
+        case vIdHTTP.ResponseCode of
+          200, 201:
+            begin
+              RespCobPatch:=  TRespCobPatch.Create;
+              try
+                RespCobPatch.LoadJson(StrmBody.DataString);
+                InOnCobPatch(Self, RespCobPatch, '');
+              finally
+                RespCobPatch.Free;
+              end;
+
+            end;
+        else
+          InOnCobPatch(Self, nil, StrmBody.DataString);
+        end;
+      Except
+        On E: EIdHTTPProtocolException Do
+          Begin
+            If (Length(E.ErrorMessage) > 0) or (E.ErrorCode <> 0) Then
+              Begin
+                InOnCobPatch(Self, nil, E.ErrorMessage);
+              End;
+          End;
+
+        on E: Exception do
+          begin
+            InOnCobPatch(Self, nil, E.Message);
+          end;
+      end;
+
+    except on E: Exception do
+      begin
+        InOnCobPatch(Self, nil, E.Message);
+      end;
+    end;
+  finally
+    vIdHTTP.Free;
+    SSLHandler.Free;
+    StrmBody.Free;
+    RequestStrm.Free;
+  end;
+end;
+
+procedure TRscPix.PixEndToEndId(endToEndId: string);
+var
+  StrmBody        : TStringStream ;
+  vIdHTTP         : TIdHTTP;
+  SSLHandler      : TIdSSLIOHandlerSocketOpenSSL;
+
+  vResponse      : TRespPixGetEndToEndId;
+  MsgErro         : string;
+  sUrl            : string;
+begin
+  if  not ValidaChavePix(MsgErro)  then
+    begin
+      InOnPixGetEndToEndId(Self, nil, MsgErro);
+      Exit;
+    end;
+
+  if  (Length(endToEndId) <= 0) then
+    begin
+      InOnPixGetEndToEndId(Self, nil, 'O endToEndId não informado ou inválido');
+      Exit;
+    end;
+
+  if  Token.AccessToken = '' then
+    begin
+      InOnPixGetEndToEndId(Self, nil, 'AccessToken não informado: Use o evento -NovoToken para solicitar um novo token ao psp');
+      Exit;
+    end;
+
+  StrmBody    :=  TStringStream.Create('');
+  vIdHTTP     := TIdHTTP.Create(nil);
+  SSLHandler  := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+  try
+    try
+      SSLHandler.SSLOptions.SSLVersions       :=  [sslvTLSv1_2];
+      SSLHandler.SSLOptions.CertFile          :=  FCertificado.CertFile;
+      SSLHandler.SSLOptions.KeyFile           :=  FCertificado.CertKeyFile;
+      SSLHandler.SSLOptions.RootCertFile      :=  '';
+      SSLHandler.Host                         := FPSP.UrlHostCert;
+      SSLHandler.Port                         := 443;
+      SSLHandler.SSLOptions.Mode              := sslmClient;
+      SSLHandler.SSLOptions.Method            := sslvTLSv1_2;
+
+      vIdHTTP.IOHandler := SSLHandler;
+      vIdHTTP.Request.CustomHeaders.Clear;
+      vIdHTTP.Request.ContentType         :=  'application/json; application/x-www-form-urlencoded; charset=UTF-8;';
+      vIdHTTP.Request.UserAgent           :=  'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; GTB5; Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; Maxthon; InfoPath.1; .NET CLR 3.5.30729; .NET CLR 3.0.30618)';
+      vIdHTTP.Request.ContentEncoding     :=  '';
+      vIdHTTP.Request.AcceptEncoding      :=  '';
+      vIdHTTP.Request.Accept              :=  '*/*';
+      vIdHTTP.ConnectTimeout              :=  20000;
+
+      vIdHTTP.Request.BasicAuthentication :=  False;
+      vIdHTTP.Request.CustomHeaders.AddValue('Authorization','Bearer ' + FToken.AccessToken);
+
+      case FPSP.Psp of
+        pspSicredi:;
+        pspBancoDoBrasil:;
+        pspSantander:;
+        pspBradesco,
+        pspSicoob:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+            //vIdHTTP.Request.AcceptEncoding      :=  ' '; VERIFICAR NECESSIDADE DESSE AQUI
+          end;
+        pspEfi:;
+        pspPagSeguro:;
+        pspItau:;
+        pspInter:;
+        pspBanRiSul:;
+      end;
+
+      sUrl  :=  FPSP.UrlApi + FPSP.EndPoints.PixGetCP;
+      sUrl := StringReplace(sUrl, '{e2eid}', endToEndId, [rfReplaceAll]);
+
+     if FAutenticar.Application_key <> '' then
+        sUrl := sUrl + '?gw-dev-app-key=' + FAutenticar.Application_key;
+
+      try
+        vIdHTTP.Get(sUrl, StrmBody);
+
+        case vIdHTTP.ResponseCode of
+          200, 201:
+            begin
+              vResponse:=  TRespPixGetEndToEndId.Create;
+              try
+                vResponse.LoadJson(StrmBody.DataString);
+                InOnPixGetEndToEndId(Self, vResponse, '');
+              finally
+                vResponse.Free;
+              end;
+
+            end;
+        else
+          InOnPixGetEndToEndId(Self, nil, StrmBody.DataString);
+        end;
+      Except
+        On E: EIdHTTPProtocolException Do
+          Begin
+            If (Length(E.ErrorMessage) > 0) or (E.ErrorCode <> 0) Then
+              Begin
+                InOnPixGetEndToEndId(Self, nil, E.ErrorMessage);
+              End;
+          End;
+
+        on E: Exception do
+          begin
+            InOnPixGetEndToEndId(Self, nil, E.Message);
+          end;
+      end;
+
+    except on E: Exception do
+      begin
+        InOnPixGetEndToEndId(Self, nil, E.Message);
+      end;
+    end;
+  finally
+    vIdHTTP.Free;
+    SSLHandler.Free;
+    StrmBody.Free;
+  end;
+end;
+
+procedure TRscPix.PixDevolucaoSolicitar(sEndToEndId, sTXIDDev: string;
+  dValor: Double);
+var
+  RequestStream : TStringStream ;
+  JasonValor    : TRscJSONobject;
+  vResponse     : TRespPixPutSD;
+
+  vIdHTTP         : TIdHTTP;
+  SSLHandler      : TIdSSLIOHandlerSocketOpenSSL;
+
+  MsgErro         : string;
+  sUrl            : string;
+  sResponse       : string;
+begin
+  if  not ValidaChavePix(MsgErro)  then
+    begin
+      InOnPixPutSD(Self, nil, MsgErro);
+      Exit;
+    end;
+
+  if  (Length(sEndToEndId) <= 0) then
+    begin
+      InOnPixPutSD(Self, nil, 'O endToEndId não informado ou inválido');
+      Exit;
+    end;
+
+
+  if  (Length(sTXIDDev) <= 0) then
+    begin
+      InOnPixPutSD(Self, nil, 'O sTXIDDev não informado ou inválido');
+      Exit;
+    end;
+
+  if  (dValor <= 0) then
+    begin
+      InOnPixPutSD(Self, nil, 'O dValor não informado ou inválido');
+      Exit;
+    end;
+
+  if  Token.AccessToken = '' then
+    begin
+      InOnPixPutSD(Self, nil, 'AccessToken não informado: Use o evento -NovoToken para solicitar um novo token ao psp');
+      Exit;
+    end;
+
+  JasonValor  :=  TRscJSONobject.Create;
+  JasonValor.AddPair('valor', StringReplace(FormatFloat('#0.00', dValor),',','.',[rfReplaceAll]));
+
+  RequestStream   :=  TStringStream.Create(JasonValor.ToJson);
+  RequestStream.Position := 0;
+
+  vIdHTTP         :=  TIdHTTP.Create(nil);
+  SSLHandler      :=  TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+  try
+    try
+      SSLHandler.SSLOptions.SSLVersions       :=  [sslvTLSv1_2];
+      SSLHandler.SSLOptions.CertFile          :=  FCertificado.CertFile;
+      SSLHandler.SSLOptions.KeyFile           :=  FCertificado.CertKeyFile;
+      SSLHandler.SSLOptions.RootCertFile      :=  '';
+      SSLHandler.Host                         := FPSP.UrlHostCert;
+      SSLHandler.Port                         := 443;
+      SSLHandler.SSLOptions.Mode              := sslmClient;
+      SSLHandler.SSLOptions.Method            := sslvTLSv1_2;
+
+      vIdHTTP.IOHandler := SSLHandler;
+      vIdHTTP.Request.CustomHeaders.Clear;
+      vIdHTTP.Request.ContentType         :=  'application/json; application/x-www-form-urlencoded; charset=UTF-8;';
+      vIdHTTP.Request.UserAgent           :=  'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; GTB5; Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; Maxthon; InfoPath.1; .NET CLR 3.5.30729; .NET CLR 3.0.30618)';
+      vIdHTTP.Request.ContentEncoding     :=  '';
+      vIdHTTP.Request.AcceptEncoding      :=  '';
+      vIdHTTP.Request.Accept              :=  '*/*';
+      vIdHTTP.ConnectTimeout              :=  20000;
+
+      vIdHTTP.Request.BasicAuthentication :=  False;
+      vIdHTTP.Request.CustomHeaders.AddValue('Authorization','Bearer ' + FToken.AccessToken);
+
+      case FPSP.Psp of
+        pspSicredi:;
+        pspBancoDoBrasil:;
+        pspSantander:;
+        pspBradesco,
+        pspSicoob:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+            //vIdHTTP.Request.AcceptEncoding      :=  ' '; VERIFICAR NECESSIDADE DESSE AQUI
+          end;
+        pspEfi: vIdHTTP.Request.ContentType         :=  'application/json';
+        pspPagSeguro:;
+        pspItau:;
+        pspInter:;
+        pspBanRiSul:;
+      end;
+
+      sUrl  :=  FPSP.UrlApi + FPSP.EndPoints.PixPut;
+      sUrl := StringReplace(sUrl, '{e2eid}', sEndToEndId, [rfReplaceAll]);
+      sUrl := StringReplace(sUrl, '{id}', sTXIDDev, [rfReplaceAll]);
+
+     if FAutenticar.Application_key <> '' then
+        sUrl := sUrl + '?gw-dev-app-key=' + FAutenticar.Application_key;
+
+      try
+        sResponse  :=  vIdHTTP.Put(sUrl, RequestStream);
+
+        case vIdHTTP.ResponseCode of
+          200, 201:
+            begin
+              vResponse  :=  TRespPixPutSD.Create;
+              try
+                vResponse.LoadJson(sResponse);
+                InOnPixPutSD(Self, vResponse, '');
+              finally
+                vResponse.Free;
+              end;
+
+            end;
+        else
+          InOnPixPutSD(Self, nil, sResponse);
+        end;
+      Except
+        On E: EIdHTTPProtocolException Do
+          Begin
+            If (Length(E.ErrorMessage) > 0) Then
+              Begin
+                InOnPixPutSD(Self, nil, E.ErrorMessage);
+              End
+            else
+              begin
+                InOnPixPutSD(Self, nil, E.Message);
+              end;
+          End;
+
+        on E: Exception do
+          begin
+            InOnPixPutSD(Self, nil, E.Message);
+          end;
+      end;
+
+    except on E: Exception do
+      begin
+        InOnPixPutSD(Self, nil, E.Message);
+      end;
+    end;
+  finally
+    vIdHTTP.Free;
+    SSLHandler.Free;
+    RequestStream.Free;
+    JasonValor.Free;
+  end;
+
+end;
+
+procedure TRscPix.PixDevolucaoConsultar(sEndToEndId, sTXIDDev: string);
+var
+  StrmBody        : TStringStream ;
+  vIdHTTP         : TIdHTTP;
+  SSLHandler      : TIdSSLIOHandlerSocketOpenSSL;
+
+  vResponse  : TRespPixPutSD;
+  MsgErro         : string;
+  sUrl            : string;
+begin
+  if  not ValidaChavePix(MsgErro)  then
+    begin
+      InOnPixPutSD(Self, nil, MsgErro);
+      Exit;
+    end;
+
+  if  (Length(sEndToEndId) <= 0) then
+    begin
+      InOnPixPutSD(Self, nil, 'O endToEndId não informado ou inválido');
+      Exit;
+    end;
+
+
+  if  (Length(sTXIDDev) <= 0) then
+    begin
+      InOnPixPutSD(Self, nil, 'O sTXIDDev não informado ou inválido');
+      Exit;
+    end;
+
+  if  Token.AccessToken = '' then
+    begin
+      InOnPixPutSD(Self, nil, 'AccessToken não informado: Use o evento -NovoToken para solicitar um novo token ao psp');
+      Exit;
+    end;
+
+  StrmBody    :=  TStringStream.Create('');
+  vIdHTTP     := TIdHTTP.Create(nil);
+  SSLHandler  := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+  try
+    try
+      SSLHandler.SSLOptions.SSLVersions       :=  [sslvTLSv1_2];
+      SSLHandler.SSLOptions.CertFile          :=  FCertificado.CertFile;
+      SSLHandler.SSLOptions.KeyFile           :=  FCertificado.CertKeyFile;
+      SSLHandler.SSLOptions.RootCertFile      :=  '';
+      SSLHandler.Host                         := FPSP.UrlHostCert;
+      SSLHandler.Port                         := 443;
+      SSLHandler.SSLOptions.Mode              := sslmClient;
+      SSLHandler.SSLOptions.Method            := sslvTLSv1_2;
+
+      vIdHTTP.IOHandler := SSLHandler;
+      vIdHTTP.Request.CustomHeaders.Clear;
+      vIdHTTP.Request.ContentType         :=  'application/json; application/x-www-form-urlencoded; charset=UTF-8;';
+      vIdHTTP.Request.UserAgent           :=  'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; GTB5; Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; Maxthon; InfoPath.1; .NET CLR 3.5.30729; .NET CLR 3.0.30618)';
+      vIdHTTP.Request.ContentEncoding     :=  '';
+      vIdHTTP.Request.AcceptEncoding      :=  '';
+      vIdHTTP.Request.Accept              :=  '*/*';
+      vIdHTTP.ConnectTimeout              :=  20000;
+
+      vIdHTTP.Request.BasicAuthentication :=  False;
+      vIdHTTP.Request.CustomHeaders.AddValue('Authorization','Bearer ' + FToken.AccessToken);
+
+      case FPSP.Psp of
+        pspSicredi:;
+        pspBancoDoBrasil:;
+        pspSantander:;
+        pspBradesco,
+        pspSicoob:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+            //vIdHTTP.Request.AcceptEncoding      :=  ' '; VERIFICAR NECESSIDADE DESSE AQUI
+          end;
+        pspEfi:;
+        pspPagSeguro:;
+        pspItau:;
+        pspInter:;
+        pspBanRiSul:;
+      end;
+
+       sUrl := FPSP.URLAPI  + FPSP.EndPoints.PixGetCD;
+
+       sUrl := StringReplace(sUrl, '{e2eid}', sEndToEndId, [rfReplaceAll]);
+       sUrl := StringReplace(sUrl, '{id}', sTXIDDev, [rfReplaceAll]);
+
+     if FAutenticar.Application_key <> '' then
+        sUrl := sUrl + '?gw-dev-app-key=' + FAutenticar.Application_key;
+
+      try
+        vIdHTTP.Get(sUrl, StrmBody);
+
+        case vIdHTTP.ResponseCode of
+          200, 201:
+            begin
+              vResponse  := TRespPixPutSD.create;
+              try
+                vResponse.LoadJson(StrmBody.DataString);
+                InOnPixPutSD(Self, vResponse, '');
+              finally
+                vResponse.Free;
+              end;
+
+            end;
+        else
+          InOnPixPutSD(Self, nil, StrmBody.DataString);
+        end;
+      Except
+        On E: EIdHTTPProtocolException Do
+          Begin
+            If (Length(E.ErrorMessage) > 0) Then
+              Begin
+                InOnPixPutSD(Self, nil, E.ErrorMessage);
+              End
+            else
+              begin
+                InOnPixPutSD(Self, nil, E.Message);
+              end;
+          End;
+
+        on E: Exception do
+          begin
+            InOnPixPutSD(Self, nil, E.Message);
+          end;
+      end;
+
+    except on E: Exception do
+      begin
+        InOnPixPutSD(Self, nil, E.Message);
+      end;
+    end;
+  finally
+    vIdHTTP.Free;
+    SSLHandler.Free;
+    StrmBody.Free;
+  end;
+end;
+
+procedure TRscPix.PixListar(
+                        dtData_Hora_Inicial: TDateTime;
+                        dtData_Hora_Final: TDateTime;
+                        txid: string;
+                        txIdPresente: Boolean;
+                        devolucaoPresente: Boolean;
+                        cpf: string;
+                        cnpj: string;
+                        iPagIndex: integer;
+                        iQtdItensPag: integer
+                       );
+var
+  StrmResponse        : TStringStream ;
+  vIdHTTP         : TIdHTTP;
+  SSLHandler      : TIdSSLIOHandlerSocketOpenSSL;
+
+  MyPixListRebPer     : TRequesteListar;
+  RespListaRecebidos      : TRespPixListaRecebidos;
+  MsgErro         : string;
+  sUrl            : string;
+begin
+  if  not ValidaChavePix(MsgErro)  then
+    begin
+      InOnPixListaRecebidos(Self, nil, MsgErro);
+      Exit;
+    end;
+
+  MyPixListRebPer := TRequesteListar.Create;
+  try
+    try
+      MyPixListRebPer.PSP           :=  FPSP.Psp;
+      MyPixListRebPer.Data_Hora_Ini :=  dtData_Hora_Inicial;
+      MyPixListRebPer.Data_Hora_Fim :=  dtData_Hora_Final;
+      MyPixListRebPer.Index_Pag     :=  iPagIndex;
+
+    except on E: Exception do
+      begin
+        InOnPixListaRecebidos(Self, nil, e.Message);
+        Exit;
+      end;
+    end;
+
+  if  Token.AccessToken = '' then
+    begin
+      InOnPixListaRecebidos(Self, nil, 'AccessToken não informado: Use o evento -NovoToken para solicitar um novo token ao psp');
+      Exit;
+    end;
+
+  StrmResponse    :=  TStringStream.Create('');
+  vIdHTTP     := TIdHTTP.Create(nil);
+  SSLHandler  := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+  try
+    try
+      SSLHandler.SSLOptions.SSLVersions       :=  [sslvTLSv1_2];
+      SSLHandler.SSLOptions.CertFile          :=  FCertificado.CertFile;
+      SSLHandler.SSLOptions.KeyFile           :=  FCertificado.CertKeyFile;
+      SSLHandler.SSLOptions.RootCertFile      :=  '';
+      SSLHandler.Host                         := FPSP.UrlHostCert;
+      SSLHandler.Port                         := 443;
+      SSLHandler.SSLOptions.Mode              := sslmClient;
+      SSLHandler.SSLOptions.Method            := sslvTLSv1_2;
+
+      vIdHTTP.IOHandler := SSLHandler;
+      vIdHTTP.Request.CustomHeaders.Clear;
+      vIdHTTP.Request.ContentType         :=  'application/json; application/x-www-form-urlencoded; charset=UTF-8;';
+      vIdHTTP.Request.UserAgent           :=  'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; GTB5; Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; Maxthon; InfoPath.1; .NET CLR 3.5.30729; .NET CLR 3.0.30618)';
+      vIdHTTP.Request.ContentEncoding     :=  '';
+      vIdHTTP.Request.AcceptEncoding      :=  '';
+      vIdHTTP.Request.Accept              :=  '*/*';
+      vIdHTTP.ConnectTimeout              :=  20000;
+
+      vIdHTTP.Request.BasicAuthentication :=  False;
+      vIdHTTP.Request.CustomHeaders.AddValue('Authorization','Bearer ' + FToken.AccessToken);
+
+      case FPSP.Psp of
+        pspSicredi:;
+        pspBancoDoBrasil:;
+        pspSantander:;
+        pspBradesco,
+        pspSicoob:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+            //vIdHTTP.Request.AcceptEncoding      :=  ' '; VERIFICAR NECESSIDADE DESSE AQUI
+          end;
+        pspEfi:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+//            vIdHTTP.Request.AcceptEncoding      :=  'gzip, deflate, br';
+          end;
+        pspPagSeguro:;
+        pspItau:;
+        pspInter:;
+        pspBanRiSul:;
+      end;
+
+      sUrl := FPSP.URLAPI + FPSP.EndPoints.PixGetCPR +
+          '?inicio=' + MyPixListRebPer.Data_Hora_Ini_ToStr  +
+          '&fim='    + MyPixListRebPer.Data_Hora_Fim_ToStr;
+
+      if Trim(txid) <> '' then
+        sUrl := sUrl + '&txid=' + Trim(txid);
+
+      if txIdPresente then
+        sUrl := sUrl + '&txIdPresente=true';
+
+      if devolucaoPresente then
+        sUrl := sUrl + '&devolucaoPresente=true';
+
+      if Trim(cpf) <> '' then
+        sUrl := sUrl + '&cpf=' + Trim(cpf);
+
+      if Trim(cnpj) <> '' then
+        sUrl := sUrl + '&cnpj=' + Trim(cnpj);
+
+      if MyPixListRebPer.Index_Pag > 0 then
+        sUrl := sUrl + '&paginaAtual=' + IntToStr(MyPixListRebPer.Index_Pag);
+
+      if (iQtdItensPag > 0) and (iQtdItensPag <= 100) then
+        sUrl := sUrl + '&itensPorPagina=' + IntToStr(iQtdItensPag)
+      else
+        begin
+          if (iQtdItensPag > 100)  then
+            sUrl := sUrl + '&itensPorPagina=' + IntToStr(100);
+        end;
+
+     if FAutenticar.Application_key <> '' then
+        sUrl := sUrl + '&gw-dev-app-key=' + FAutenticar.Application_key;
+
+      try
+        vIdHTTP.Get(sUrl, StrmResponse);
+
+        case vIdHTTP.ResponseCode of
+          200, 201:
+            begin
+              RespListaRecebidos  :=  TRespPixListaRecebidos.Create;
+              try
+                RespListaRecebidos.LoadJson(StrmResponse.DataString);
+                InOnPixListaRecebidos(Self, RespListaRecebidos, '');
+              finally
+                RespListaRecebidos.Free;
+              end;
+
+            end;
+        else
+          InOnPixListaRecebidos(Self, nil, StrmResponse.DataString);
+        end;
+      Except
+        On E: EIdHTTPProtocolException Do
+          Begin
+            If (Length(E.ErrorMessage) > 0) or (E.ErrorCode <> 0) Then
+              Begin
+                InOnPixListaRecebidos(Self, nil, E.ErrorMessage);
+              End;
+          End;
+
+        on E: Exception do
+          begin
+            InOnPixListaRecebidos(Self, nil, E.Message);
+          end;
+      end;
+
+    except on E: Exception do
+      begin
+        InOnPixListaRecebidos(Self, nil, E.Message);
+      end;
+    end;
+  finally
+    vIdHTTP.Free;
+    SSLHandler.Free;
+    StrmResponse.Free;
+  end;
+  finally
+    MyPixListRebPer.Free;
+  end;
+end;
+
+procedure TRscPix.LocationCriar(const TipoCobranca: TTipoCobranca);
+var
+  StrmResponse    : TStringStream ;
+  RequestStrm     : TStringStream;
+  vIdHTTP         : TIdHTTP;
+  SSLHandler      : TIdSSLIOHandlerSocketOpenSSL;
+
+  sReqJson        : string;
+  JsonEnviar     : TRscJSONobject;
+
+  Response        : TRespLocPost;
+  MsgErro         : string;
+  sUrl            : string;
+begin
+  if  not ValidaChavePix(MsgErro)  then
+    begin
+      InOnLocPost(Self, nil, MsgErro);
+      Exit;
+    end;
+
+  if  Token.AccessToken = '' then
+    begin
+      InOnLocPost(Self, nil, 'AccessToken não informado: Use o evento -NovoToken para solicitar um novo token ao psp');
+      Exit;
+    end;
+
+  JsonEnviar      := TRscJSONobject.Create;
+  try
+    case TipoCobranca of
+      tcbCob: JsonEnviar.AddPair('tipoCob', 'cob');
+      tcbCobV: JsonEnviar.AddPair('tipoCob', 'cobv');
+    end;
+
+    sReqJson  :=  JsonEnviar.ToJson;
+
+  finally
+    JsonEnviar.Free;
+  end;
+
+  RequestStrm :=  TStringStream.Create(sReqJson);
+  StrmResponse:=  TStringStream.Create('');
+  vIdHTTP     := TIdHTTP.Create(nil);
+  SSLHandler  := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+  try
+    try
+      SSLHandler.SSLOptions.SSLVersions       :=  [sslvTLSv1_2];
+      SSLHandler.SSLOptions.CertFile          :=  FCertificado.CertFile;
+      SSLHandler.SSLOptions.KeyFile           :=  FCertificado.CertKeyFile;
+      SSLHandler.SSLOptions.RootCertFile      :=  '';
+      SSLHandler.Host                         := FPSP.UrlHostCert;
+      SSLHandler.Port                         := 443;
+      SSLHandler.SSLOptions.Mode              := sslmClient;
+      SSLHandler.SSLOptions.Method            := sslvTLSv1_2;
+
+      vIdHTTP.IOHandler := SSLHandler;
+      vIdHTTP.Request.CustomHeaders.Clear;
+      vIdHTTP.Request.ContentType         :=  'application/json; application/x-www-form-urlencoded; charset=UTF-8;';
+      vIdHTTP.Request.UserAgent           :=  'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; GTB5; Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; Maxthon; InfoPath.1; .NET CLR 3.5.30729; .NET CLR 3.0.30618)';
+      vIdHTTP.Request.ContentEncoding     :=  '';
+      vIdHTTP.Request.AcceptEncoding      :=  '';
+      vIdHTTP.Request.Accept              :=  '*/*';
+      vIdHTTP.ConnectTimeout              :=  20000;
+
+      vIdHTTP.Request.BasicAuthentication :=  False;
+      vIdHTTP.Request.CustomHeaders.AddValue('Authorization','Bearer ' + FToken.AccessToken);
+
+      sUrl := FPSP.URLAPI + FPSP.EndPoints.LocPost;
+
+      case FPSP.Psp of
+        pspSicredi:;
+        pspBancoDoBrasil:
+          begin
+            if FAutenticar.Application_key <> '' then
+              sUrl := sUrl + '?gw-dev-app-key=' + FAutenticar.Application_key;
+
+            vIdHTTP.Request.ContentType         :=  'application/json';
+          end;
+        pspSantander:;
+        pspBanRiSul,
+        pspBradesco,
+        pspSicoob:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+            //vIdHTTP.Request.AcceptEncoding      :=  ' '; VERIFICAR NECESSIDADE DESSE AQUI
+          end;
+        pspEfi:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+            vIdHTTP.Request.AcceptEncoding      :=  'gzip, deflate, br';
+          end;
+        pspPagSeguro:;
+        pspItau:;
+        pspInter:;
+      end;
+
+      try
+        vIdHTTP.Post(sUrl, RequestStrm, StrmResponse);
+
+        case vIdHTTP.ResponseCode of
+          200, 201:
+            begin
+              Response  :=  TRespLocPost.Create;
+              try
+                Response.LoadJson(StrmResponse.DataString);
+                InOnLocPost(Self, Response, '');
+              finally
+                Response.Free;
+              end;
+
+            end;
+        else
+          InOnLocPost(Self, nil, StrmResponse.DataString);
+        end;
+      Except
+        On E: EIdHTTPProtocolException Do
+          Begin
+            If (Length(E.ErrorMessage) > 0) and (E.ErrorCode <> 0) Then
+              Begin
+                InOnLocPost(Self, nil, E.ErrorMessage);
+              End;
+          End;
+
+        on E: Exception do
+          begin
+            InOnLocPost(Self, nil, E.Message);
+          end;
+      end;
+
+    except on E: Exception do
+      begin
+        InOnLocPost(Self, nil, E.Message);
+      end;
+    end;
+  finally
+    vIdHTTP.Free;
+    SSLHandler.Free;
+    StrmResponse.Free;
+    RequestStrm.Free;
+  end;
+end;
+
+procedure TRscPix.LocationListarCadastrados(dtData_Hora_Inicial,
+  dtData_Hora_Final: TDateTime; txIdPresente: Boolean; tipoCob: TTipoCobranca;
+  iPagIndex, iQtdItensPag: integer);
+var
+  StrmResponse        : TStringStream ;
+  vIdHTTP         : TIdHTTP;
+  SSLHandler      : TIdSSLIOHandlerSocketOpenSSL;
+
+  MyPixListRebPer : TRequesteListar;
+  RespLocGet      : TRespLocList;
+  MsgErro         : string;
+  sUrl            : string;
+begin
+  if  not ValidaChavePix(MsgErro)  then
+    begin
+      InOnLocConsultarList(Self, nil, MsgErro);
+      Exit;
+    end;
+
+  MyPixListRebPer := TRequesteListar.Create;
+  try
+    try
+      MyPixListRebPer.PSP           :=  FPSP.Psp;
+      MyPixListRebPer.Data_Hora_Ini :=  dtData_Hora_Inicial;
+      MyPixListRebPer.Data_Hora_Fim :=  dtData_Hora_Final;
+      MyPixListRebPer.Index_Pag     :=  iPagIndex;
+
+    except on E: Exception do
+      begin
+        InOnLocConsultarList(Self, nil, e.Message);
+        Exit;
+      end;
+    end;
+
+  if  Token.AccessToken = '' then
+    begin
+      InOnLocConsultarList(Self, nil, 'AccessToken não informado: Use o evento -NovoToken para solicitar um novo token ao psp');
+      Exit;
+    end;
+
+  StrmResponse    :=  TStringStream.Create('');
+  vIdHTTP     := TIdHTTP.Create(nil);
+  SSLHandler  := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+  try
+    try
+      SSLHandler.SSLOptions.SSLVersions       :=  [sslvTLSv1_2];
+      SSLHandler.SSLOptions.CertFile          :=  FCertificado.CertFile;
+      SSLHandler.SSLOptions.KeyFile           :=  FCertificado.CertKeyFile;
+      SSLHandler.SSLOptions.RootCertFile      :=  '';
+      SSLHandler.Host                         := FPSP.UrlHostCert;
+      SSLHandler.Port                         := 443;
+      SSLHandler.SSLOptions.Mode              := sslmClient;
+      SSLHandler.SSLOptions.Method            := sslvTLSv1_2;
+
+      vIdHTTP.IOHandler := SSLHandler;
+      vIdHTTP.Request.CustomHeaders.Clear;
+      vIdHTTP.Request.ContentType         :=  'application/json; application/x-www-form-urlencoded; charset=UTF-8;';
+      vIdHTTP.Request.UserAgent           :=  'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; GTB5; Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; Maxthon; InfoPath.1; .NET CLR 3.5.30729; .NET CLR 3.0.30618)';
+      vIdHTTP.Request.ContentEncoding     :=  '';
+      vIdHTTP.Request.AcceptEncoding      :=  '';
+      vIdHTTP.Request.Accept              :=  '*/*';
+      vIdHTTP.ConnectTimeout              :=  20000;
+
+      vIdHTTP.Request.BasicAuthentication :=  False;
+      vIdHTTP.Request.CustomHeaders.AddValue('Authorization','Bearer ' + FToken.AccessToken);
+
+      sUrl := FPSP.URLAPI + FPSP.EndPoints.LocGet +
+          '?inicio=' + MyPixListRebPer.Data_Hora_Ini_ToStr  +
+          '&fim='    + MyPixListRebPer.Data_Hora_Fim_ToStr;
+
+      if MyPixListRebPer.Index_Pag > 0 then
+        sUrl := sUrl + '&paginaAtual=' + IntToStr(MyPixListRebPer.Index_Pag);
+
+      if (iQtdItensPag > 0) and (iQtdItensPag <= 100) then
+        sUrl := sUrl + '&itensPorPagina=' + IntToStr(iQtdItensPag);
+
+      if txIdPresente then
+        sUrl := sUrl + '&txIdPresente=true'
+      else
+        sUrl := sUrl + '&txIdPresente=false';
+
+      case tipoCob of
+        tcbCob  : sUrl := sUrl + '&tipoCob=cob';
+        tcbCobV : sUrl := sUrl + '&tipoCob=cobv';
+      end;
+
+      case FPSP.Psp of
+        pspSicredi:;
+        pspBancoDoBrasil:
+          begin
+            if FAutenticar.Application_key <> '' then
+              sUrl := sUrl + '&gw-dev-app-key=' + FAutenticar.Application_key;
+          end;
+        pspSantander:;
+        pspBradesco,
+        pspSicoob:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+            //vIdHTTP.Request.AcceptEncoding      :=  ' '; VERIFICAR NECESSIDADE DESSE AQUI
+          end;
+        pspEfi:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+          end;
+        pspPagSeguro:;
+        pspItau:;
+        pspInter:;
+        pspBanRiSul:;
+      end;
+
+      try
+        vIdHTTP.Get(sUrl, StrmResponse);
+
+        case vIdHTTP.ResponseCode of
+          200, 201:
+            begin
+              RespLocGet:=  TRespLocList.Create;
+              try
+                RespLocGet.LoadJson(StrmResponse.DataString);
+                InOnLocConsultarList(Self, RespLocGet, '');
+              finally
+                RespLocGet.Free;
+              end;
+
+            end;
+        else
+          InOnLocConsultarList(Self, nil, StrmResponse.DataString);
+        end;
+      Except
+        On E: EIdHTTPProtocolException Do
+          Begin
+            If (Length(E.ErrorMessage) > 0) or (E.ErrorCode <> 0) Then
+              Begin
+                InOnLocConsultarList(Self, nil, E.ErrorMessage);
+              End;
+          End;
+
+        on E: Exception do
+          begin
+            InOnLocConsultarList(Self, nil, E.Message);
+          end;
+      end;
+
+    except on E: Exception do
+      begin
+        InOnLocConsultarList(Self, nil, E.Message);
+      end;
+    end;
+  finally
+    vIdHTTP.Free;
+    SSLHandler.Free;
+    StrmResponse.Free;
+  end;
+  finally
+    MyPixListRebPer.Free;
+  end;
+end;
+
+procedure TRscPix.LocationId(locId: integer);
+var
+  StrmBody        : TStringStream ;
+  vIdHTTP         : TIdHTTP;
+  SSLHandler      : TIdSSLIOHandlerSocketOpenSSL;
+
+  ResultLocGet    : TRespLocGet;
+  MsgErro         : string;
+  sUrl            : string;
+begin
+  if  not ValidaChavePix(MsgErro)  then
+    begin
+      InOnLocGetId(Self, nil, MsgErro);
+      Exit;
+    end;
+
+  if  (locId <= 0) then
+    begin
+      InOnLocGetId(Self, nil, 'O locId não informado ou inválido');
+      Exit;
+    end;
+
+  if  Token.AccessToken = '' then
+    begin
+      InOnLocGetId(Self, nil, 'AccessToken não informado: Use o evento -NovoToken para solicitar um novo token ao psp');
+      Exit;
+    end;
+
+  StrmBody    :=  TStringStream.Create('');
+  vIdHTTP     := TIdHTTP.Create(nil);
+  SSLHandler  := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+  try
+    try
+      SSLHandler.SSLOptions.SSLVersions       :=  [sslvTLSv1_2];
+      SSLHandler.SSLOptions.CertFile          :=  FCertificado.CertFile;
+      SSLHandler.SSLOptions.KeyFile           :=  FCertificado.CertKeyFile;
+      SSLHandler.SSLOptions.RootCertFile      :=  '';
+      SSLHandler.Host                         := FPSP.UrlHostCert;
+      SSLHandler.Port                         := 443;
+      SSLHandler.SSLOptions.Mode              := sslmClient;
+      SSLHandler.SSLOptions.Method            := sslvTLSv1_2;
+
+      vIdHTTP.IOHandler := SSLHandler;
+      vIdHTTP.Request.CustomHeaders.Clear;
+      vIdHTTP.Request.ContentType         :=  'application/json; application/x-www-form-urlencoded; charset=UTF-8;';
+      vIdHTTP.Request.UserAgent           :=  'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; GTB5; Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; Maxthon; InfoPath.1; .NET CLR 3.5.30729; .NET CLR 3.0.30618)';
+      vIdHTTP.Request.ContentEncoding     :=  '';
+      vIdHTTP.Request.AcceptEncoding      :=  '';
+      vIdHTTP.Request.Accept              :=  '*/*';
+      vIdHTTP.ConnectTimeout              :=  20000;
+
+      vIdHTTP.Request.BasicAuthentication :=  False;
+      vIdHTTP.Request.CustomHeaders.AddValue('Authorization','Bearer ' + FToken.AccessToken);
+
+      case FPSP.Psp of
+        pspSicredi:;
+        pspBancoDoBrasil:;
+        pspSantander:;
+        pspBradesco,
+        pspSicoob:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+            //vIdHTTP.Request.AcceptEncoding      :=  ' '; VERIFICAR NECESSIDADE DESSE AQUI
+          end;
+        pspEfi:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+            vIdHTTP.Request.AcceptEncoding      :=  'gzip, deflate, br';
+          end;
+        pspPagSeguro:;
+        pspItau:;
+        pspInter:;
+        pspBanRiSul:;
+      end;
+
+      sUrl  :=  FPSP.UrlApi + FPSP.EndPoints.LocGetId;
+      sUrl := StringReplace(sUrl, '{locId}', IntToStr(locId), [rfReplaceAll]);
+
+     if FAutenticar.Application_key <> '' then
+        sUrl := sUrl + '?gw-dev-app-key=' + FAutenticar.Application_key;
+
+      try
+        vIdHTTP.Get(sUrl, StrmBody);
+
+        case vIdHTTP.ResponseCode of
+          200, 201:
+            begin
+              ResultLocGet:=  TRespLocGet.Create;
+              try
+                ResultLocGet.LoadJson(StrmBody.DataString);
+                InOnLocGetId(Self, ResultLocGet, '');
+              finally
+                ResultLocGet.Free;
+              end;
+
+            end;
+        else
+          InOnLocGetId(Self, nil, StrmBody.DataString);
+        end;
+      Except
+        On E: EIdHTTPProtocolException Do
+          Begin
+            If (Length(E.ErrorMessage) > 0) or (E.ErrorCode <> 0) Then
+              Begin
+                InOnLocGetId(Self, nil, E.ErrorMessage);
+              End;
+          End;
+
+        on E: Exception do
+          begin
+            InOnLocGetId(Self, nil, E.Message);
+          end;
+      end;
+
+    except on E: Exception do
+      begin
+        InOnLocGetId(Self, nil, E.Message);
+      end;
+    end;
+  finally
+    vIdHTTP.Free;
+    SSLHandler.Free;
+    StrmBody.Free;
+  end;
+end;
+
+procedure TRscPix.LocationIdToQrCode(locId: integer);
+var
+  StrmBody        : TStringStream ;
+  vIdHTTP         : TIdHTTP;
+  SSLHandler      : TIdSSLIOHandlerSocketOpenSSL;
+
+  ResultLocGet    : TRespLocGetIdQrcode;
+  MsgErro         : string;
+  sUrl            : string;
+begin
+  if  not ValidaChavePix(MsgErro)  then
+    begin
+      InOnLocGetIdQrCode(Self, nil, MsgErro);
+      Exit;
+    end;
+
+  if  (locId <= 0) then
+    begin
+      InOnLocGetIdQrCode(Self, nil, 'O locId não informado ou inválido');
+      Exit;
+    end;
+
+  if  Token.AccessToken = '' then
+    begin
+      InOnLocGetIdQrCode(Self, nil, 'AccessToken não informado: Use o evento -NovoToken para solicitar um novo token ao psp');
+      Exit;
+    end;
+
+  StrmBody    :=  TStringStream.Create('');
+  vIdHTTP     := TIdHTTP.Create(nil);
+  SSLHandler  := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+  try
+    try
+      SSLHandler.SSLOptions.SSLVersions       :=  [sslvTLSv1_2];
+      SSLHandler.SSLOptions.CertFile          :=  FCertificado.CertFile;
+      SSLHandler.SSLOptions.KeyFile           :=  FCertificado.CertKeyFile;
+      SSLHandler.SSLOptions.RootCertFile      :=  '';
+      SSLHandler.Host                         := FPSP.UrlHostCert;
+      SSLHandler.Port                         := 443;
+      SSLHandler.SSLOptions.Mode              := sslmClient;
+      SSLHandler.SSLOptions.Method            := sslvTLSv1_2;
+
+      vIdHTTP.IOHandler := SSLHandler;
+      vIdHTTP.Request.CustomHeaders.Clear;
+      vIdHTTP.Request.ContentType         :=  'application/json; application/x-www-form-urlencoded; charset=UTF-8;';
+      vIdHTTP.Request.UserAgent           :=  'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; GTB5; Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; Maxthon; InfoPath.1; .NET CLR 3.5.30729; .NET CLR 3.0.30618)';
+      vIdHTTP.Request.ContentEncoding     :=  '';
+      vIdHTTP.Request.AcceptEncoding      :=  '';
+      vIdHTTP.Request.Accept              :=  '*/*';
+      vIdHTTP.ConnectTimeout              :=  20000;
+
+      vIdHTTP.Request.BasicAuthentication :=  False;
+      vIdHTTP.Request.CustomHeaders.AddValue('Authorization','Bearer ' + FToken.AccessToken);
+
+      sUrl  :=  FPSP.UrlApi + FPSP.EndPoints.LocGetIdQrcode;
+      sUrl := StringReplace(sUrl, '{locId}', IntToStr(locId), [rfReplaceAll]);
+
+      case FPSP.Psp of
+        pspSicredi:;
+        pspBancoDoBrasil:
+          begin
+            sUrl  :=  FPSP.UrlApi + FPSP.EndPoints.LocGetId;
+            sUrl := StringReplace(sUrl, '{locId}', IntToStr(locId), [rfReplaceAll]);
+
+            if FAutenticar.Application_key <> '' then
+              sUrl := sUrl + '?gw-dev-app-key=' + FAutenticar.Application_key;
+          end;
+        pspSantander:;
+        pspBradesco,
+        pspSicoob:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+            //vIdHTTP.Request.AcceptEncoding      :=  ' '; VERIFICAR NECESSIDADE DESSE AQUI
+          end;
+        pspEfi:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+          end;
+        pspPagSeguro:;
+        pspItau:;
+        pspInter:;
+        pspBanRiSul:;
+      end;
+
+      try
+        vIdHTTP.Get(sUrl, StrmBody);
+
+        case vIdHTTP.ResponseCode of
+          200, 201:
+            begin
+              ResultLocGet:=  TRespLocGetIdQrcode.Create;
+              try
+                ResultLocGet.LoadJson(StrmBody.DataString);
+                InOnLocGetIdQrCode(Self, ResultLocGet, '');
+              finally
+                ResultLocGet.Free;
+              end;
+
+            end;
+        else
+          InOnLocGetIdQrCode(Self, nil, StrmBody.DataString);
+        end;
+      Except
+        On E: EIdHTTPProtocolException Do
+          Begin
+            If (Length(E.ErrorMessage) > 0) or (E.ErrorCode <> 0) Then
+              Begin
+                InOnLocGetIdQrCode(Self, nil, E.ErrorMessage);
+              End;
+          End;
+
+        on E: Exception do
+          begin
+            InOnLocGetIdQrCode(Self, nil, E.Message);
+          end;
+      end;
+
+    except on E: Exception do
+      begin
+        InOnLocGetIdQrCode(Self, nil, E.Message);
+      end;
+    end;
+  finally
+    vIdHTTP.Free;
+    SSLHandler.Free;
+    StrmBody.Free;
+  end;
+end;
+
+procedure TRscPix.LocationDesvincularTxId(locId: integer);
+var
+  StrmBody        : TStringStream ;
+  vIdHTTP         : TIdHTTP;
+  SSLHandler      : TIdSSLIOHandlerSocketOpenSSL;
+
+  vResponse       : TRespLocDelete;
+  MsgErro         : string;
+  sUrl            : string;
+begin
+  if  not ValidaChavePix(MsgErro)  then
+    begin
+      InOnLocDelete(Self, nil, MsgErro);
+      Exit;
+    end;
+
+  if  (locId <= 0) then
+    begin
+      InOnLocDelete(Self, nil, 'O locId não informado ou inválido');
+      Exit;
+    end;
+
+  if  Token.AccessToken = '' then
+    begin
+      InOnLocDelete(Self, nil, 'AccessToken não informado: Use o evento -NovoToken para solicitar um novo token ao psp');
+      Exit;
+    end;
+
+  StrmBody    :=  TStringStream.Create('');
+  vIdHTTP     := TIdHTTP.Create(nil);
+  SSLHandler  := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+  try
+    try
+      SSLHandler.SSLOptions.SSLVersions       :=  [sslvTLSv1_2];
+      SSLHandler.SSLOptions.CertFile          :=  FCertificado.CertFile;
+      SSLHandler.SSLOptions.KeyFile           :=  FCertificado.CertKeyFile;
+      SSLHandler.SSLOptions.RootCertFile      :=  '';
+      SSLHandler.Host                         := FPSP.UrlHostCert;
+      SSLHandler.Port                         := 443;
+      SSLHandler.SSLOptions.Mode              := sslmClient;
+      SSLHandler.SSLOptions.Method            := sslvTLSv1_2;
+
+      vIdHTTP.IOHandler := SSLHandler;
+      vIdHTTP.Request.CustomHeaders.Clear;
+      vIdHTTP.Request.ContentType         :=  'application/json; application/x-www-form-urlencoded; charset=UTF-8;';
+      vIdHTTP.Request.UserAgent           :=  'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; GTB5; Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; Maxthon; InfoPath.1; .NET CLR 3.5.30729; .NET CLR 3.0.30618)';
+      vIdHTTP.Request.ContentEncoding     :=  '';
+      vIdHTTP.Request.AcceptEncoding      :=  '';
+      vIdHTTP.Request.Accept              :=  '*/*';
+      vIdHTTP.ConnectTimeout              :=  20000;
+
+      vIdHTTP.Request.BasicAuthentication :=  False;
+      vIdHTTP.Request.CustomHeaders.AddValue('Authorization','Bearer ' + FToken.AccessToken);
+
+      case FPSP.Psp of
+        pspSicredi:;
+        pspBancoDoBrasil:;
+        pspSantander:;
+        pspBradesco,
+        pspSicoob:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+            //vIdHTTP.Request.AcceptEncoding      :=  ' '; VERIFICAR NECESSIDADE DESSE AQUI
+          end;
+        pspEfi:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+          end;
+        pspPagSeguro:;
+        pspItau:;
+        pspInter:;
+        pspBanRiSul:;
+      end;
+
+      sUrl  :=  FPSP.UrlApi + FPSP.EndPoints.LocDelete;
+      sUrl := StringReplace(sUrl, '{locId}', IntToStr(locId), [rfReplaceAll]);
+
+     if FAutenticar.Application_key <> '' then
+        sUrl := sUrl + '?gw-dev-app-key=' + FAutenticar.Application_key;
+
+      try
+        case FPSP.Psp of
+          pspSicredi,
+          pspBancoDoBrasil,
+          pspSantander,
+          pspBradesco,
+          pspSicoob,
+          pspPagSeguro,
+          pspItau,
+          pspInter,
+          pspBanRiSul,
+          pspEfi:
+            begin
+              vIdHTTP.Delete(sUrl, StrmBody);
+            end;
+        end;
+
+        case vIdHTTP.ResponseCode of
+          200, 201:
+            begin
+              vResponse :=  TRespLocDelete.Create;
+              try
+                vResponse.LoadJson(StrmBody.DataString);
+                InOnLocDelete(Self, vResponse, '');
+              finally
+                vResponse.Free;
+              end;
+
+            end;
+        else
+          InOnLocDelete(Self, nil, StrmBody.DataString);
+        end;
+      Except
+        On E: EIdHTTPProtocolException Do
+          Begin
+            If (Length(E.ErrorMessage) > 0) or (E.ErrorCode <> 0) Then
+              Begin
+                InOnLocDelete(Self, nil, E.ErrorMessage);
+              End;
+          End;
+
+        on E: Exception do
+          begin
+            InOnLocDelete(Self, nil, E.Message);
+          end;
+      end;
+
+    except on E: Exception do
+      begin
+        InOnLocDelete(Self, nil, E.Message);
+      end;
+    end;
+  finally
+    vIdHTTP.Free;
+    SSLHandler.Free;
+    StrmBody.Free;
+  end;
+end;
+
+procedure TRscPix.WebhookListarCadastrados(dtData_Hora_Inicial,
+  dtData_Hora_Final: TDateTime; iPagIndex, iQtdItensPag: integer);
+var
+  StrmResponse        : TStringStream ;
+  vIdHTTP         : TIdHTTP;
+  SSLHandler      : TIdSSLIOHandlerSocketOpenSSL;
+
+  MyPixListRebPer : TRequesteListar;
+  vResponse        : TRespWebhookListar;
+  MsgErro         : string;
+  sUrl            : string;
+begin
+  if  not ValidaChavePix(MsgErro)  then
+    begin
+      InOnWebhookListar(Self, nil, MsgErro);
+      Exit;
+    end;
+
+  MyPixListRebPer := TRequesteListar.Create;
+  try
+    try
+      MyPixListRebPer.PSP           :=  FPSP.Psp;
+      MyPixListRebPer.Data_Hora_Ini :=  dtData_Hora_Inicial;
+      MyPixListRebPer.Data_Hora_Fim :=  dtData_Hora_Final;
+      MyPixListRebPer.Index_Pag     :=  iPagIndex;
+
+    except on E: Exception do
+      begin
+        InOnWebhookListar(Self, nil, e.Message);
+        Exit;
+      end;
+    end;
+
+  if  Token.AccessToken = '' then
+    begin
+      InOnWebhookListar(Self, nil, 'AccessToken não informado: Use o evento -NovoToken para solicitar um novo token ao psp');
+      Exit;
+    end;
+
+  StrmResponse    :=  TStringStream.Create('');
+  vIdHTTP     := TIdHTTP.Create(nil);
+  SSLHandler  := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+  try
+    try
+      SSLHandler.SSLOptions.SSLVersions       :=  [sslvTLSv1_2];
+      SSLHandler.SSLOptions.CertFile          :=  FCertificado.CertFile;
+      SSLHandler.SSLOptions.KeyFile           :=  FCertificado.CertKeyFile;
+      SSLHandler.SSLOptions.RootCertFile      :=  '';
+      SSLHandler.Host                         := FPSP.UrlHostCert;
+      SSLHandler.Port                         := 443;
+      SSLHandler.SSLOptions.Mode              := sslmClient;
+      SSLHandler.SSLOptions.Method            := sslvTLSv1_2;
+
+      vIdHTTP.IOHandler := SSLHandler;
+      vIdHTTP.Request.CustomHeaders.Clear;
+      vIdHTTP.Request.ContentType         :=  'application/json; application/x-www-form-urlencoded; charset=UTF-8;';
+      vIdHTTP.Request.UserAgent           :=  'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; GTB5; Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; Maxthon; InfoPath.1; .NET CLR 3.5.30729; .NET CLR 3.0.30618)';
+      vIdHTTP.Request.ContentEncoding     :=  '';
+      vIdHTTP.Request.AcceptEncoding      :=  '';
+      vIdHTTP.Request.Accept              :=  '*/*';
+      vIdHTTP.ConnectTimeout              :=  20000;
+
+      vIdHTTP.Request.BasicAuthentication :=  False;
+      vIdHTTP.Request.CustomHeaders.AddValue('Authorization','Bearer ' + FToken.AccessToken);
+
+      sUrl := FPSP.URLAPI + FPSP.EndPoints.WebhookGetCWC +
+          '?inicio=' + MyPixListRebPer.Data_Hora_Ini_ToStr  +
+          '&fim='    + MyPixListRebPer.Data_Hora_Fim_ToStr;
+
+      case FPSP.Psp of
+        pspSicredi:;
+        pspBancoDoBrasil:
+          begin
+            if MyPixListRebPer.Index_Pag > 0 then
+              sUrl := sUrl + '&paginaAtual=' + IntToStr(MyPixListRebPer.Index_Pag);
+
+            if (iQtdItensPag > 0) and (iQtdItensPag <= 100) then
+              sUrl := sUrl + '&itensPorPagina=' + IntToStr(iQtdItensPag);
+
+            if FAutenticar.Application_key <> '' then
+              sUrl := sUrl + '&gw-dev-app-key=' + FAutenticar.Application_key;
+          end;
+        pspSantander:;
+        pspBradesco,
+        pspSicoob:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+            //vIdHTTP.Request.AcceptEncoding      :=  ' '; VERIFICAR NECESSIDADE DESSE AQUI
+          end;
+        pspEfi:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+          end;
+        pspPagSeguro:;
+        pspItau:;
+        pspInter:;
+        pspBanRiSul:;
+      end;
+
+      try
+        vIdHTTP.Get(sUrl, StrmResponse);
+
+        case vIdHTTP.ResponseCode of
+          200, 201:
+            begin
+              vResponse :=  TRespWebhookListar.Create;
+              try
+                vResponse.LoadJson(StrmResponse.DataString);
+                InOnWebhookListar(Self, vResponse, '');
+              finally
+                vResponse.Free;
+              end;
+
+            end;
+        else
+          InOnWebhookListar(Self, nil, StrmResponse.DataString);
+        end;
+      Except
+        On E: EIdHTTPProtocolException Do
+          Begin
+            If (Length(E.ErrorMessage) > 0) or (E.ErrorCode <> 0) Then
+              Begin
+                InOnWebhookListar(Self, nil, E.ErrorMessage);
+              End;
+          End;
+
+        on E: Exception do
+          begin
+            InOnWebhookListar(Self, nil, E.Message);
+          end;
+      end;
+
+    except on E: Exception do
+      begin
+        InOnWebhookListar(Self, nil, E.Message);
+      end;
+    end;
+  finally
+    vIdHTTP.Free;
+    SSLHandler.Free;
+    StrmResponse.Free;
+  end;
+  finally
+    MyPixListRebPer.Free;
+  end;
+end;
+
+procedure TRscPix.WebhookConfigurar(const webhookUrl: string);
+var
+  RequestStream : TStringStream ;
+  vJsonEnviar    : TRscJSONobject;
+  vResponse     : TRespWebhookPutDelete;
+
+  vIdHTTP         : TIdHTTP;
+  SSLHandler      : TIdSSLIOHandlerSocketOpenSSL;
+
+  MsgErro         : string;
+  sUrl            : string;
+  sResponse       : string;
+begin
+  if  not ValidaChavePix(MsgErro)  then
+    begin
+      InOnWebhookPut(Self, nil, MsgErro);
+      Exit;
+    end;
+
+  if  (Length(webhookUrl) <= 0) then
+    begin
+      InOnWebhookPut(Self, nil, 'O webhookUrl não informado ou inválido');
+      Exit;
+    end;
+
+  if  Token.AccessToken = '' then
+    begin
+      InOnWebhookPut(Self, nil, 'AccessToken não informado: Use o evento -NovoToken para solicitar um novo token ao psp');
+      Exit;
+    end;
+
+  vJsonEnviar  :=  TRscJSONobject.Create;
+  vJsonEnviar.AddPair('webhookUrl', Trim(webhookUrl));
+
+  RequestStream   :=  TStringStream.Create(vJsonEnviar.ToJson);
+  RequestStream.Position := 0;
+
+  vIdHTTP         :=  TIdHTTP.Create(nil);
+  SSLHandler      :=  TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+  try
+    try
+      SSLHandler.SSLOptions.SSLVersions       :=  [sslvTLSv1_2];
+      SSLHandler.SSLOptions.CertFile          :=  FCertificado.CertFile;
+      SSLHandler.SSLOptions.KeyFile           :=  FCertificado.CertKeyFile;
+      SSLHandler.SSLOptions.RootCertFile      :=  '';
+      SSLHandler.Host                         := FPSP.UrlHostCert;
+      SSLHandler.Port                         := 443;
+      SSLHandler.SSLOptions.Mode              := sslmClient;
+      SSLHandler.SSLOptions.Method            := sslvTLSv1_2;
+
+      vIdHTTP.IOHandler := SSLHandler;
+      vIdHTTP.Request.CustomHeaders.Clear;
+      vIdHTTP.Request.ContentType         :=  'application/json; application/x-www-form-urlencoded; charset=UTF-8;';
+      vIdHTTP.Request.UserAgent           :=  'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; GTB5; Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; Maxthon; InfoPath.1; .NET CLR 3.5.30729; .NET CLR 3.0.30618)';
+      vIdHTTP.Request.ContentEncoding     :=  '';
+      vIdHTTP.Request.AcceptEncoding      :=  '';
+      vIdHTTP.Request.Accept              :=  '*/*';
+      vIdHTTP.ConnectTimeout              :=  20000;
+
+      vIdHTTP.Request.BasicAuthentication :=  False;
+      vIdHTTP.Request.CustomHeaders.AddValue('Authorization','Bearer ' + FToken.AccessToken);
+
+      case FPSP.Psp of
+        pspSicredi:;
+        pspBancoDoBrasil:;
+        pspSantander:;
+        pspBradesco,
+        pspSicoob:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+            //vIdHTTP.Request.AcceptEncoding      :=  ' '; VERIFICAR NECESSIDADE DESSE AQUI
+          end;
+        pspBanRiSul,
+        pspEfi:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+          end;
+        pspPagSeguro:;
+        pspItau:;
+        pspInter:;
+      end;
+
+      sUrl  :=  FPSP.UrlApi + FPSP.EndPoints.WebhookPut;
+      sUrl := StringReplace(sUrl, '{chave}', Trim(Titular.ChavePix), [rfReplaceAll]);
+
+     if FAutenticar.Application_key <> '' then
+        sUrl := sUrl + '?gw-dev-app-key=' + FAutenticar.Application_key;
+
+      try
+        sResponse  :=  vIdHTTP.Put(sUrl, RequestStream);
+
+        case vIdHTTP.ResponseCode of
+          200, 201:
+            begin
+              vResponse :=  TRespWebhookPutDelete.Create;
+              try
+                vResponse.response  :=  'Webhook para notificações acerca de Pix recebidos associados a um txid. Cadastrado com sucesso';
+                InOnWebhookPut(Self, vResponse, '');
+              finally
+                vResponse.Free;
+              end;
+
+            end;
+        else
+          InOnWebhookPut(Self, nil, sResponse);
+        end;
+      Except
+        On E: EIdHTTPProtocolException Do
+          Begin
+            If (Length(E.ErrorMessage) > 0) or (E.ErrorCode <> 0) Then
+              Begin
+                InOnWebhookPut(Self, nil, E.ErrorMessage);
+              End;
+          End;
+
+        on E: Exception do
+          begin
+            InOnWebhookPut(Self, nil, E.Message);
+          end;
+      end;
+
+    except on E: Exception do
+      begin
+        InOnWebhookPut(Self, nil, E.Message);
+      end;
+    end;
+  finally
+    vIdHTTP.Free;
+    SSLHandler.Free;
+    RequestStream.Free;
+    vJsonEnviar.Free;
+  end;
+end;
+
+procedure TRscPix.WebhookConsultar;
+var
+  StrmResponse        : TStringStream ;
+  vIdHTTP         : TIdHTTP;
+  SSLHandler      : TIdSSLIOHandlerSocketOpenSSL;
+
+  vResponse        : TRespWebhookGet;
+  MsgErro         : string;
+  sUrl            : string;
+begin
+  if  not ValidaChavePix(MsgErro)  then
+    begin
+      InOnWebhookGet(Self, nil, MsgErro);
+      Exit;
+    end;
+
+  if  Token.AccessToken = '' then
+    begin
+      InOnWebhookGet(Self, nil, 'AccessToken não informado: Use o evento -NovoToken para solicitar um novo token ao psp');
+      Exit;
+    end;
+
+  StrmResponse    :=  TStringStream.Create('');
+  vIdHTTP     := TIdHTTP.Create(nil);
+  SSLHandler  := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+  try
+    try
+      SSLHandler.SSLOptions.SSLVersions       :=  [sslvTLSv1_2];
+      SSLHandler.SSLOptions.CertFile          :=  FCertificado.CertFile;
+      SSLHandler.SSLOptions.KeyFile           :=  FCertificado.CertKeyFile;
+      SSLHandler.SSLOptions.RootCertFile      :=  '';
+      SSLHandler.Host                         := FPSP.UrlHostCert;
+      SSLHandler.Port                         := 443;
+      SSLHandler.SSLOptions.Mode              := sslmClient;
+      SSLHandler.SSLOptions.Method            := sslvTLSv1_2;
+
+      vIdHTTP.IOHandler := SSLHandler;
+      vIdHTTP.Request.CustomHeaders.Clear;
+      vIdHTTP.Request.ContentType         :=  'application/json; application/x-www-form-urlencoded; charset=UTF-8;';
+      vIdHTTP.Request.UserAgent           :=  'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; GTB5; Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; Maxthon; InfoPath.1; .NET CLR 3.5.30729; .NET CLR 3.0.30618)';
+      vIdHTTP.Request.ContentEncoding     :=  '';
+      vIdHTTP.Request.AcceptEncoding      :=  '';
+      vIdHTTP.Request.Accept              :=  '*/*';
+      vIdHTTP.ConnectTimeout              :=  20000;
+
+      vIdHTTP.Request.BasicAuthentication :=  False;
+      vIdHTTP.Request.CustomHeaders.AddValue('Authorization','Bearer ' + FToken.AccessToken);
+
+      sUrl  :=  FPSP.UrlApi + FPSP.EndPoints.WebhookGet;
+      sUrl := StringReplace(sUrl, '{chave}', Trim(Titular.ChavePix), [rfReplaceAll]);
+
+     if FAutenticar.Application_key <> '' then
+        sUrl := sUrl + '?gw-dev-app-key=' + FAutenticar.Application_key;
+
+      case FPSP.Psp of
+        pspSicredi:;
+        pspBancoDoBrasil:;
+        pspSantander:;
+        pspBradesco,
+        pspSicoob:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+            //vIdHTTP.Request.AcceptEncoding      :=  ' '; VERIFICAR NECESSIDADE DESSE AQUI
+          end;
+        pspEfi:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+          end;
+        pspPagSeguro:;
+        pspItau:;
+        pspInter:;
+        pspBanRiSul:;
+      end;
+
+      try
+        vIdHTTP.Get(sUrl, StrmResponse);
+
+        case vIdHTTP.ResponseCode of
+          200, 201:
+            begin
+              vResponse :=  TRespWebhookGet.Create;
+              try
+                vResponse.LoadJson(StrmResponse.DataString);
+                InOnWebhookGet(Self, vResponse, '');
+              finally
+                vResponse.Free;
+              end;
+
+            end;
+        else
+          InOnWebhookGet(Self, nil, StrmResponse.DataString);
+        end;
+      Except
+        On E: EIdHTTPProtocolException Do
+          Begin
+            If (Length(E.ErrorMessage) > 0) or (E.ErrorCode <> 0) Then
+              Begin
+                InOnWebhookGet(Self, nil, E.ErrorMessage);
+              End;
+          End;
+
+        on E: Exception do
+          begin
+            InOnWebhookGet(Self, nil, E.Message);
+          end;
+      end;
+
+    except on E: Exception do
+      begin
+        InOnWebhookGet(Self, nil, E.Message);
+      end;
+    end;
+  finally
+    vIdHTTP.Free;
+    SSLHandler.Free;
+    StrmResponse.Free;
+  end;
+end;
+
+procedure TRscPix.WebhookDesvincular;
+var
+  StrmResponse        : TStringStream ;
+  vIdHTTP         : TIdHTTP;
+  SSLHandler      : TIdSSLIOHandlerSocketOpenSSL;
+
+  vResponse        : TRespWebhookPutDelete;
+  MsgErro         : string;
+  sUrl            : string;
+begin
+  if  not ValidaChavePix(MsgErro)  then
+    begin
+      InOnWebhookDelete(Self, nil, MsgErro);
+      Exit;
+    end;
+
+  if  Token.AccessToken = '' then
+    begin
+      InOnWebhookDelete(Self, nil, 'AccessToken não informado: Use o evento -NovoToken para solicitar um novo token ao psp');
+      Exit;
+    end;
+
+  StrmResponse    :=  TStringStream.Create('');
+  vIdHTTP     := TIdHTTP.Create(nil);
+  SSLHandler  := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+  try
+    try
+      SSLHandler.SSLOptions.SSLVersions       :=  [sslvTLSv1_2];
+      SSLHandler.SSLOptions.CertFile          :=  FCertificado.CertFile;
+      SSLHandler.SSLOptions.KeyFile           :=  FCertificado.CertKeyFile;
+      SSLHandler.SSLOptions.RootCertFile      :=  '';
+      SSLHandler.Host                         := FPSP.UrlHostCert;
+      SSLHandler.Port                         := 443;
+      SSLHandler.SSLOptions.Mode              := sslmClient;
+      SSLHandler.SSLOptions.Method            := sslvTLSv1_2;
+
+      vIdHTTP.IOHandler := SSLHandler;
+      vIdHTTP.Request.CustomHeaders.Clear;
+      vIdHTTP.Request.ContentType         :=  'application/json; application/x-www-form-urlencoded; charset=UTF-8;';
+      vIdHTTP.Request.UserAgent           :=  'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; GTB5; Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; Maxthon; InfoPath.1; .NET CLR 3.5.30729; .NET CLR 3.0.30618)';
+      vIdHTTP.Request.ContentEncoding     :=  '';
+      vIdHTTP.Request.AcceptEncoding      :=  '';
+      vIdHTTP.Request.Accept              :=  '*/*';
+      vIdHTTP.ConnectTimeout              :=  20000;
+
+      vIdHTTP.Request.BasicAuthentication :=  False;
+      vIdHTTP.Request.CustomHeaders.AddValue('Authorization','Bearer ' + FToken.AccessToken);
+
+      sUrl  :=  FPSP.UrlApi + FPSP.EndPoints.WebhookGet;
+      sUrl := StringReplace(sUrl, '{chave}', Trim(Titular.ChavePix), [rfReplaceAll]);
+
+     if FAutenticar.Application_key <> '' then
+        sUrl := sUrl + '?gw-dev-app-key=' + FAutenticar.Application_key;
+
+      case FPSP.Psp of
+        pspSicredi:;
+        pspBancoDoBrasil:;
+        pspSantander:;
+        pspBradesco,
+        pspSicoob:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+            //vIdHTTP.Request.AcceptEncoding      :=  ' '; VERIFICAR NECESSIDADE DESSE AQUI
+          end;
+        pspEfi:
+          begin
+            vIdHTTP.Request.ContentType         :=  'application/json';
+          end;
+        pspPagSeguro:;
+        pspItau:;
+        pspInter:;
+        pspBanRiSul:;
+      end;
+
+      try
+        vIdHTTP.Delete(sUrl, StrmResponse);
+
+        case vIdHTTP.ResponseCode of
+          200, 201, 204:
+            begin
+              vResponse :=  TRespWebhookPutDelete.Create;
+              try
+                vResponse.response  :=  'Webhook para notificações Pix foi cancelado com sucesso';
+                InOnWebhookDelete(Self, vResponse, '');
+              finally
+                vResponse.Free;
+              end;
+
+            end;
+        else
+          InOnWebhookDelete(Self, nil, StrmResponse.DataString);
+        end;
+      Except
+        On E: EIdHTTPProtocolException Do
+          Begin
+            If (Length(E.ErrorMessage) > 0) or (E.ErrorCode <> 0) Then
+              Begin
+                InOnWebhookDelete(Self, nil, E.ErrorMessage);
+              End;
+          End;
+
+        on E: Exception do
+          begin
+            InOnWebhookDelete(Self, nil, E.Message);
+          end;
+      end;
+
+    except on E: Exception do
+      begin
+        InOnWebhookDelete(Self, nil, E.Message);
+      end;
+    end;
+  finally
+    vIdHTTP.Free;
+    SSLHandler.Free;
+    StrmResponse.Free;
+  end;
 end;
 
 end.
