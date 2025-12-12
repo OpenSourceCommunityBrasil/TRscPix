@@ -160,7 +160,7 @@ end;
 
 function TirarAcentoE(Texto: string): widestring;
 const
-  ComAcentuacao = ' &àáâãäèéêëìíîïòóôõöùúûüçÀÁÁÂÃÄÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÇÇ`´ª°ºªÇÚ,<>'+'''';
+  ComAcentuacao = ' &Ã Ã¡Ã¢Ã£Ã¤Ã¨Ã©ÃªÃ«Ã¬Ã­Ã®Ã¯Ã²Ã³Ã´ÃµÃ¶Ã¹ÃºÃ»Ã¼Ã§Ã€ÃÃÃ‚ÃƒÃ„ÃˆÃ‰ÃŠÃ‹ÃŒÃÃÃÃ’Ã“Ã”Ã•Ã–Ã™ÃšÃ›ÃœÃ‡Ã‡`Â´ÂªÂ°ÂºÂªÃ‡Ãš,<>'+'''';
   SemAcentuacao = ' EaaaaaeeeeiiiiooooouuuucAAAAAAEEEEIIIIOOOOOUUUUCC  aooaCU               ';
 var
   i : Integer;
@@ -176,18 +176,18 @@ var
   i: Integer;
 begin
   Result  :=  False;
-  // Verifica se o número de celular tem o formato esperado
-  if (Length(aCelNumber) <> 13) or (aCelNumber[1] <> '+') then
+  // Verifica se o nÃºmero de celular tem o formato esperado
+  if (Length(aCelNumber) <> 14) or (aCelNumber[1] <> '+') then
     Exit;
 
-  // Verifica se todos os caracteres após o código de país são dígitos
+  // Verifica se todos os caracteres apÃ³s o cÃ³digo de paÃ­s sÃ£o dÃ­gitos
   for i := 2 to Length(aCelNumber) do
   begin
     if not IsCharInSet(aCelNumber[i], ['0'..'9']) then
       Exit;
   end;
 
-  // Verifica se o padrão específico para números de celular é atendido
+  // Verifica se o padrÃ£o especÃ­fico para nÃºmeros de celular Ã© atendido
   if (StrToInt(aCelNumber[3]) in [6..9]) and (StrToInt(aCelNumber[4]) in [1..9]) and
      (StrToInt(aCelNumber[5]) in [0..9]) and (StrToInt(aCelNumber[6]) in [0..9]) and
      (StrToInt(aCelNumber[7]) in [0..9]) and (StrToInt(aCelNumber[8]) in [0..9]) and
@@ -202,7 +202,7 @@ var
   sm, i, r, peso: integer;
 begin
   CNPJ  :=  GetStrNumber(CNPJ);
-  // length - retorna o tamanho da string do CNPJ (CNPJ é um número formado por 14 dígitos)
+  // length - retorna o tamanho da string do CNPJ (CNPJ Ã© um nÃºmero formado por 14 dÃ­gitos)
   if ((CNPJ = '00000000000000') or (CNPJ = '11111111111111') or
     (CNPJ = '22222222222222') or (CNPJ = '33333333333333') or
     (CNPJ = '44444444444444') or (CNPJ = '55555555555555') or
@@ -214,14 +214,14 @@ begin
     exit;
   end;
 
-  // "try" - protege o código para eventuais erros de conversão de tipo através da função "StrToInt"
+  // "try" - protege o cÃ³digo para eventuais erros de conversÃ£o de tipo atravÃ©s da funÃ§Ã£o "StrToInt"
   try
-    { *-- Cálculo do 1o. Digito Verificador --* }
+    { *-- CÃ¡lculo do 1o. Digito Verificador --* }
     sm := 0;
     peso := 2;
     for i := 12 downto 1 do
     begin
-      // StrToInt converte o i-ésimo caractere do CNPJ em um número
+      // StrToInt converte o i-Ã©simo caractere do CNPJ em um nÃºmero
       sm := sm + (StrToInt(CNPJ[i]) * peso);
       peso := peso + 1;
       if (peso = 10) then
@@ -232,9 +232,9 @@ begin
       dig13 := '0'
     else
       str((11 - r): 1, dig13);
-    // converte um número no respectivo caractere numérico
+    // converte um nÃºmero no respectivo caractere numÃ©rico
 
-    { *-- Cálculo do 2o. Digito Verificador --* }
+    { *-- CÃ¡lculo do 2o. Digito Verificador --* }
     sm := 0;
     peso := 2;
     for i := 13 downto 1 do
@@ -266,7 +266,7 @@ var
   S, i, r, peso: integer;
 begin
   CPF  :=  GetStrNumber(CPF);
-  // length - retorna o tamanho da string (CPF é um número formado por 11 dígitos)
+  // length - retorna o tamanho da string (CPF Ã© um nÃºmero formado por 11 dÃ­gitos)
   if ((CPF = '00000000000') or (CPF = '11111111111') or (CPF = '22222222222') or
     (CPF = '33333333333') or (CPF = '44444444444') or (CPF = '55555555555') or
     (CPF = '66666666666') or (CPF = '77777777777') or (CPF = '88888888888') or
@@ -276,14 +276,14 @@ begin
     exit;
   end;
 
-  // try - protege o código para eventuais erros de conversão de tipo na função StrToInt
+  // try - protege o cÃ³digo para eventuais erros de conversÃ£o de tipo na funÃ§Ã£o StrToInt
   try
-    { *-- Cálculo do 1o. Digito Verificador --* }
+    { *-- CÃ¡lculo do 1o. Digito Verificador --* }
     S := 0;
     peso := 10;
     for i := 1 to 9 do
     begin
-      // StrToInt converte o i-ésimo caractere do CPF em um número
+      // StrToInt converte o i-Ã©simo caractere do CPF em um nÃºmero
       S := S + (StrToInt(CPF[i]) * peso);
       peso := peso - 1;
     end;
@@ -291,9 +291,9 @@ begin
     if ((r = 10) or (r = 11)) then
       dig10 := '0'
     else
-      str(r: 1, dig10); // converte um número no respectivo caractere numérico
+      str(r: 1, dig10); // converte um nÃºmero no respectivo caractere numÃ©rico
 
-    { *-- Cálculo do 2o. Digito Verificador --* }
+    { *-- CÃ¡lculo do 2o. Digito Verificador --* }
     S := 0;
     peso := 11;
     for i := 1 to 10 do
