@@ -188,12 +188,15 @@ begin
   end;
 
   // Verifica se o padrão específico para números de celular é atendido
-  if (StrToInt(aCelNumber[3]) in [6..9]) and (StrToInt(aCelNumber[4]) in [1..9]) and
-     (StrToInt(aCelNumber[5]) in [0..9]) and (StrToInt(aCelNumber[6]) in [0..9]) and
-     (StrToInt(aCelNumber[7]) in [0..9]) and (StrToInt(aCelNumber[8]) in [0..9]) and
-     (StrToInt(aCelNumber[9]) in [0..9]) and (StrToInt(aCelNumber[10]) in [0..9]) and
-     (StrToInt(aCelNumber[11]) in [0..9]) and (StrToInt(aCelNumber[12]) in [0..9]) then
-    Result := True;
+  if (StrToInt(aCelNumber[4]) in [6..9]) and (StrToInt(aCelNumber[5]) in [1..9]) and
+     (StrToInt(aCelNumber[6]) in [0..9]) and (StrToInt(aCelNumber[7]) in [0..9]) and
+     (StrToInt(aCelNumber[8]) in [0..9]) and (StrToInt(aCelNumber[9]) in [0..9]) and
+     (StrToInt(aCelNumber[10]) in [0..9]) and (StrToInt(aCelNumber[11]) in [0..9]) and
+     (StrToInt(aCelNumber[12]) in [0..9]) and (StrToInt(aCelNumber[13]) in [0..9])
+  then
+    begin
+      Result := True;
+    end;
 end;
 
 function isCNPJ(CNPJ: string): boolean;
