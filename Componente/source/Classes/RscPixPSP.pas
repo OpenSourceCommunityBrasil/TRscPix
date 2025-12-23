@@ -131,7 +131,7 @@ begin
           taProducao:
             begin
               FURLToken                 :=  'https://oauth.bb.com.br/oauth/token';
-              FURLAPI                   :=  'https://api.bb.com.br/pix/v2';
+              FURLAPI                   :=  'https://api-pix.bb.com.br/pix/v2';
               FUrlHostCert              :=  '';
             end;
         end;
